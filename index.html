@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfil DISC - Análise Comportamental</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <div class="container header-content">
+            <h1>Perfil <span class="highlight">DISC</span></h1>
+            <p class="subtitle">Análise Comportamental | Prisma Comportamental PRO</p>
+        </div>
+    </header>
+
+    <main>
+        <!-- ===== HOME ===== -->
+        <section id="home" class="section-home">
+            <div class="container">
+                <div class="hero-box">
+                    <div class="hero-text">
+                        <h2>Descubra seu Perfil Comportamental</h2>
+                        <p>O método DISC mapeia quatro dimensões da sua personalidade: <strong>Dominância (D)</strong>, <strong>Influência (I)</strong>, <strong>Estabilidade (S)</strong> e <strong>Conformidade (C)</strong>.</p>
+                        <p>Em poucos minutos, você receberá uma <strong>análise completa</strong> com seu perfil pessoal, como os outros veem você e seus comportamentos sob pressão.</p>
+                        <button class="btn btn-primary btn-lg" onclick="iniciarQuiz()">Iniciar Teste</button>
+                    </div>
+                    <div class="disc-quad">
+                        <div class="quad-item d">D<br><small>Dominância</small></div>
+                        <div class="quad-item i">I<br><small>Influência</small></div>
+                        <div class="quad-item s">S<br><small>Estabilidade</small></div>
+                        <div class="quad-item c">C<br><small>Conformidade</small></div>
+                    </div>
+                </div>
+                <div class="info-strip">
+                    <div class="info-item"><strong>20</strong> perguntas</div>
+                    <div class="info-item"><strong>4</strong> fatores DISC</div>
+                    <div class="info-item"><strong>3</strong> min</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== QUIZ ===== -->
+        <section id="quiz-section" class="section" style="display:none">
+            <div class="container">
+                <div class="quiz-header">
+                    <div class="quiz-header-top">
+                        <span class="quiz-badge">Teste DISC</span>
+                        <span id="quiz-progresso" class="quiz-progresso">1 de 20</span>
+                    </div>
+                    <div class="progress-bar-bg">
+                        <div id="progress-bar" class="progress-bar-fill"></div>
+                    </div>
+                </div>
+                <div id="quiz-container" class="quiz-container"></div>
+            </div>
+        </section>
+
+        <!-- ===== RESULTADO ===== -->
+        <section id="resultado-section" class="section" style="display:none">
+            <div class="container resultado-wrapper">
+                <div id="resultado-container"></div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container footer-content">
+            <p>Prisma Comportamental PRO &mdash; Análise Comportamental DISC</p>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="app.js"></script>
+    <script src="quiz.js"></script>
+</body>
+</html>
