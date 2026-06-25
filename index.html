@@ -1,78 +1,684 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Perfil DISC - Análise Comportamental</title>
-    <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Perfil DISC - Análise Comportamental</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+*{font-family:'Inter',system-ui,sans-serif;scroll-behavior:smooth}
+.disc-d{color:#E74C3C}.disc-i{color:#F39C12}.disc-s{color:#27AE60}.disc-c{color:#2980B9}
+.bg-d{background:#E74C3C}.bg-i{background:#F39C12}.bg-s{background:#27AE60}.bg-c{background:#2980B9}
+.border-d{border-color:#E74C3C}.border-i{border-color:#F39C12}.border-s{border-color:#27AE60}.border-c{border-color:#2980B9}
+.opt-card{cursor:pointer;border:2px solid transparent;transition:.15s}
+.opt-card.most{border-color:#1a1a2e;background:#eef2f7}
+.opt-card.least{border-color:#E74C3C;background:#fde8e8}
+@keyframes fIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.fade-in{animation:fIn .35s ease}
+.progress-bar{transition:width .5s ease}
+.acc-c{max-height:0;overflow:hidden;transition:max-height .35s ease}
+.acc-c.open{max-height:2000px}
+@media print{.no-print{display:none!important}}
+</style>
 </head>
-<body>
-    <header>
-        <div class="container header-content">
-            <h1>Perfil <span class="highlight">DISC</span></h1>
-            <p class="subtitle">Análise Comportamental | Prisma Comportamental PRO</p>
-        </div>
-    </header>
+<body class="bg-gray-50 text-gray-900 min-h-screen flex flex-col">
 
-    <main>
-        <!-- ===== HOME ===== -->
-        <section id="home" class="section-home">
-            <div class="container">
-                <div class="hero-box">
-                    <div class="hero-text">
-                        <h2>Descubra seu Perfil Comportamental</h2>
-                        <p>O método DISC mapeia quatro dimensões da sua personalidade: <strong>Dominância (D)</strong>, <strong>Influência (I)</strong>, <strong>Estabilidade (S)</strong> e <strong>Conformidade (C)</strong>.</p>
-                        <p>Em poucos minutos, você receberá uma <strong>análise completa</strong> com seu perfil pessoal, como os outros veem você e seus comportamentos sob pressão.</p>
-                        <button class="btn btn-primary btn-lg" onclick="iniciarQuiz()">Iniciar Teste</button>
-                    </div>
-                    <div class="disc-quad">
-                        <div class="quad-item d">D<br><small>Dominância</small></div>
-                        <div class="quad-item i">I<br><small>Influência</small></div>
-                        <div class="quad-item s">S<br><small>Estabilidade</small></div>
-                        <div class="quad-item c">C<br><small>Conformidade</small></div>
-                    </div>
-                </div>
-                <div class="info-strip">
-                    <div class="info-item"><strong>20</strong> perguntas</div>
-                    <div class="info-item"><strong>4</strong> fatores DISC</div>
-                    <div class="info-item"><strong>3</strong> min</div>
-                </div>
-            </div>
-        </section>
+<header class="bg-gradient-to-r from-[#1a1a2e] to-[#16213e] text-white py-6 px-4 text-center">
+  <h1 class="text-xl font-bold tracking-wider">Perfil <span class="text-amber-400">DISC</span></h1>
+  <p class="text-sm text-white/60 mt-1">Análise Comportamental | TeclaPonto</p>
+</header>
 
-        <!-- ===== QUIZ ===== -->
-        <section id="quiz-section" class="section" style="display:none">
-            <div class="container">
-                <div class="quiz-header">
-                    <div class="quiz-header-top">
-                        <span class="quiz-badge">Teste DISC</span>
-                        <span id="quiz-progresso" class="quiz-progresso">1 de 20</span>
-                    </div>
-                    <div class="progress-bar-bg">
-                        <div id="progress-bar" class="progress-bar-fill"></div>
-                    </div>
-                </div>
-                <div id="quiz-container" class="quiz-container"></div>
-            </div>
-        </section>
+<main class="flex-1" id="app">
 
-        <!-- ===== RESULTADO ===== -->
-        <section id="resultado-section" class="section" style="display:none">
-            <div class="container resultado-wrapper">
-                <div id="resultado-container"></div>
-            </div>
-        </section>
-    </main>
+<section id="home" class="py-12 px-4">
+  <div class="max-w-2xl mx-auto bg-white rounded-2xl shadow-sm p-8 text-center">
+    <h2 class="text-2xl font-bold mb-3">Descubra seu Perfil Comportamental</h2>
+    <p class="text-gray-500 text-sm leading-relaxed mb-2">O método DISC mapeia quatro dimensões do comportamento: <strong>Dominância (D)</strong>, <strong>Influência (I)</strong>, <strong>Estabilidade (S)</strong> e <strong>Conformidade (C)</strong>.</p>
+    <p class="text-gray-500 text-sm leading-relaxed mb-4">São <strong>40 questões</strong> no formato forced-choice. Em cada uma, escolha a opção que <strong>mais</strong> e a que <strong>menos</strong> se parece com você.</p>
+    <div class="grid grid-cols-4 gap-2 max-w-xs mx-auto mb-6">
+      <div class="bg-d text-white rounded-xl p-3 font-bold text-center text-sm">D<br><span class="font-normal text-xs">Dominância</span></div>
+      <div class="bg-i text-white rounded-xl p-3 font-bold text-center text-sm">I<br><span class="font-normal text-xs">Influência</span></div>
+      <div class="bg-s text-white rounded-xl p-3 font-bold text-center text-sm">S<br><span class="font-normal text-xs">Estabilidade</span></div>
+      <div class="bg-c text-white rounded-xl p-3 font-bold text-center text-sm">C<br><span class="font-normal text-xs">Conformidade</span></div>
+    </div>
+    <button onclick="iniciar()" class="bg-[#1a1a2e] text-white px-12 py-3.5 rounded-full font-semibold shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all">Iniciar Teste</button>
+    <div class="flex justify-center gap-3 mt-5">
+      <span class="bg-white border rounded-full px-4 py-1.5 text-xs text-gray-500"><strong>40</strong> questões</span>
+      <span class="bg-white border rounded-full px-4 py-1.5 text-xs text-gray-500"><strong>4</strong> fatores</span>
+      <span class="bg-white border rounded-full px-4 py-1.5 text-xs text-gray-500"><strong>~8</strong> min</span>
+    </div>
+  </div>
+</section>
 
-    <footer>
-        <div class="container footer-content">
-            <p>Prisma Comportamental PRO &mdash; Análise Comportamental DISC</p>
-        </div>
-    </footer>
+<section id="quiz" class="py-8 px-4" style="display:none">
+  <div class="max-w-2xl mx-auto">
+    <div class="bg-white rounded-xl shadow-sm p-5 mb-5">
+      <div class="flex justify-between items-center mb-3">
+        <span class="bg-[#1a1a2e] text-white text-xs font-bold px-3 py-1 rounded-full">Teste DISC</span>
+        <span id="progressText" class="text-sm font-semibold text-gray-400">1 de 40</span>
+      </div>
+      <div class="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
+        <div id="progressBar" class="progress-bar h-full bg-gradient-to-r from-amber-400 to-red-500 rounded-full" style="width:0%"></div>
+      </div>
+    </div>
+    <div id="quizContainer" class="min-h-[300px]"></div>
+  </div>
+</section>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="app.js"></script>
-    <script src="quiz.js"></script>
+<section id="nameForm" class="py-8 px-4" style="display:none">
+  <div class="max-w-lg mx-auto bg-white rounded-2xl shadow-sm p-8 text-center fade-in">
+    <h2 class="text-xl font-bold mb-2">Teste Concluído!</h2>
+    <p class="text-gray-500 text-sm mb-6">Insira seu nome para gerar o relatório personalizado.</p>
+    <input id="userName" type="text" placeholder="Seu nome" class="w-full border rounded-xl px-4 py-3 text-center text-lg font-medium outline-none focus:border-[#1a1a2e] transition-colors mb-4">
+    <div id="nameError" class="text-red-500 text-sm mb-3 hidden">Por favor, digite seu nome.</div>
+    <button onclick="gerarRelatorio()" class="bg-[#1a1a2e] text-white px-10 py-3 rounded-full font-semibold shadow-lg hover:shadow-xl transition-all">Gerar meu Relatório</button>
+  </div>
+</section>
+
+<section id="resultado" class="py-8 px-4" style="display:none">
+  <div class="max-w-3xl mx-auto" id="resultadoContainer"></div>
+</section>
+
+</main>
+
+<footer class="bg-[#1a1a2e] text-white/60 text-center py-4 text-xs mt-auto">
+  <p>TeclaPonto — Análise Comportamental DISC. Instrumento de autoconhecimento. Não substitui avaliação psicológica profissional.</p>
+</footer>
+
+<script>
+const PERGUNTAS = [
+  {id:'q01',tema:'Decisão',opts:[{t:'Em situações novas, prefiro definir o próximo passo rapidamente',f:'D'},{t:'Costumo ouvir diferentes pontos de vista antes de me posicionar',f:'S'},{t:'Gosto de compartilhar ideias e inspirar as pessoas ao redor',f:'I'},{t:'Analiso cuidadosamente as alternativas antes de escolher',f:'C'}]},
+  {id:'q02',tema:'Relações',opts:[{t:'Construo relações de confiança de forma gradual e consistente',f:'S'},{t:'Sou aberto e expressivo ao conhecer novas pessoas',f:'I'},{t:'Prefiro interações diretas e objetivas com os outros',f:'D'},{t:'Valorizo conversas que sigam uma pauta clara e organizada',f:'C'}]},
+  {id:'q03',tema:'Ritmo',opts:[{t:'Trabalho melhor quando posso seguir meu próprio ritmo constante',f:'S'},{t:'Gosto de ambientes dinâmicos com variedade de estímulos',f:'I'},{t:'Busco agir com rapidez e eficiência para alcançar metas',f:'D'},{t:'Prefiro planejar cada etapa antes de executar',f:'C'}]},
+  {id:'q04',tema:'Problemas',opts:[{t:'Diante de um problema, busco resolvê-lo de forma prática e imediata',f:'D'},{t:'Procuro envolver outras pessoas para encontrar a melhor solução juntos',f:'I'},{t:'Reservo um tempo para pensar e processar antes de agir',f:'S'},{t:'Analiso os dados e sigo métodos testados para resolver',f:'C'}]},
+  {id:'q05',tema:'Mudança',opts:[{t:'Mudanças me motivam a buscar novos resultados',f:'D'},{t:'Adapto-me bem a mudanças quando vejo o lado positivo delas',f:'I'},{t:'Prefiro mudanças planejadas e com tempo para me ajustar',f:'S'},{t:'Aceito mudanças quando são bem fundamentadas e justificadas',f:'C'}]},
+  {id:'q06',tema:'Comunicação',opts:[{t:'Expresso minhas opiniões de forma direta e sem rodeios',f:'D'},{t:'Uso histórias e exemplos para me comunicar melhor',f:'I'},{t:'Comunico-me de forma calma e ponderada',f:'S'},{t:'Estruturei minha comunicação de forma lógica e sequencial',f:'C'}]},
+  {id:'q07',tema:'Equipe',opts:[{t:'Gosto de coordenar e direcionar os esforços do grupo',f:'D'},{t:'Trago energia e entusiasmo para o time',f:'I'},{t:'Contribuo para manter a harmonia e cooperação no grupo',f:'S'},{t:'Ajudo a equipe a seguir processos e prazos estabelecidos',f:'C'}]},
+  {id:'q08',tema:'Aprendizado',opts:[{t:'Aprendo melhor fazendo e enfrentando desafios reais',f:'D'},{t:'Aprendo melhor discutindo ideias com outras pessoas',f:'I'},{t:'Aprendo melhor com prática repetida e consistente',f:'S'},{t:'Aprendo melhor estudando materiais e seguindo métodos',f:'C'}]},
+  {id:'q09',tema:'Pressão',opts:[{t:'Sob pressão, assumo o controle e busco soluções rápidas',f:'D'},{t:'Sob pressão, busco apoio e troco ideias com outras pessoas',f:'I'},{t:'Sob pressão, mantenho a calma e procuro manter a rotina',f:'S'},{t:'Sob pressão, busco mais informações antes de agir',f:'C'}]},
+  {id:'q10',tema:'Organização',opts:[{t:'Organizo meu espaço de trabalho de forma funcional e prática',f:'D'},{t:'Meu ambiente reflete criatividade e dinamismo',f:'I'},{t:'Mantenho uma organização consistente e previsível',f:'S'},{t:'Sou meticuloso com a organização e detalhes',f:'C'}]},
+  {id:'q11',tema:'Metas',opts:[{t:'Estabeleço metas ambiciosas e trabalho duro para alcançá-las',f:'D'},{t:'Compartilho minhas metas para me manter motivado',f:'I'},{t:'Prefiro metas realistas com prazos confortáveis',f:'S'},{t:'Defino metas com critérios claros de medição',f:'C'}]},
+  {id:'q12',tema:'Conflito',opts:[{t:'Enfrento conflitos de frente e busco resolvê-los rapidamente',f:'D'},{t:'Busco mediar conflitos de forma positiva e construtiva',f:'I'},{t:'Evito conflitos e prefiro manter um ambiente pacífico',f:'S'},{t:'Abordo conflitos com argumentos lógicos e objetivos',f:'C'}]},
+  {id:'q13',tema:'Energia',opts:[{t:'Minha energia vem de superar obstáculos e vencer desafios',f:'D'},{t:'Minha energia vem da interação com pessoas e do reconhecimento',f:'I'},{t:'Minha energia vem de ambientes estáveis e relacionamentos seguros',f:'S'},{t:'Minha energia vem de fazer as coisas corretamente e com qualidade',f:'C'}]},
+  {id:'q14',tema:'Planejamento',opts:[{t:'Planejo de forma estratégica focando no resultado final',f:'D'},{t:'Planejo de forma flexível, deixando espaço para adaptações',f:'I'},{t:'Planejo com cuidado e prefiro seguir o plano estabelecido',f:'S'},{t:'Planejo detalhadamente cada etapa e contingência',f:'C'}]},
+  {id:'q15',tema:'Decisão',opts:[{t:'Decido rápido e assumo riscos calculados',f:'D'},{t:'Decido considerando o impacto nas pessoas envolvidas',f:'I'},{t:'Decido com calma depois de pesar bem as opções',f:'S'},{t:'Decido baseado em análise de dados e evidências',f:'C'}]},
+  {id:'q16',tema:'Iniciativa',opts:[{t:'Tomar a frente em projetos novos me motiva',f:'D'},{t:'Sugiro novas ideias com entusiasmo para engajar o grupo',f:'I'},{t:'Contribuo de forma constante sem precisar de destaque',f:'S'},{t:'Contribuo quando tenho clareza do processo e dos padrões',f:'C'}]},
+  {id:'q17',tema:'Relacionamento',opts:[{t:'Valorizo mais resultados do que agradar as pessoas',f:'D'},{t:'Invisto tempo em construir relacionamentos positivos',f:'I'},{t:'Prezo por relações longas e de confiança mútua',f:'S'},{t:'Mantenho relações profissionais com limites claros',f:'C'}]},
+  {id:'q18',tema:'Qualidade',opts:[{t:'Foco em entregar resultados que gerem impacto',f:'D'},{t:'Foco em criar experiências positivas para as pessoas',f:'I'},{t:'Foco em entregar trabalhos consistentes e confiáveis',f:'S'},{t:'Foco em atingir padrões elevados de qualidade e precisão',f:'C'}]},
+  {id:'q19',tema:'Mudança',opts:[{t:'Mudanças rápidas me estimulam e trazem oportunidades',f:'D'},{t:'Mudanças são oportunidades para conhecer coisas novas',f:'I'},{t:'Mudanças são melhores quando graduais e bem comunicadas',f:'S'},{t:'Mudanças precisam ser bem justificadas e planejadas',f:'C'}]},
+  {id:'q20',tema:'Prioridade',opts:[{t:'Minha prioridade é alcançar resultados rápidos e concretos',f:'D'},{t:'Minha prioridade é manter boas relações e clima positivo',f:'I'},{t:'Minha prioridade é garantir estabilidade e previsibilidade',f:'S'},{t:'Minha prioridade é fazer bem feito da primeira vez',f:'C'}]},
+  {id:'q21',tema:'Contribuição',opts:[{t:'Contribuo com direcionamento e capacidade de execução',f:'D'},{t:'Contribuo com otimismo e capacidade de mobilizar pessoas',f:'I'},{t:'Contribuo com paciência e consistência nas tarefas',f:'S'},{t:'Contribuo com análise cuidadosa e senso crítico',f:'C'}]},
+  {id:'q22',tema:'Feedback',opts:[{t:'Recebo bem feedbacks diretos e objetivos',f:'D'},{t:'Aprecio feedback que reconheça meu esforço e contribuição',f:'I'},{t:'Prefiro feedback em particular, de forma cuidadosa',f:'S'},{t:'Valorizo feedback específico e baseado em fatos',f:'C'}]},
+  {id:'q23',tema:'Autonomia',opts:[{t:'Gosto de ter autonomia para decidir como alcançar resultados',f:'D'},{t:'Gosto de liberdade para expressar ideias e opinar',f:'I'},{t:'Gosto de saber exatamente o que se espera de mim',f:'S'},{t:'Gosto de ter diretrizes claras e procedimentos definidos',f:'C'}]},
+  {id:'q24',tema:'Desafio',opts:[{t:'Desafios difíceis me motivam a dar o melhor de mim',f:'D'},{t:'Desafios criativos que envolvem pessoas me interessam',f:'I'},{t:'Desafios previsíveis e bem definidos me trazem segurança',f:'S'},{t:'Desafios que exigem análise aprofundada me atraem',f:'C'}]},
+  {id:'q25',tema:'Rotina',opts:[{t:'Prefiro variedade a rotinas previsíveis',f:'D'},{t:'Gosto quando cada dia traz interações e situações diferentes',f:'I'},{t:'Rotinas bem estabelecidas me trazem conforto e produtividade',f:'S'},{t:'Ter processos padronizados me ajuda a manter a qualidade',f:'C'}]},
+  {id:'q26',tema:'Influência',opts:[{t:'Influencio pessoas pela minha determinação e convicção',f:'D'},{t:'Influencio pessoas pelo meu entusiasmo e capacidade de motivar',f:'I'},{t:'Influencio pessoas pela minha confiabilidade e consistência',f:'S'},{t:'Influencio pessoas pelo meu conhecimento e precisão técnica',f:'C'}]},
+  {id:'q27',tema:'Estilo',opts:[{t:'Sou mais orientado a ação e resultados rápidos',f:'D'},{t:'Sou mais orientado a pessoas e conexões sociais',f:'I'},{t:'Sou mais orientado a estabilidade e harmonia',f:'S'},{t:'Sou mais orientado a qualidade e precisão',f:'C'}]},
+  {id:'q28',tema:'Crise',opts:[{t:'Em crise, ajo rápido para retomar o controle',f:'D'},{t:'Em crise, busco unir as pessoas para enfrentarmos juntos',f:'I'},{t:'Em crise, procuro manter a calma e seguir a rotina possível',f:'S'},{t:'Em crise, busco compreender as causas antes de agir',f:'C'}]},
+  {id:'q29',tema:'Social',opts:[{t:'Em ambientes sociais, costumo liderar a conversa',f:'D'},{t:'Em ambientes sociais, sou expansivo e me conecto fácil',f:'I'},{t:'Em ambientes sociais, observo antes de interagir',f:'S'},{t:'Em ambientes sociais, prefiro conversas com propósito definido',f:'C'}]},
+  {id:'q30',tema:'Critério',opts:[{t:'Confio mais na minha intuição prática para decidir',f:'D'},{t:'Confio na minha capacidade de avaliar pessoas e situações',f:'I'},{t:'Confio na experiência e no que já funcionou antes',f:'S'},{t:'Confio em análises e dados objetivos para decidir',f:'C'}]},
+  {id:'q31',tema:'Liderança',opts:[{t:'Lidero estabelecendo metas claras e cobrando resultados',f:'D'},{t:'Lidero inspirando e motivando a equipe',f:'I'},{t:'Lidero apoiando e garantindo que todos estejam bem',f:'S'},{t:'Lidero definindo padrões e assegurando qualidade',f:'C'}]},
+  {id:'q32',tema:'Inovação',opts:[{t:'Gosto de inovar para ganhar vantagem e superar concorrentes',f:'D'},{t:'Gosto de inovar trazendo novas ideias que inspirem pessoas',f:'I'},{t:'Gosto de inovar com melhorias incrementais e seguras',f:'S'},{t:'Gosto de inovar com base em pesquisa e análise aprofundada',f:'C'}]},
+  {id:'q33',tema:'Pessoas',opts:[{t:'Avalio pessoas pelo que elas entregam e realizam',f:'D'},{t:'Avalio pessoas pela energia positiva que trazem',f:'I'},{t:'Avalio pessoas pela confiabilidade e lealdade',f:'S'},{t:'Avalio pessoas pela competência técnica e precisão',f:'C'}]},
+  {id:'q34',tema:'Ação',opts:[{t:'Prefiro agir logo e ajustar o rumo depois',f:'D'},{t:'Prefiro agir e envolver outros no processo',f:'I'},{t:'Prefiro agir com segurança e passo a passo',f:'S'},{t:'Prefiro agir depois de analisar todas as variáveis',f:'C'}]},
+  {id:'q35',tema:'Motivação',opts:[{t:'Sou motivado por superação e conquistas',f:'D'},{t:'Sou motivado por reconhecimento e pertencimento',f:'I'},{t:'Sou motivado por segurança e estabilidade',f:'S'},{t:'Sou motivado por excelência e domínio técnico',f:'C'}]},
+  {id:'q36',tema:'Decisão em grupo',opts:[{t:'Em grupo, defendo minhas ideias com firmeza',f:'D'},{t:'Em grupo, busco engajar todos na discussão',f:'I'},{t:'Em grupo, apoio a decisão que trouxer mais harmonia',f:'S'},{t:'Em grupo, contribuo com análise lógica e dados',f:'C'}]},
+  {id:'q37',tema:'Foco',opts:[{t:'Meu foco está no resultado e na meta final',f:'D'},{t:'Meu foco está nas pessoas e nos relacionamentos',f:'I'},{t:'Meu foco está no processo e na consistência',f:'S'},{t:'Meu foco está nos detalhes e na qualidade da entrega',f:'C'}]},
+  {id:'q38',tema:'Tempo',opts:[{t:'Gosto de trabalhar em ritmo acelerado e intenso',f:'D'},{t:'Gosto quando o tempo é flexível para interagir',f:'I'},{t:'Gosto de ter tempo suficiente para fazer bem feito',f:'S'},{t:'Gosto de cumprir prazos com margem de segurança',f:'C'}]},
+  {id:'q39',tema:'Equilíbrio',opts:[{t:'Equilíbrio para mim é ter desafios e conquistas',f:'D'},{t:'Equilíbrio para mim é ter vida social ativa e conexões',f:'I'},{t:'Equilíbrio para mim é ter rotina e previsibilidade',f:'S'},{t:'Equilíbrio para mim é ter ordem e qualidade de vida',f:'C'}]},
+  {id:'q40',tema:'Contribuição',opts:[{t:'Minha maior contribuição é fazer acontecer',f:'D'},{t:'Minha maior contribuição é conectar pessoas e ideias',f:'I'},{t:'Minha maior contribuição é dar estabilidade e suporte',f:'S'},{t:'Minha maior contribuição é garantir qualidade e precisão',f:'C'}]}
+];
+
+
+// ===== STATE =====
+const state = {
+  passo: 0,
+  most: {},
+  least: {},
+  shuffled: []
+};
+
+// ===== SHUFFLE =====
+function shuffleArray(a) {
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function shufflePerguntas() {
+  state.shuffled = shuffleArray([...PERGUNTAS]);
+  state.shuffled.forEach(q => {
+    q._shuffled = shuffleArray([...q.opts]);
+  });
+}
+
+// ===== INICIAR =====
+function iniciar() {
+  document.getElementById('home').style.display = 'none';
+  document.getElementById('quiz').style.display = 'block';
+  state.passo = 0;
+  state.most = {};
+  state.least = {};
+  shufflePerguntas();
+  mostrarPergunta();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ===== MOSTRAR PERGUNTA =====
+function mostrarPergunta() {
+  const total = state.shuffled.length;
+  const idx = state.passo;
+  if (idx >= total) { mostrarFormNome(); return; }
+
+  const q = state.shuffled[idx];
+  document.getElementById('progressText').textContent = `${idx + 1} de ${total}`;
+  document.getElementById('progressBar').style.width = `${((idx) / total) * 100}%`;
+
+  const container = document.getElementById('quizContainer');
+  const optLetters = ['A', 'B', 'C', 'D'];
+  let optsHtml = q._shuffled.map((opt, oi) => {
+    const isMost = state.most[q.id] === oi;
+    const isLeast = state.least[q.id] === oi;
+    return `<div class="opt-card bg-gray-50 rounded-xl p-3 sm:p-4 mb-2 ${isMost ? 'most' : ''} ${isLeast ? 'least' : ''}" data-q="${q.id}" data-idx="${oi}">
+      <div class="flex items-center gap-3">
+        <span class="w-7 h-7 rounded-full bg-gray-200 flex items-center justify-center text-xs font-bold flex-shrink-0">${optLetters[oi]}</span>
+        <span class="text-sm text-gray-700">${opt.t}</span>
+      </div>
+      <div class="flex gap-2 mt-2 ml-10">
+        <button class="btn-most text-xs font-semibold px-3 py-1 rounded-full ${isMost ? 'bg-[#1a1a2e] text-white' : 'bg-gray-200 text-gray-500'} transition-all" data-q="${q.id}" data-idx="${oi}">+ Mais</button>
+        <button class="btn-least text-xs font-semibold px-3 py-1 rounded-full ${isLeast ? 'bg-red-500 text-white' : 'bg-gray-200 text-gray-500'} transition-all" data-q="${q.id}" data-idx="${oi}">- Menos</button>
+      </div>
+    </div>`;
+  }).join('');
+
+  container.innerHTML = `
+    <div class="bg-white rounded-2xl shadow-sm p-5 sm:p-8 fade-in">
+      <div class="flex items-center gap-2 mb-4">
+        <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">${q.tema}</span>
+        <span class="text-gray-300">·</span>
+        <span class="text-xs text-gray-400">Questão ${idx + 1} de ${total}</span>
+      </div>
+      <p class="text-base sm:text-lg font-semibold mb-5 leading-relaxed">${q._shuffled.map((_, oi) => optLetters[oi]).join(', ')}</p>
+      <p class="text-base sm:text-lg font-semibold mb-5 leading-relaxed">Escolha uma opção para <strong>MAIS</strong> e uma para <strong>MENOS</strong> se parece com você:</p>
+      ${optsHtml}
+    </div>
+    <div class="flex justify-center gap-3 mt-4">
+      ${idx > 0 ? '<button onclick="voltar()" class="bg-gray-200 text-gray-700 px-6 py-2.5 rounded-full font-semibold hover:bg-gray-300 transition-all">Voltar</button>' : ''}
+      <button onclick="avancar()" class="bg-[#1a1a2e] text-white px-8 py-2.5 rounded-full font-semibold shadow hover:shadow-lg transition-all" id="btnAvancar">
+        ${idx < total - 1 ? 'Próxima →' : 'Ver Resultado →'}
+      </button>
+    </div>`;
+
+  // Attach events
+  container.querySelectorAll('.btn-most').forEach(btn => {
+    btn.onclick = function(e) {
+      e.stopPropagation();
+      const qid = this.dataset.q;
+      const idx = parseInt(this.dataset.idx);
+      const q = state.shuffled.find(p => p.id === qid);
+      if (state.least[qid] === idx) { state.least[qid] = -1; }
+      state.most[qid] = state.most[qid] === idx ? -1 : idx;
+      mostrarPergunta();
+    };
+  });
+  container.querySelectorAll('.btn-least').forEach(btn => {
+    btn.onclick = function(e) {
+      e.stopPropagation();
+      const qid = this.dataset.q;
+      const idx = parseInt(this.dataset.idx);
+      const q = state.shuffled.find(p => p.id === qid);
+      if (state.most[qid] === idx) { state.most[qid] = -1; }
+      state.least[qid] = state.least[qid] === idx ? -1 : idx;
+      mostrarPergunta();
+    };
+  });
+}
+
+function voltar() {
+  if (state.passo > 0) { state.passo--; mostrarPergunta(); }
+}
+
+function avancar() {
+  const q = state.shuffled[state.passo];
+  if (state.most[q.id] === undefined || state.most[q.id] === -1 || state.least[q.id] === undefined || state.least[q.id] === -1) {
+    alert('Por favor, escolha uma opção para "MAIS" e uma para "MENOS" se parece com você.');
+    return;
+  }
+  state.passo++;
+  mostrarPergunta();
+}
+
+// ===== FORM NOME =====
+function mostrarFormNome() {
+  document.getElementById('progressBar').style.width = '100%';
+  document.getElementById('quiz').style.display = 'none';
+  document.getElementById('nameForm').style.display = 'block';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function gerarRelatorio() {
+  const nome = document.getElementById('userName').value.trim();
+  if (!nome) {
+    document.getElementById('nameError').classList.remove('hidden');
+    return;
+  }
+  document.getElementById('nameError').classList.add('hidden');
+  document.getElementById('nameForm').style.display = 'none';
+  calcularERenderizar(nome);
+}
+
+// ===== SCORING =====
+function calcularScores() {
+  const raw = { D: 0, I: 0, S: 0, C: 0 };
+  state.shuffled.forEach(q => {
+    if (state.most[q.id] !== undefined && state.most[q.id] !== -1) {
+      const f = q._shuffled[state.most[q.id]].f;
+      raw[f] += 1;
+    }
+    if (state.least[q.id] !== undefined && state.least[q.id] !== -1) {
+      const f = q._shuffled[state.least[q.id]].f;
+      raw[f] -= 1;
+    }
+  });
+  // Normalize to -10 to +10 (range -40 to +40, divide by 4)
+  const scores = {};
+  FACTORES.forEach(f => {
+    scores[f] = Math.max(-10, Math.min(10, Math.round(raw[f] / 4 * 10) / 10));
+  });
+  return scores;
+}
+
+function determinarPerfil(scores) {
+  const sorted = FACTORES.slice().sort((a, b) => scores[b] - scores[a]);
+  const top = sorted[0];
+  const second = sorted[1];
+  const third = sorted[2];
+  const blend = top + (scores[second] > 0 ? second : '') + (scores[third] > 0 && Math.abs(scores[third] - scores[second]) < 2 ? third : '');
+  return { primario: top, blend, sorted };
+}
+
+function classificarScore(valor) {
+  if (Math.abs(valor) > 8) return 'Zona Cinzenta';
+  if (valor > 5) return 'Alto';
+  if (valor > 2) return 'Médio-Alto';
+  if (valor > -2) return 'Médio';
+  if (valor > -5) return 'Médio-Baixo';
+  if (valor > -8) return 'Baixo';
+  return 'Zona Cinzenta';
+}
+
+
+// ===== TEXTOS DEVOLUTIVA =====
+const TEXTOS = {
+  descricao: {
+    D: { alto: 'Pessoas com D alto são diretas, orientadas a resultados, gostam de desafios e tomam decisões rápidas. Têm alta energia para superar obstáculos.', baixo: 'D baixo sugere perfil mais cooperativo, que prefere evitar confrontos e valoriza consenso em vez de competição direta.' },
+    I: { alto: 'Pessoas com I alto são comunicativas, entusiasmadas, gostam de interagir e influenciar pessoas. Trazem energia positiva aos grupos.', baixo: 'I baixo sugere perfil mais reservado, que prefere profundidade nas relações em vez de amplitude social.' },
+    S: { alto: 'Pessoas com S alto são estáveis, consistentes, leais e valorizam harmonia. Trazem segurança e confiabilidade às equipes.', baixo: 'S baixo sugere preferência por dinamismo, mudanças e variedade em vez de rotinas previsíveis.' },
+    C: { alto: 'Pessoas com C alto são analíticas, precisas, criteriosas e valorizam qualidade. Seguem padrões e buscam excelência técnica.', baixo: 'C baixo sugere perfil mais flexível com regras, que prefere autonomia e não se prende a procedimentos rígidos.' }
+  },
+  forcas: {
+    D: ['Capacidade de tomar decisões rápidas', 'Orientação a resultados e metas', 'Iniciativa e proatividade', 'Enfrenta desafios com determinação'],
+    I: ['Comunicação persuasiva e envolvente', 'Capacidade de motivar equipes', 'Criatividade e otimismo', 'Facilidade para networking'],
+    S: ['Confiabilidade e consistência', 'Paciência e capacidade de ouvir', 'Lealdade à equipe', 'Estabilidade em momentos de crise'],
+    C: ['Precisão e atenção aos detalhes', 'Pensamento analítico e crítico', 'Compromisso com qualidade', 'Seguimento de padrões e processos']
+  },
+  atencao: {
+    D: ['Pode ser visto como autoritário ou impaciente', 'Risco de atropelar processos e pessoas', 'Dificuldade com burocracia e detalhes', 'Pode se frustrar com ritmos mais lentos'],
+    I: ['Pode ser visto como disperso ou superficial', 'Dificuldade com follow-through e prazos', 'Evita confrontos necessários', 'Pode ser excessivamente otimista'],
+    S: ['Resistência a mudanças necessárias', 'Dificuldade com decisões rápidas', 'Pode evitar conflitos importantes', 'Dificuldade em se posicionar'],
+    C: ['Paralisia por análise', 'Pode ser visto como crítico ou frio', 'Dificuldade com ambiguidade', 'Perfeccionismo pode atrasar entregas']
+  },
+  comunicacao: {
+    D: 'Sua comunicação é direta, objetiva e vai ao ponto. Prefere mensagens claras sem rodeios. Para se comunicar melhor com você: sejam objetivos, foquem em resultados, evitem detalhes desnecessários.',
+    I: 'Sua comunicação é expressiva, entusiasta e persuasiva. Gosta de trocar ideias e ser ouvido. Para se comunicar melhor com você: sejam abertos, reconheçam suas contribuições, deem espaço para se expressar.',
+    S: 'Sua comunicação é calma, acolhedora e consistente. Prefere diálogos harmoniosos. Para se comunicar melhor com você: sejam pacientes, evitem pressa, ofereçam segurança e previsibilidade.',
+    C: 'Sua comunicação é técnica, precisa e fundamentada em dados. Valoriza argumentos lógicos. Para se comunicar melhor com você: tragam dados, sejam específicos, evitem exageros ou informações vagas.'
+  },
+  pressao: {
+    D: 'Sob pressão, você tende a assumir o controle e buscar soluções rápidas. Pode ficar impaciente e atropelar processos. Risco de agir por impulso. Recomenda-se pausas deliberadas para ouvir o grupo antes de decidir.',
+    I: 'Sob pressão, busca apoio social e validação. Pode ficar disperso ou ansioso se isolado. Risco de evitar enfrentamento. Recomenda-se estruturar ideias por escrito antes de compartilhá-las.',
+    S: 'Sob pressão, tende a se retrair e buscar estabilidade. Pode hesitar em decisões rápidas. Risco de resistir a mudanças. Recomenda-se focar em um passo de cada vez e buscar apoio de pessoas de confiança.',
+    C: 'Sob pressão, se aprofunda na análise. Pode ficar sobrecarregado com decisões rápidas. Risco de paralisia por análise. Recomenda-se estabelecer prazos e aceitar que informações parciais são suficientes.'
+  },
+  percepcao: {
+    D: 'Você projeta confiança, determinação e objetividade. Os outros provavelmente o veem como direto, assertivo e focado. Em alguns contextos, pode ser percebido como autoritário ou impaciente.',
+    I: 'Você é percebido como carismático, entusiasta e comunicativo. Os outros provavelmente o veem como alguém que traz energia e engaja pessoas. Em excesso, pode ser visto como disperso ou superficial.',
+    S: 'Você transmite calma, confiabilidade e consistência. Os outros provavelmente o veem como paciente, leal e estável. Pode ser interpretado como resistente a mudanças ou passivo.',
+    C: 'Você é percebido como criterioso, preciso e analítico. Os outros provavelmente o veem como competente e rigoroso. Pode ser interpretado como excessivamente crítico ou lento.'
+  },
+  recomendacoes: {
+    D: ['Pratique escuta ativa antes de decidir', 'Valorize contribuições de perfis mais analíticos', 'Faça pausas para reflexão', 'Delegue mais e confie na equipe'],
+    I: ['Equilibre entusiasmo com disciplina de prazos', 'Documente acordos e decisões', 'Desenvolva resiliência a críticas', 'Aprofunde temas antes de compartilhar'],
+    S: ['Comunique-se abertamente sobre mudanças', 'Pratique sair da zona de conforto gradualmente', 'Desenvolva assertividade', 'Compartilhe suas opiniões mais cedo'],
+    C: ['Equilibre análise com ação', 'Aceite que informação parcial é ok para começar', 'Pratique decisões com prazos curtos', 'Compartilhe conhecimento com a equipe']
+  },
+  equipe: {
+    D: ['Direcionamento e foco em resultados', 'Capacidade de tomar decisões difíceis', 'Energia para superar obstáculos', 'Visão estratégica e ambição'],
+    I: ['Energia positiva e motivação', 'Criatividade e geração de ideias', 'Conexão e networking', 'Comunicação e engajamento'],
+    S: ['Estabilidade e confiabilidade', 'Apoio e suporte à equipe', 'Memória institucional e consistência', 'Harmonia e cooperação'],
+    C: ['Análise crítica e qualidade', 'Precisão e atenção a detalhes', 'Padrões elevados de excelência', 'Rigor técnico e metodologia']
+  }
+};
+
+function getTextoPorScore(f, score) {
+  return score > 0 ? TEXTOS.descricao[f].alto : TEXTOS.descricao[f].baixo;
+}
+
+// ===== RENDERIZAR RESULTADO =====
+function calcularERenderizar(nome) {
+  const scores = calcularScores();
+  const perfil = determinarPerfil(scores);
+  const sorted = perfil.sorted;
+  const hoje = new Date().toLocaleDateString('pt-BR');
+
+  const primario = sorted[0];
+  const secundario = scores[sorted[1]] > 0 ? sorted[1] : null;
+  const blendStr = primario + (secundario || '');
+
+  // Build sections HTML
+  const secaoPerfil = gerarSecaoPerfil(primario, secundario, scores);
+  const secaoGrafico = gerarGrafico(nome, scores, perfil);
+  const secaoDescritivo = gerarDescritivo(scores, sorted);
+  const secaoForcas = gerarListaSecao('Forças / Pontos Fortes', scores, TEXTOS.forcas);
+  const secaoComunicacao = gerarSecaoComunicacao(scores);
+  const secaoAtencao = gerarListaSecao('Pontos de Atenção / Áreas de Desenvolvimento', scores, TEXTOS.atencao);
+  const secaoRecomendacoes = gerarListaSecao('Recomendações Práticas', scores, TEXTOS.recomendacoes);
+  const secaoPressao = gerarSecaoPressao(scores);
+  const secaoPercepcao = gerarSecaoPercepcao(scores);
+  const secaoZona = gerarSecaoZona(scores);
+  const secaoEquipe = gerarListaSecao('O que você traz para a equipe', scores, TEXTOS.equipe);
+  const secaoSI = gerarSecaoSI(scores);
+
+  document.getElementById('resultadoContainer').innerHTML = `
+    <div id="printArea">
+      <div class="text-center mb-8">
+        <h2 class="text-2xl font-bold">Perfil Comportamental DISC</h2>
+        <p class="text-gray-500 mt-1">${nome} · ${hoje}</p>
+        <div class="inline-block bg-[#1a1a2e] text-white px-5 py-2 rounded-full text-sm font-bold mt-3">Perfil Principal: ${blendStr}</div>
+      </div>
+
+      ${secaoGrafico}
+      ${secaoPerfil}
+      ${secaoDescritivo}
+      ${secaoForcas}
+      ${secaoComunicacao}
+      ${secaoAtencao}
+      ${secaoRecomendacoes}
+      ${secaoPressao}
+      ${secaoPercepcao}
+      ${secaoEquipe}
+      ${secaoZona}
+      ${secaoSI}
+
+      <div class="text-center text-xs text-gray-400 mt-8 pt-4 border-t">
+        <p>Instrumento de autoconhecimento comportamental inspirado no modelo DISC. Não substitui avaliação psicológica profissional. Resultados são indicativos e contextuais.</p>
+      </div>
+
+      <div class="flex flex-wrap justify-center gap-3 mt-8 no-print">
+        <button onclick="window.print()" class="bg-[#1a1a2e] text-white px-6 py-2.5 rounded-full font-semibold shadow hover:shadow-lg transition-all btn-scale">🖨️ Imprimir / Salvar PDF</button>
+        <button onclick="refazer()" class="bg-gray-200 text-gray-700 px-6 py-2.5 rounded-full font-semibold hover:bg-gray-300 transition-all btn-scale">Refazer Teste</button>
+      </div>
+    </div>`;
+
+  document.getElementById('resultado').style.display = 'block';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  // Init chart after DOM render
+  setTimeout(() => initGrafico(scores), 100);
+}
+
+// ===== GRÁFICO =====
+function gerarGrafico(nome, scores, perfil) {
+  return `
+    <div class="bg-white rounded-2xl shadow-sm p-5 sm:p-8 mb-6 fade-in">
+      <h3 class="text-lg font-bold mb-4 text-center">Gráfico de Perfil DISC</h3>
+      <div class="relative" style="height:320px">
+        <canvas id="chartDISC"></canvas>
+      </div>
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-4 text-center">
+        ${FACTORES.map(f => `
+          <div>
+            <div class="font-bold text-lg" style="color:${CORES[f]}">${f}</div>
+            <div class="text-2xl font-bold">${scores[f] > 0 ? '+' : ''}${scores[f]}</div>
+            <div class="text-xs text-gray-400">${classificarScore(scores[f])}</div>
+          </div>
+        `).join('')}
+      </div>
+    </div>`;
+}
+
+function initGrafico(scores) {
+  const ctx = document.getElementById('chartDISC');
+  if (!ctx) return;
+  if (window._chart) window._chart.destroy();
+
+  window._chart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: FACTORES,
+      datasets: [{
+        label: 'Score DISC',
+        data: FACTORES.map(f => scores[f]),
+        backgroundColor: FACTORES.map(f => CORES[f] + 'CC'),
+        borderColor: FACTORES.map(f => CORES[f]),
+        borderWidth: 2,
+        borderRadius: 6,
+        barPercentage: 0.6
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: ctx => `Score: ${ctx.parsed.y > 0 ? '+' : ''}${ctx.parsed.y}`,
+            afterLabel: ctx => {
+              const f = FACTORES[ctx.dataIndex];
+              return classificarScore(scores[f]) + (Math.abs(scores[f]) > 8 ? '\n⚠️ Zona Cinzenta' : '');
+            }
+          }
+        }
+      },
+      scales: {
+        y: {
+          min: -11, max: 11,
+          ticks: {
+            stepSize: 2,
+            callback: v => v === -10 ? '-10 (↓ Baixo)' : v === 0 ? '0 (Neutro)' : v === 10 ? '10 (↑ Alto)' : v
+          },
+          grid: {
+            color: ctx => ctx.tick.value === 0 ? '#333' : ctx.tick.value % 4 === 0 ? '#ddd' : '#eee'
+          }
+        }
+      }
+    },
+    plugins: [{
+      id: 'zoneLines',
+      afterDraw(chart) {
+        const yScale = chart.scales.y;
+        const ctx = chart.ctx;
+        // Gray zone lines at 8 and -8
+        [-8, 8].forEach(val => {
+          const y = yScale.getPixelForValue(val);
+          ctx.save();
+          ctx.setLineDash([5, 5]);
+          ctx.strokeStyle = val > 0 ? '#E74C3C' : '#2980B9';
+          ctx.lineWidth = 1.5;
+          ctx.beginPath();
+          ctx.moveTo(chart.chartArea.left, y);
+          ctx.lineTo(chart.chartArea.right, y);
+          ctx.stroke();
+          ctx.restore();
+        });
+      }
+    }]
+  });
+}
+
+// ===== SEÇÕES =====
+function gerarSecaoPerfil(primario, secundario, scores) {
+  const desc = TEXTOS.descricao[primario];
+  const descTexto = scores[primario] > 0 ? desc.alto : desc.baixo;
+  const blend = primario + (secundario && scores[secundario] > 0 ? secundario : '');
+  return `
+    <div class="bg-white rounded-2xl shadow-sm p-5 sm:p-8 mb-6 fade-in">
+      <h3 class="text-lg font-bold mb-4">📋 Visão Geral do Perfil</h3>
+      <div class="flex items-center gap-3 mb-4">
+        <span class="px-4 py-1.5 rounded-full text-white font-bold text-sm" style="background:${CORES[primario]}">${blend}</span>
+        <span class="text-gray-600">${blendDescriptions[blend] || 'Perfil combinado'}</span>
+      </div>
+      <p class="text-gray-600 leading-relaxed">${descTexto}</p>
+      ${secundario && scores[secundario] > 0 ? `
+        <div class="mt-4 p-4 bg-gray-50 rounded-xl">
+          <p class="text-sm"><strong>Influência secundária de ${secundario}:</strong> ${getTextoPorScore(secundario, scores[secundario])}</p>
+        </div>` : ''}
+    </div>`;
+}
+
+const blendDescriptions = {
+  D: 'Foco em resultados e ação direta',
+  I: 'Foco em pessoas e comunicação',
+  S: 'Foco em estabilidade e harmonia',
+  C: 'Foco em qualidade e análise',
+  DI: 'Ação combinada com influência — orientado a resultados através de pessoas',
+  ID: 'Influência combinada com ação — comunicação direcionada a metas',
+  DS: 'Determinação equilibrada com estabilidade',
+  SD: 'Estabilidade com capacidade de ação',
+  DC: 'Ação com critério — resultados com qualidade',
+  CD: 'Critério com ação — qualidade orientada a resultados',
+  IS: 'Influência com estabilidade — comunicação acolhedora',
+  SI: 'Estabilidade com influência — conexão consistente',
+  SC: 'Estabilidade com critério — análise consistente',
+  CS: 'Critério com estabilidade — qualidade consistente',
+  IC: 'Influência com critério — comunicação analítica',
+  CI: 'Critério com influência — análise comunicativa'
+};
+
+function gerarDescritivo(scores, sorted) {
+  const palavras = [];
+  sorted.forEach(f => {
+    if (scores[f] > 5) palavras.push(...['Decidido', 'Independente', 'Ação', 'Resultado']);
+    else if (scores[f] > 2) palavras.push(...['Equilibrado', 'Moderado']);
+    else if (scores[f] > -2) palavras.push(...['Centrado', 'Flexível']);
+    else palavras.push(...['Cooperativo', 'Reflexivo', 'Cuidadoso']);
+  });
+  return `
+    <div class="bg-white rounded-2xl shadow-sm p-5 sm:p-8 mb-6 fade-in">
+      <h3 class="text-lg font-bold mb-4">🏷️ Palavras Descritivas</h3>
+      <div class="flex flex-wrap gap-2">
+        ${[...new Set(palavras)].slice(0, 10).map(p => `<span class="px-3 py-1.5 bg-gray-100 rounded-full text-sm font-medium">${p}</span>`).join('')}
+      </div>
+    </div>`;
+}
+
+function gerarListaSecao(titulo, scores, fonte) {
+  const itens = [];
+  FACTORES.forEach(f => {
+    if (scores[f] > 0 && fonte[f]) {
+      itens.push(...fonte[f]);
+    }
+  });
+  return `
+    <div class="bg-white rounded-2xl shadow-sm p-5 sm:p-8 mb-6 fade-in">
+      <h3 class="text-lg font-bold mb-4">${titulo}</h3>
+      <ul class="space-y-2">
+        ${itens.slice(0, 8).map(i => `<li class="flex items-start gap-2"><span class="text-green-500 mt-1">✓</span><span class="text-gray-600 text-sm">${i}</span></li>`).join('')}
+      </ul>
+    </div>`;
+}
+
+function gerarSecaoComunicacao(scores) {
+  const f = scores.D > scores.I && scores.D > scores.S && scores.D > scores.C ? 'D'
+          : scores.I > scores.S && scores.I > scores.C ? 'I'
+          : scores.S > scores.C ? 'S' : 'C';
+  return `
+    <div class="bg-white rounded-2xl shadow-sm p-5 sm:p-8 mb-6 fade-in">
+      <h3 class="text-lg font-bold mb-4">💬 Estilo de Comunicação</h3>
+      <p class="text-gray-600 leading-relaxed">${TEXTOS.comunicacao[f]}</p>
+    </div>`;
+}
+
+function gerarSecaoPressao(scores) {
+  const f = scores.D > scores.I && scores.D > scores.S && scores.D > scores.C ? 'D'
+          : scores.I > scores.S && scores.I > scores.C ? 'I'
+          : scores.S > scores.C ? 'S' : 'C';
+  return `
+    <div class="bg-white rounded-2xl shadow-sm p-5 sm:p-8 mb-6 fade-in">
+      <h3 class="text-lg font-bold mb-4">🔥 Comportamento sob Pressão</h3>
+      <p class="text-gray-600 leading-relaxed">${TEXTOS.pressao[f]}</p>
+    </div>`;
+}
+
+function gerarSecaoPercepcao(scores) {
+  const f = scores.D > scores.I && scores.D > scores.S && scores.D > scores.C ? 'D'
+          : scores.I > scores.S && scores.I > scores.C ? 'I'
+          : scores.S > scores.C ? 'S' : 'C';
+  return `
+    <div class="bg-white rounded-2xl shadow-sm p-5 sm:p-8 mb-6 fade-in">
+      <h3 class="text-lg font-bold mb-4">👀 Como os Outros Veem Você</h3>
+      <p class="text-gray-600 leading-relaxed">${TEXTOS.percepcao[f]}</p>
+    </div>`;
+}
+
+function gerarSecaoZona(scores) {
+  const naZona = FACTORES.filter(f => Math.abs(scores[f]) > 8);
+  if (!naZona.length) return '';
+  return `
+    <div class="bg-white rounded-2xl shadow-sm p-5 sm:p-8 mb-6 border-2 border-red-200 fade-in">
+      <h3 class="text-lg font-bold mb-4">⚠️ Zona Cinzenta — Linha de Ênfase</h3>
+      <p class="text-gray-600 text-sm mb-4">Fatores com |score| > 8 estão na zona cinzenta. São traços muito pronunciados — grandes forças que podem exigir moderação para evitar excessos.</p>
+      ${naZona.map(f => `
+        <div class="p-4 rounded-xl mb-3" style="background:${CORES[f]}15;border-left:4px solid ${CORES[f]}">
+          <strong style="color:${CORES[f]}">Fator ${f} (${scores[f] > 0 ? '+' : ''}${scores[f]}):</strong>
+          <p class="text-sm text-gray-600 mt-1">${scores[f] > 0 ? 'Intensidade muito elevada. Grande força que pede atenção para não se tornar excesso.' : 'Intensidade muito baixa. Pode indicar área que requer desenvolvimento consciente.'}</p>
+        </div>`).join('')}
+    </div>`;
+}
+
+function gerarSecaoSI(scores) {
+  const sScore = scores.S;
+  const iScore = scores.I;
+  const outrosMedio = FACTORES.filter(f => f !== 'S' && f !== 'I')
+    .reduce((acc, f) => acc + Math.abs(scores[f]), 0) / 2;
+  const deltaS = Math.abs(sScore);
+  const deltaI = Math.abs(iScore);
+
+  let interpretacao = '';
+  if (deltaS < 2 && outrosMedio > 4) {
+    interpretacao += '⚠️ Seu fator S (Estabilidade) está próximo do neutro enquanto outros fatores têm intensidade maior. Isso pode indicar desconforto com falta de estabilidade ou ritmo inadequado. Avalie se seu ambiente atual oferece a previsibilidade que você precisa.<br><br>';
+  }
+  if (deltaI < 2 && outrosMedio > 4) {
+    interpretacao += '⚠️ Seu fator I (Influência) está próximo do neutro enquanto outros fatores têm intensidade maior. Isso pode indicar frustração na expressão social ou dificuldade em exercer influência. Avalie se há espaço para se expressar e conectar com pessoas.<br><br>';
+  }
+  if (deltaS >= 5) {
+    interpretacao += `✓ Seu fator S (${sScore > 0 ? '+' : ''}${sScore}) indica ${sScore > 0 ? 'forte necessidade de estabilidade e consistência' : 'preferência por dinamismo e variedade'}.`;
+  }
+  if (deltaI >= 5) {
+    interpretacao += `<br>✓ Seu fator I (${iScore > 0 ? '+' : ''}${iScore}) indica ${iScore > 0 ? 'forte orientação social e comunicativa' : 'preferência por interações mais reservadas'}.`;
+  }
+  if (!interpretacao) interpretacao = 'Seus fatores S e I estão alinhados com os demais, sem indicadores significativos de frustração ou desconforto.';
+
+  return `
+    <div class="bg-white rounded-2xl shadow-sm p-5 sm:p-8 mb-6 fade-in">
+      <h3 class="text-lg font-bold mb-4">📊 Análise Comparativa — Fatores S e I</h3>
+      <p class="text-gray-600 text-sm leading-relaxed">${interpretacao}</p>
+    </div>`;
+}
+
+// ===== REFAZER =====
+function refazer() {
+  document.getElementById('resultado').style.display = 'none';
+  document.getElementById('home').style.display = 'block';
+  if (window._chart) { window._chart.destroy(); window._chart = null; }
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+</script>
 </body>
 </html>
