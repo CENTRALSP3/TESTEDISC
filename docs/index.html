@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang='pt-BR'>
+<head>
+  <meta charset='UTF-8'>
+  <title>TESTEDISC – Inferência DISC</title>
+  <style>
+    body{font-family:Arial,sans-serif;margin:2rem;max-width:600px}
+    label{display:block;margin-top:1rem}
+    button{margin-top:1rem;padding:.5rem 1rem}
+    .result{margin-top:1rem;padding:.5rem;border:1px solid #ccc}
+  </style>
+</head>
+<body>
+  <h1>Teste DISC – Inferência</h1>
+  <form id='form'>
+    <label>D: <input type='number' step='any' name='D' required></label>
+    <label>I: <input type='number' step='any' name='I' required></label>
+    <label>S: <input type='number' step='any' name='S' required></label>
+    <label>C: <input type='number' step='any' name='C' required></label>
+    <button type='submit'>Inferir</button>
+  </form>
+  <div class='result' id='result' style='display:none'></div>
+  <script>
+    const form=document.getElementById('form');
+    const resultDiv=document.getElementById('result');
+    form.addEventListener('submit',async e=>{
+      e.preventDefault();
+      const data={};
+      new FormData(form).forEach((v,k)=>{data[k]=parseFloat(v)});
+      try{
+        const resp=await fetch('https://<BACKEND_HOST>/infer',{
+          method:'POST',
+          headers:{'Content-Type':'application/json'},
+          body:JSON.stringify(data)
+        });
+        if(!resp.ok) throw new Error('API error');
+        const json=await resp.json();
+        resultDiv.style.display='block';
+        resultDiv.innerHTML=`<strong>Interpretação:</strong> ${json.interpretation}<br><strong>Confiança:</strong> ${json.confidence}`;
+      }catch(err){
+        resultDiv.style.display='block';
+        resultDiv.innerHTML='Erro ao chamar a API. Configure <code>&lt;BACKEND_HOST&gt;</code>.';
+      }
+    });
+  </script>
+</body>
+</html>
