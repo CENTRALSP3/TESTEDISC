@@ -3,27 +3,31 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Perfil DISC - Análise Comportamental</title>
+<title>Perfil DISC V2 - Análise Comportamental</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#1a1a2e">
 <script src="https://cdn.tailwindcss.com"></script>
+<script>tailwind.config={darkMode:'class'}</script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 *{font-family:'Inter',system-ui,sans-serif;scroll-behavior:smooth}
 .disc-d{color:#E74C3C}.disc-i{color:#F39C12}.disc-s{color:#27AE60}.disc-c{color:#2980B9}
 .bg-d{background:#E74C3C}.bg-i{background:#F39C12}.bg-s{background:#27AE60}.bg-c{background:#2980B9}
-.border-d{border-color:#E74C3C}.border-i{border-color:#F39C12}.border-s{border-color:#27AE60}.border-c{border-color:#2980B9}
 .opt-card{cursor:pointer;border:2px solid transparent;transition:.15s}
 .opt-card.most{border-color:#1a1a2e;background:#eef2f7}
+.dark .opt-card.most{background:#2d3748}
 .opt-card.least{border-color:#E74C3C;background:#fde8e8}
+.dark .opt-card.least{background:#4a2020}
 @keyframes fIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
 .fade-in{animation:fIn .35s ease}
 .progress-bar{transition:width .5s ease}
-.acc-c{max-height:0;overflow:hidden;transition:max-height .35s ease}
-.acc-c.open{max-height:2000px}
+html.dark body{background:#111827;color:#f3f4f6}
+html.dark .card{background:#1f2937!important}
 @media print{.no-print{display:none!important}}
 </style>
 </head>
-<body class="bg-gray-50 text-gray-900 min-h-screen flex flex-col">
+<body class="bg-gray-50 text-gray-900 dark:bg-gray-900 dark:text-gray-100 min-h-screen flex flex-col">
 
 <header class="bg-gradient-to-r from-[#1a1a2e] to-[#16213e] text-white py-6 px-4 text-center">
   <h1 class="text-xl font-bold tracking-wider">Perfil <span class="text-amber-400">DISC</span></h1>
@@ -36,7 +40,7 @@
   <div class="max-w-2xl mx-auto bg-white rounded-2xl shadow-sm p-8 text-center">
     <h2 class="text-2xl font-bold mb-3">Descubra seu Perfil Comportamental</h2>
     <p class="text-gray-500 text-sm leading-relaxed mb-2">O método DISC mapeia quatro dimensões do comportamento: <strong>Dominância (D)</strong>, <strong>Influência (I)</strong>, <strong>Estabilidade (S)</strong> e <strong>Conformidade (C)</strong>.</p>
-    <p class="text-gray-500 text-sm leading-relaxed mb-4">São <strong>40 questões</strong> no formato forced-choice. Em cada uma, escolha a opção que <strong>mais</strong> e a que <strong>menos</strong> se parece com você.</p>
+    <p class="text-gray-500 dark:text-gray-400 text-sm leading-relaxed mb-4">São <strong>56 questões</strong> em dois blocos: <strong>Perfil Natural</strong> (como você é) e <strong>Perfil Adaptado</strong> (como age no trabalho). Em cada uma, escolha a opção <strong>mais</strong> e <strong>menos</strong> parecida com você.</p>
     <div class="grid grid-cols-4 gap-2 max-w-xs mx-auto mb-6">
       <div class="bg-d text-white rounded-xl p-3 font-bold text-center text-sm">D<br><span class="font-normal text-xs">Dominância</span></div>
       <div class="bg-i text-white rounded-xl p-3 font-bold text-center text-sm">I<br><span class="font-normal text-xs">Influência</span></div>
@@ -44,11 +48,13 @@
       <div class="bg-c text-white rounded-xl p-3 font-bold text-center text-sm">C<br><span class="font-normal text-xs">Conformidade</span></div>
     </div>
     <button onclick="iniciar()" class="bg-[#1a1a2e] text-white px-12 py-3.5 rounded-full font-semibold shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all">Iniciar Teste</button>
-    <div class="flex justify-center gap-3 mt-5">
-      <span class="bg-white border rounded-full px-4 py-1.5 text-xs text-gray-500"><strong>40</strong> questões</span>
-      <span class="bg-white border rounded-full px-4 py-1.5 text-xs text-gray-500"><strong>4</strong> fatores</span>
-      <span class="bg-white border rounded-full px-4 py-1.5 text-xs text-gray-500"><strong>~8</strong> min</span>
+    <div class="flex justify-center gap-3 mt-5 flex-wrap">
+      <span class="bg-white dark:bg-gray-800 border rounded-full px-4 py-1.5 text-xs text-gray-500"><strong>56</strong> questões</span>
+      <span class="bg-white dark:bg-gray-800 border rounded-full px-4 py-1.5 text-xs text-gray-500"><strong>2</strong> blocos</span>
+      <span class="bg-white dark:bg-gray-800 border rounded-full px-4 py-1.5 text-xs text-gray-500"><strong>~15</strong> min</span>
+      <span class="bg-white dark:bg-gray-800 border rounded-full px-4 py-1.5 text-xs text-gray-500">v<strong>2.0</strong></span>
     </div>
+    <button onclick="toggleDarkMode()" class="mt-4 text-xs text-gray-400 underline">Alternar modo escuro</button>
   </div>
 </section>
 
@@ -56,14 +62,23 @@
   <div class="max-w-2xl mx-auto">
     <div class="bg-white rounded-xl shadow-sm p-5 mb-5">
       <div class="flex justify-between items-center mb-3">
-        <span class="bg-[#1a1a2e] text-white text-xs font-bold px-3 py-1 rounded-full">Teste DISC</span>
-        <span id="progressText" class="text-sm font-semibold text-gray-400">1 de 40</span>
+        <span id="blocoLabel" class="bg-[#1a1a2e] text-white text-xs font-bold px-3 py-1 rounded-full">Perfil Natural</span>
+        <span id="progressText" class="text-sm font-semibold text-gray-400">1 de 56</span>
       </div>
       <div class="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
         <div id="progressBar" class="progress-bar h-full bg-gradient-to-r from-amber-400 to-red-500 rounded-full" style="width:0%"></div>
       </div>
     </div>
     <div id="quizContainer" class="min-h-[300px]"></div>
+  </div>
+</section>
+
+<section id="pausaBloco" class="py-12 px-4" style="display:none">
+  <div class="max-w-lg mx-auto bg-white dark:bg-gray-800 rounded-2xl shadow-sm p-8 text-center fade-in card">
+    <h2 class="text-xl font-bold mb-2">Bloco 1 Concluído!</h2>
+    <p class="text-gray-500 dark:text-gray-400 text-sm mb-2">Você completou o <strong>Perfil Natural</strong> (como você é).</p>
+    <p class="text-gray-500 dark:text-gray-400 text-sm mb-6">Agora responda o <strong>Perfil Adaptado</strong> — como você age no seu ambiente de trabalho atual.</p>
+    <button onclick="iniciarBlocoAdaptado()" class="bg-[#1a1a2e] text-white px-10 py-3 rounded-full font-semibold shadow-lg">Iniciar Bloco 2 →</button>
   </div>
 </section>
 
@@ -93,51 +108,77 @@
 // ===== CONSTANTS =====
 const FACTORES = ['D', 'I', 'S', 'C'];
 const CORES = { D: '#E74C3C', I: '#F39C12', S: '#27AE60', C: '#2980B9' };
-const INSTRUMENT_VERSION = '0.9.0';
+const INSTRUMENT_VERSION = '2.0.0';
+const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+  ? 'http://localhost:8000' : '';
+const DISCREPANCY_THRESHOLD = 4;
+const ZONA_CINZENTA = 8;
 // --- questions.js ---
-// ===== QUESTIONS =====
-const PERGUNTAS = [
-  {id:'q01',tema:'Decisão',opts:[{t:'Em situações novas, prefiro definir o próximo passo rapidamente',f:'D'},{t:'Costumo ouvir diferentes pontos de vista antes de me posicionar',f:'S'},{t:'Gosto de compartilhar ideias e inspirar as pessoas ao redor',f:'I'},{t:'Analiso cuidadosamente as alternativas antes de escolher',f:'C'}]},
-  {id:'q02',tema:'Relações',opts:[{t:'Construo relações de confiança de forma gradual e consistente',f:'S'},{t:'Sou aberto e expressivo ao conhecer novas pessoas',f:'I'},{t:'Prefiro interações diretas e objetivas com os outros',f:'D'},{t:'Valorizo conversas que sigam uma pauta clara e organizada',f:'C'}]},
-  {id:'q03',tema:'Ritmo',opts:[{t:'Trabalho melhor quando posso seguir meu próprio ritmo constante',f:'S'},{t:'Gosto de ambientes dinâmicos com variedade de estímulos',f:'I'},{t:'Busco agir com rapidez e eficiência para alcançar metas',f:'D'},{t:'Prefiro planejar cada etapa antes de executar',f:'C'}]},
-  {id:'q04',tema:'Problemas',opts:[{t:'Diante de um problema, busco resolvê-lo de forma prática e imediata',f:'D'},{t:'Procuro envolver outras pessoas para encontrar a melhor solução juntos',f:'I'},{t:'Reservo um tempo para pensar e processar antes de agir',f:'S'},{t:'Analiso os dados e sigo métodos testados para resolver',f:'C'}]},
-  {id:'q05',tema:'Mudança',opts:[{t:'Mudanças me motivam a buscar novos resultados',f:'D'},{t:'Adapto-me bem a mudanças quando vejo o lado positivo delas',f:'I'},{t:'Prefiro mudanças planejadas e com tempo para me ajustar',f:'S'},{t:'Aceito mudanças quando são bem fundamentadas e justificadas',f:'C'}]},
-  {id:'q06',tema:'Comunicação',opts:[{t:'Expresso minhas opiniões de forma direta e sem rodeios',f:'D'},{t:'Uso histórias e exemplos para me comunicar melhor',f:'I'},{t:'Comunico-me de forma calma e ponderada',f:'S'},{t:'Estruturei minha comunicação de forma lógica e sequencial',f:'C'}]},
-  {id:'q07',tema:'Equipe',opts:[{t:'Gosto de coordenar e direcionar os esforços do grupo',f:'D'},{t:'Trago energia e entusiasmo para o time',f:'I'},{t:'Contribuo para manter a harmonia e cooperação no grupo',f:'S'},{t:'Ajudo a equipe a seguir processos e prazos estabelecidos',f:'C'}]},
-  {id:'q08',tema:'Aprendizado',opts:[{t:'Aprendo melhor fazendo e enfrentando desafios reais',f:'D'},{t:'Aprendo melhor discutindo ideias com outras pessoas',f:'I'},{t:'Aprendo melhor com prática repetida e consistente',f:'S'},{t:'Aprendo melhor estudando materiais e seguindo métodos',f:'C'}]},
-  {id:'q09',tema:'Pressão',opts:[{t:'Sob pressão, assumo o controle e busco soluções rápidas',f:'D'},{t:'Sob pressão, busco apoio e troco ideias com outras pessoas',f:'I'},{t:'Sob pressão, mantenho a calma e procuro manter a rotina',f:'S'},{t:'Sob pressão, busco mais informações antes de agir',f:'C'}]},
-  {id:'q10',tema:'Organização',opts:[{t:'Organizo meu espaço de trabalho de forma funcional e prática',f:'D'},{t:'Meu ambiente reflete criatividade e dinamismo',f:'I'},{t:'Mantenho uma organização consistente e previsível',f:'S'},{t:'Sou meticuloso com a organização e detalhes',f:'C'}]},
-  {id:'q11',tema:'Metas',opts:[{t:'Estabeleço metas ambiciosas e trabalho duro para alcançá-las',f:'D'},{t:'Compartilho minhas metas para me manter motivado',f:'I'},{t:'Prefiro metas realistas com prazos confortáveis',f:'S'},{t:'Defino metas com critérios claros de medição',f:'C'}]},
-  {id:'q12',tema:'Conflito',opts:[{t:'Enfrento conflitos de frente e busco resolvê-los rapidamente',f:'D'},{t:'Busco mediar conflitos de forma positiva e construtiva',f:'I'},{t:'Evito conflitos e prefiro manter um ambiente pacífico',f:'S'},{t:'Abordo conflitos com argumentos lógicos e objetivos',f:'C'}]},
-  {id:'q13',tema:'Energia',opts:[{t:'Minha energia vem de superar obstáculos e vencer desafios',f:'D'},{t:'Minha energia vem da interação com pessoas e do reconhecimento',f:'I'},{t:'Minha energia vem de ambientes estáveis e relacionamentos seguros',f:'S'},{t:'Minha energia vem de fazer as coisas corretamente e com qualidade',f:'C'}]},
-  {id:'q14',tema:'Planejamento',opts:[{t:'Planejo de forma estratégica focando no resultado final',f:'D'},{t:'Planejo de forma flexível, deixando espaço para adaptações',f:'I'},{t:'Planejo com cuidado e prefiro seguir o plano estabelecido',f:'S'},{t:'Planejo detalhadamente cada etapa e contingência',f:'C'}]},
-  {id:'q15',tema:'Decisão',opts:[{t:'Decido rápido e assumo riscos calculados',f:'D'},{t:'Decido considerando o impacto nas pessoas envolvidas',f:'I'},{t:'Decido com calma depois de pesar bem as opções',f:'S'},{t:'Decido baseado em análise de dados e evidências',f:'C'}]},
-  {id:'q16',tema:'Iniciativa',opts:[{t:'Tomar a frente em projetos novos me motiva',f:'D'},{t:'Sugiro novas ideias com entusiasmo para engajar o grupo',f:'I'},{t:'Contribuo de forma constante sem precisar de destaque',f:'S'},{t:'Contribuo quando tenho clareza do processo e dos padrões',f:'C'}]},
-  {id:'q17',tema:'Relacionamento',opts:[{t:'Valorizo mais resultados do que agradar as pessoas',f:'D'},{t:'Invisto tempo em construir relacionamentos positivos',f:'I'},{t:'Prezo por relações longas e de confiança mútua',f:'S'},{t:'Mantenho relações profissionais com limites claros',f:'C'}]},
-  {id:'q18',tema:'Qualidade',opts:[{t:'Foco em entregar resultados que gerem impacto',f:'D'},{t:'Foco em criar experiências positivas para as pessoas',f:'I'},{t:'Foco em entregar trabalhos consistentes e confiáveis',f:'S'},{t:'Foco em atingir padrões elevados de qualidade e precisão',f:'C'}]},
-  {id:'q19',tema:'Mudança',opts:[{t:'Mudanças rápidas me estimulam e trazem oportunidades',f:'D'},{t:'Mudanças são oportunidades para conhecer coisas novas',f:'I'},{t:'Mudanças são melhores quando graduais e bem comunicadas',f:'S'},{t:'Mudanças precisam ser bem justificadas e planejadas',f:'C'}]},
-  {id:'q20',tema:'Prioridade',opts:[{t:'Minha prioridade é alcançar resultados rápidos e concretos',f:'D'},{t:'Minha prioridade é manter boas relações e clima positivo',f:'I'},{t:'Minha prioridade é garantir estabilidade e previsibilidade',f:'S'},{t:'Minha prioridade é fazer bem feito da primeira vez',f:'C'}]},
-  {id:'q21',tema:'Contribuição',opts:[{t:'Contribuo com direcionamento e capacidade de execução',f:'D'},{t:'Contribuo com otimismo e capacidade de mobilizar pessoas',f:'I'},{t:'Contribuo com paciência e consistência nas tarefas',f:'S'},{t:'Contribuo com análise cuidadosa e senso crítico',f:'C'}]},
-  {id:'q22',tema:'Feedback',opts:[{t:'Recebo bem feedbacks diretos e objetivos',f:'D'},{t:'Aprecio feedback que reconheça meu esforço e contribuição',f:'I'},{t:'Prefiro feedback em particular, de forma cuidadosa',f:'S'},{t:'Valorizo feedback específico e baseado em fatos',f:'C'}]},
-  {id:'q23',tema:'Autonomia',opts:[{t:'Gosto de ter autonomia para decidir como alcançar resultados',f:'D'},{t:'Gosto de liberdade para expressar ideias e opinar',f:'I'},{t:'Gosto de saber exatamente o que se espera de mim',f:'S'},{t:'Gosto de ter diretrizes claras e procedimentos definidos',f:'C'}]},
-  {id:'q24',tema:'Desafio',opts:[{t:'Desafios difíceis me motivam a dar o melhor de mim',f:'D'},{t:'Desafios criativos que envolvem pessoas me interessam',f:'I'},{t:'Desafios previsíveis e bem definidos me trazem segurança',f:'S'},{t:'Desafios que exigem análise aprofundada me atraem',f:'C'}]},
-  {id:'q25',tema:'Rotina',opts:[{t:'Prefiro variedade a rotinas previsíveis',f:'D'},{t:'Gosto quando cada dia traz interações e situações diferentes',f:'I'},{t:'Rotinas bem estabelecidas me trazem conforto e produtividade',f:'S'},{t:'Ter processos padronizados me ajuda a manter a qualidade',f:'C'}]},
-  {id:'q26',tema:'Influência',opts:[{t:'Influencio pessoas pela minha determinação e convicção',f:'D'},{t:'Influencio pessoas pelo meu entusiasmo e capacidade de motivar',f:'I'},{t:'Influencio pessoas pela minha confiabilidade e consistência',f:'S'},{t:'Influencio pessoas pelo meu conhecimento e precisão técnica',f:'C'}]},
-  {id:'q27',tema:'Estilo',opts:[{t:'Sou mais orientado a ação e resultados rápidos',f:'D'},{t:'Sou mais orientado a pessoas e conexões sociais',f:'I'},{t:'Sou mais orientado a estabilidade e harmonia',f:'S'},{t:'Sou mais orientado a qualidade e precisão',f:'C'}]},
-  {id:'q28',tema:'Crise',opts:[{t:'Em crise, ajo rápido para retomar o controle',f:'D'},{t:'Em crise, busco unir as pessoas para enfrentarmos juntos',f:'I'},{t:'Em crise, procuro manter a calma e seguir a rotina possível',f:'S'},{t:'Em crise, busco compreender as causas antes de agir',f:'C'}]},
-  {id:'q29',tema:'Social',opts:[{t:'Em ambientes sociais, costumo liderar a conversa',f:'D'},{t:'Em ambientes sociais, sou expansivo e me conecto fácil',f:'I'},{t:'Em ambientes sociais, observo antes de interagir',f:'S'},{t:'Em ambientes sociais, prefiro conversas com propósito definido',f:'C'}]},
-  {id:'q30',tema:'Critério',opts:[{t:'Confio mais na minha intuição prática para decidir',f:'D'},{t:'Confio na minha capacidade de avaliar pessoas e situações',f:'I'},{t:'Confio na experiência e no que já funcionou antes',f:'S'},{t:'Confio em análises e dados objetivos para decidir',f:'C'}]},
-  {id:'q31',tema:'Liderança',opts:[{t:'Lidero estabelecendo metas claras e cobrando resultados',f:'D'},{t:'Lidero inspirando e motivando a equipe',f:'I'},{t:'Lidero apoiando e garantindo que todos estejam bem',f:'S'},{t:'Lidero definindo padrões e assegurando qualidade',f:'C'}]},
-  {id:'q32',tema:'Inovação',opts:[{t:'Gosto de inovar para ganhar vantagem e superar concorrentes',f:'D'},{t:'Gosto de inovar trazendo novas ideias que inspirem pessoas',f:'I'},{t:'Gosto de inovar com melhorias incrementais e seguras',f:'S'},{t:'Gosto de inovar com base em pesquisa e análise aprofundada',f:'C'}]},
-  {id:'q33',tema:'Pessoas',opts:[{t:'Avalio pessoas pelo que elas entregam e realizam',f:'D'},{t:'Avalio pessoas pela energia positiva que trazem',f:'I'},{t:'Avalio pessoas pela confiabilidade e lealdade',f:'S'},{t:'Avalio pessoas pela competência técnica e precisão',f:'C'}]},
-  {id:'q34',tema:'Ação',opts:[{t:'Prefiro agir logo e ajustar o rumo depois',f:'D'},{t:'Prefiro agir e envolver outros no processo',f:'I'},{t:'Prefiro agir com segurança e passo a passo',f:'S'},{t:'Prefiro agir depois de analisar todas as variáveis',f:'C'}]},
-  {id:'q35',tema:'Motivação',opts:[{t:'Sou motivado por superação e conquistas',f:'D'},{t:'Sou motivado por reconhecimento e pertencimento',f:'I'},{t:'Sou motivado por segurança e estabilidade',f:'S'},{t:'Sou motivado por excelência e domínio técnico',f:'C'}]},
-  {id:'q36',tema:'Decisão em grupo',opts:[{t:'Em grupo, defendo minhas ideias com firmeza',f:'D'},{t:'Em grupo, busco engajar todos na discussão',f:'I'},{t:'Em grupo, apoio a decisão que trouxer mais harmonia',f:'S'},{t:'Em grupo, contribuo com análise lógica e dados',f:'C'}]},
-  {id:'q37',tema:'Foco',opts:[{t:'Meu foco está no resultado e na meta final',f:'D'},{t:'Meu foco está nas pessoas e nos relacionamentos',f:'I'},{t:'Meu foco está no processo e na consistência',f:'S'},{t:'Meu foco está nos detalhes e na qualidade da entrega',f:'C'}]},
-  {id:'q38',tema:'Tempo',opts:[{t:'Gosto de trabalhar em ritmo acelerado e intenso',f:'D'},{t:'Gosto quando o tempo é flexível para interagir',f:'I'},{t:'Gosto de ter tempo suficiente para fazer bem feito',f:'S'},{t:'Gosto de cumprir prazos com margem de segurança',f:'C'}]},
-  {id:'q39',tema:'Equilíbrio',opts:[{t:'Equilíbrio para mim é ter desafios e conquistas',f:'D'},{t:'Equilíbrio para mim é ter vida social ativa e conexões',f:'I'},{t:'Equilíbrio para mim é ter rotina e previsibilidade',f:'S'},{t:'Equilíbrio para mim é ter ordem e qualidade de vida',f:'C'}]},
-  {id:'q40',tema:'Contribuição',opts:[{t:'Minha maior contribuição é fazer acontecer',f:'D'},{t:'Minha maior contribuição é conectar pessoas e ideias',f:'I'},{t:'Minha maior contribuição é dar estabilidade e suporte',f:'S'},{t:'Minha maior contribuição é garantir qualidade e precisão',f:'C'}]}
+// Gerado por scripts/generate_questions.py
+const PERGUNTAS_NATURAL = [
+  {id:'n01',bloco:'natural',tema:'Decisão',opts:[{t:'Em situações novas, prefiro definir o próximo passo rapidamente',f:'D'}, {t:'Costumo ouvir diferentes pontos de vista antes de me posicionar',f:'S'}, {t:'Sinto-me à vontade ao trocar perspectivas em grupo',f:'I'}, {t:'Analiso cuidadosamente as alternativas antes de escolher',f:'C'}]},
+  {id:'n02',bloco:'natural',tema:'Relações',opts:[{t:'Construo relações de confiança de forma gradual',f:'S'}, {t:'Sou aberto ao conhecer novas pessoas',f:'I'}, {t:'Prefiro interações diretas e objetivas',f:'D'}, {t:'Valorizo conversas com pauta clara e organizada',f:'C'}]},
+  {id:'n03',bloco:'natural',tema:'Ritmo',opts:[{t:'Trabalho melhor com ritmo constante e previsível',f:'S'}, {t:'Gosto de ambientes com variedade de estímulos',f:'I'}, {t:'Busco agir com rapidez para alcançar metas',f:'D'}, {t:'Prefiro planejar cada etapa antes de executar',f:'C'}]},
+  {id:'n04',bloco:'natural',tema:'Problemas',opts:[{t:'Diante de problemas, busco soluções práticas e imediatas',f:'D'}, {t:'Procuro envolver outras pessoas na solução',f:'I'}, {t:'Reservo tempo para processar antes de agir',f:'S'}, {t:'Analiso dados e sigo métodos testados',f:'C'}]},
+  {id:'n05',bloco:'natural',tema:'Mudança',opts:[{t:'Mudanças me motivam a buscar novos resultados',f:'D'}, {t:'Adapto-me bem quando vejo o lado positivo das mudanças',f:'I'}, {t:'Prefiro mudanças planejadas com tempo para me ajustar',f:'S'}, {t:'Aceito mudanças quando são bem fundamentadas',f:'C'}]},
+  {id:'n06',bloco:'natural',tema:'Comunicação',opts:[{t:'Expresso opiniões de forma direta',f:'D'}, {t:'Uso exemplos e histórias para me comunicar',f:'I'}, {t:'Comunico-me de forma calma e ponderada',f:'S'}, {t:'Estruturo minha comunicação de forma lógica',f:'C'}]},
+  {id:'n07',bloco:'natural',tema:'Equipe',opts:[{t:'Gosto de coordenar esforços do grupo',f:'D'}, {t:'Trago energia e entusiasmo para o time',f:'I'}, {t:'Contribuo para harmonia e cooperação',f:'S'}, {t:'Ajudo a equipe a seguir processos e prazos',f:'C'}]},
+  {id:'n08',bloco:'natural',tema:'Aprendizado',opts:[{t:'Aprendo melhor fazendo e enfrentando desafios',f:'D'}, {t:'Aprendo melhor discutindo ideias com outros',f:'I'}, {t:'Aprendo melhor com prática repetida',f:'S'}, {t:'Aprendo melhor estudando materiais estruturados',f:'C'}]},
+  {id:'n09',bloco:'natural',tema:'Pressão',opts:[{t:'Sob pressão, assumo controle e busco soluções rápidas',f:'D'}, {t:'Sob pressão, busco apoio e troco ideias',f:'I'}, {t:'Sob pressão, mantenho calma e rotina',f:'S'}, {t:'Sob pressão, busco mais informações antes de agir',f:'C'}]},
+  {id:'n10',bloco:'natural',tema:'Organização',opts:[{t:'Organizo meu espaço de forma funcional',f:'D'}, {t:'Meu ambiente reflete criatividade e dinamismo',f:'I'}, {t:'Mantenho organização consistente e previsível',f:'S'}, {t:'Sou meticuloso com organização e detalhes',f:'C'}]},
+  {id:'n11',bloco:'natural',tema:'Metas',opts:[{t:'Estabeleço metas ambiciosas e trabalho para alcançá-las',f:'D'}, {t:'Compartilho metas para me manter motivado',f:'I'}, {t:'Prefiro metas realistas com prazos confortáveis',f:'S'}, {t:'Defino metas com critérios claros de medição',f:'C'}]},
+  {id:'n12',bloco:'natural',tema:'Conflito',opts:[{t:'Enfrento conflitos de frente para resolvê-los',f:'D'}, {t:'Busco mediar conflitos de forma construtiva',f:'I'}, {t:'Evito conflitos e prefiro ambiente pacífico',f:'S'}, {t:'Abordo conflitos com argumentos lógicos',f:'C'}]},
+  {id:'n13',bloco:'natural',tema:'Energia',opts:[{t:'Minha energia vem de superar obstáculos',f:'D'}, {t:'Minha energia vem da interação e reconhecimento',f:'I'}, {t:'Minha energia vem de ambientes estáveis',f:'S'}, {t:'Minha energia vem de fazer as coisas com qualidade',f:'C'}]},
+  {id:'n14',bloco:'natural',tema:'Planejamento',opts:[{t:'Planejo focando no resultado final',f:'D'}, {t:'Planejo deixando espaço para adaptações',f:'I'}, {t:'Planejo com cuidado e sigo o plano',f:'S'}, {t:'Planejo detalhadamente cada etapa',f:'C'}]},
+  {id:'n15',bloco:'natural',tema:'Iniciativa',opts:[{t:'Tomar a frente em projetos novos me motiva',f:'D'}, {t:'Sugiro ideias com entusiasmo para engajar',f:'I'}, {t:'Contribuo de forma constante sem precisar de destaque',f:'S'}, {t:'Contribuo quando tenho clareza de processos',f:'C'}]},
+  {id:'n16',bloco:'natural',tema:'Relacionamento',opts:[{t:'Valorizo mais resultados do que agradar',f:'D'}, {t:'Invisto tempo em relacionamentos positivos',f:'I'}, {t:'Prezo por relações longas e de confiança',f:'S'}, {t:'Mantenho relações com limites claros',f:'C'}]},
+  {id:'n17',bloco:'natural',tema:'Qualidade',opts:[{t:'Foco em entregar resultados com impacto',f:'D'}, {t:'Foco em criar experiências positivas',f:'I'}, {t:'Foco em trabalhos consistentes e confiáveis',f:'S'}, {t:'Foco em padrões elevados de qualidade',f:'C'}]},
+  {id:'n18',bloco:'natural',tema:'Prioridade',opts:[{t:'Priorizo resultados rápidos e concretos',f:'D'}, {t:'Priorizo boas relações e clima positivo',f:'I'}, {t:'Priorizo estabilidade e previsibilidade',f:'S'}, {t:'Priorizo fazer bem feito da primeira vez',f:'C'}]},
+  {id:'n19',bloco:'natural',tema:'Feedback',opts:[{t:'Recebo bem feedbacks diretos e objetivos',f:'D'}, {t:'Aprecio feedback que reconheça meu esforço',f:'I'}, {t:'Prefiro feedback em particular e cuidadoso',f:'S'}, {t:'Valorizo feedback específico baseado em fatos',f:'C'}]},
+  {id:'n20',bloco:'natural',tema:'Autonomia',opts:[{t:'Gosto de autonomia para decidir como agir',f:'D'}, {t:'Gosto de liberdade para expressar ideias',f:'I'}, {t:'Gosto de saber exatamente o que se espera',f:'S'}, {t:'Gosto de diretrizes e procedimentos claros',f:'C'}]},
+  {id:'n21',bloco:'natural',tema:'Desafio',opts:[{t:'Desafios difíceis me motivam',f:'D'}, {t:'Desafios criativos com pessoas me interessam',f:'I'}, {t:'Desafios previsíveis me trazem segurança',f:'S'}, {t:'Desafios analíticos me atraem',f:'C'}]},
+  {id:'n22',bloco:'natural',tema:'Rotina',opts:[{t:'Prefiro variedade a rotinas previsíveis',f:'D'}, {t:'Gosto quando cada dia traz situações diferentes',f:'I'}, {t:'Rotinas estabelecidas me trazem conforto',f:'S'}, {t:'Processos padronizados ajudam minha qualidade',f:'C'}]},
+  {id:'n23',bloco:'natural',tema:'Influência',opts:[{t:'Influencio pela determinação e convicção',f:'D'}, {t:'Influencio pelo entusiasmo e motivação',f:'I'}, {t:'Influencio pela confiabilidade e consistência',f:'S'}, {t:'Influencio pelo conhecimento técnico',f:'C'}]},
+  {id:'n24',bloco:'natural',tema:'Crise',opts:[{t:'Em crise, ajo rápido para retomar controle',f:'D'}, {t:'Em crise, busco unir as pessoas',f:'I'}, {t:'Em crise, mantenho calma e rotina possível',f:'S'}, {t:'Em crise, busco compreender causas antes de agir',f:'C'}]},
+  {id:'n25',bloco:'natural',tema:'Social',opts:[{t:'Em grupos, costumo liderar a conversa',f:'D'}, {t:'Em grupos, sou expansivo e me conecto fácil',f:'I'}, {t:'Em grupos, observo antes de interagir',f:'S'}, {t:'Em grupos, prefiro conversas com propósito',f:'C'}]},
+  {id:'n26',bloco:'natural',tema:'Liderança',opts:[{t:'Lidero com metas claras e cobrança de resultados',f:'D'}, {t:'Lidero inspirando e motivando',f:'I'}, {t:'Lidero apoiando e garantindo bem-estar',f:'S'}, {t:'Lidero definindo padrões e qualidade',f:'C'}]},
+  {id:'n27',bloco:'natural',tema:'Motivação',opts:[{t:'Sou motivado por superação e conquistas',f:'D'}, {t:'Sou motivado por reconhecimento e pertencimento',f:'I'}, {t:'Sou motivado por segurança e estabilidade',f:'S'}, {t:'Sou motivado por excelência técnica',f:'C'}]},
+  {id:'n28',bloco:'natural',tema:'Foco',opts:[{t:'Meu foco está no resultado e meta final',f:'D'}, {t:'Meu foco está nas pessoas e relacionamentos',f:'I'}, {t:'Meu foco está no processo e consistência',f:'S'}, {t:'Meu foco está nos detalhes e qualidade',f:'C'}]},
 ];
+
+const PERGUNTAS_ADAPTADO = [
+  {id:'a01',bloco:'adaptado',tema:'Decisão',opts:[{t:'No trabalho, em situações novas, prefiro definir o próximo passo rapidamente',f:'D'}, {t:'No trabalho, costumo ouvir diferentes pontos de vista antes de me posicionar',f:'S'}, {t:'No trabalho, sinto-me à vontade ao trocar perspectivas em grupo',f:'I'}, {t:'No trabalho, analiso cuidadosamente as alternativas antes de escolher',f:'C'}]},
+  {id:'a02',bloco:'adaptado',tema:'Relações',opts:[{t:'No ambiente profissional, construo relações de confiança de forma gradual',f:'S'}, {t:'No ambiente profissional, sou aberto ao conhecer novas pessoas',f:'I'}, {t:'No ambiente profissional, prefiro interações diretas e objetivas',f:'D'}, {t:'No ambiente profissional, valorizo conversas com pauta clara e organizada',f:'C'}]},
+  {id:'a03',bloco:'adaptado',tema:'Ritmo',opts:[{t:'Na rotina de trabalho, trabalho melhor com ritmo constante e previsível',f:'S'}, {t:'Na rotina de trabalho, gosto de ambientes com variedade de estímulos',f:'I'}, {t:'Na rotina de trabalho, busco agir com rapidez para alcançar metas',f:'D'}, {t:'Na rotina de trabalho, prefiro planejar cada etapa antes de executar',f:'C'}]},
+  {id:'a04',bloco:'adaptado',tema:'Problemas',opts:[{t:'Ao resolver problemas no trabalho, diante de problemas, busco soluções práticas e imediatas',f:'D'}, {t:'Ao resolver problemas no trabalho, procuro envolver outras pessoas na solução',f:'I'}, {t:'Ao resolver problemas no trabalho, reservo tempo para processar antes de agir',f:'S'}, {t:'Ao resolver problemas no trabalho, analiso dados e sigo métodos testados',f:'C'}]},
+  {id:'a05',bloco:'adaptado',tema:'Mudança',opts:[{t:'Diante de mudanças organizacionais, mudanças me motivam a buscar novos resultados',f:'D'}, {t:'Diante de mudanças organizacionais, adapto-me bem quando vejo o lado positivo das mudanças',f:'I'}, {t:'Diante de mudanças organizacionais, prefiro mudanças planejadas com tempo para me ajustar',f:'S'}, {t:'Diante de mudanças organizacionais, aceito mudanças quando são bem fundamentadas',f:'C'}]},
+  {id:'a06',bloco:'adaptado',tema:'Comunicação',opts:[{t:'Na comunicação profissional, expresso opiniões de forma direta',f:'D'}, {t:'Na comunicação profissional, uso exemplos e histórias para me comunicar',f:'I'}, {t:'Na comunicação profissional, comunico-me de forma calma e ponderada',f:'S'}, {t:'Na comunicação profissional, estruturo minha comunicação de forma lógica',f:'C'}]},
+  {id:'a07',bloco:'adaptado',tema:'Equipe',opts:[{t:'Na equipe, gosto de coordenar esforços do grupo',f:'D'}, {t:'Na equipe, trago energia e entusiasmo para o time',f:'I'}, {t:'Na equipe, contribuo para harmonia e cooperação',f:'S'}, {t:'Na equipe, ajudo a equipe a seguir processos e prazos',f:'C'}]},
+  {id:'a08',bloco:'adaptado',tema:'Aprendizado',opts:[{t:'Para aprender no trabalho, aprendo melhor fazendo e enfrentando desafios',f:'D'}, {t:'Para aprender no trabalho, aprendo melhor discutindo ideias com outros',f:'I'}, {t:'Para aprender no trabalho, aprendo melhor com prática repetida',f:'S'}, {t:'Para aprender no trabalho, aprendo melhor estudando materiais estruturados',f:'C'}]},
+  {id:'a09',bloco:'adaptado',tema:'Pressão',opts:[{t:'Sob pressão no trabalho, sob pressão, assumo controle e busco soluções rápidas',f:'D'}, {t:'Sob pressão no trabalho, sob pressão, busco apoio e troco ideias',f:'I'}, {t:'Sob pressão no trabalho, sob pressão, mantenho calma e rotina',f:'S'}, {t:'Sob pressão no trabalho, sob pressão, busco mais informações antes de agir',f:'C'}]},
+  {id:'a10',bloco:'adaptado',tema:'Organização',opts:[{t:'No meu espaço de trabalho, organizo meu espaço de forma funcional',f:'D'}, {t:'No meu espaço de trabalho, meu ambiente reflete criatividade e dinamismo',f:'I'}, {t:'No meu espaço de trabalho, mantenho organização consistente e previsível',f:'S'}, {t:'No meu espaço de trabalho, sou meticuloso com organização e detalhes',f:'C'}]},
+  {id:'a11',bloco:'adaptado',tema:'Metas',opts:[{t:'Em relação às metas do trabalho, estabeleço metas ambiciosas e trabalho para alcançá-las',f:'D'}, {t:'Em relação às metas do trabalho, compartilho metas para me manter motivado',f:'I'}, {t:'Em relação às metas do trabalho, prefiro metas realistas com prazos confortáveis',f:'S'}, {t:'Em relação às metas do trabalho, defino metas com critérios claros de medição',f:'C'}]},
+  {id:'a12',bloco:'adaptado',tema:'Conflito',opts:[{t:'Em conflitos no trabalho, enfrento conflitos de frente para resolvê-los',f:'D'}, {t:'Em conflitos no trabalho, busco mediar conflitos de forma construtiva',f:'I'}, {t:'Em conflitos no trabalho, evito conflitos e prefiro ambiente pacífico',f:'S'}, {t:'Em conflitos no trabalho, abordo conflitos com argumentos lógicos',f:'C'}]},
+  {id:'a13',bloco:'adaptado',tema:'Energia',opts:[{t:'No trabalho, minha energia vem de superar obstáculos',f:'D'}, {t:'No trabalho, minha energia vem de minha energia vem da interação e reconhecimento',f:'I'}, {t:'No trabalho, minha energia vem de ambientes estáveis',f:'S'}, {t:'No trabalho, minha energia vem de fazer as coisas com qualidade',f:'C'}]},
+  {id:'a14',bloco:'adaptado',tema:'Planejamento',opts:[{t:'No planejamento de tarefas, planejo focando no resultado final',f:'D'}, {t:'No planejamento de tarefas, planejo deixando espaço para adaptações',f:'I'}, {t:'No planejamento de tarefas, planejo com cuidado e sigo o plano',f:'S'}, {t:'No planejamento de tarefas, planejo detalhadamente cada etapa',f:'C'}]},
+  {id:'a15',bloco:'adaptado',tema:'Iniciativa',opts:[{t:'No trabalho, tomar a frente em projetos novos me motiva',f:'D'}, {t:'No trabalho, sugiro ideias com entusiasmo para engajar',f:'I'}, {t:'No trabalho, contribuo de forma constante sem precisar de destaque',f:'S'}, {t:'No trabalho, contribuo quando tenho clareza de processos',f:'C'}]},
+  {id:'a16',bloco:'adaptado',tema:'Relacionamento',opts:[{t:'Nas relações profissionais, valorizo mais resultados do que agradar',f:'D'}, {t:'Nas relações profissionais, invisto tempo em relacionamentos positivos',f:'I'}, {t:'Nas relações profissionais, prezo por relações longas e de confiança',f:'S'}, {t:'Nas relações profissionais, mantenho relações com limites claros',f:'C'}]},
+  {id:'a17',bloco:'adaptado',tema:'Qualidade',opts:[{t:'Na entrega de trabalho, foco em entregar resultados com impacto',f:'D'}, {t:'Na entrega de trabalho, foco em criar experiências positivas',f:'I'}, {t:'Na entrega de trabalho, foco em trabalhos consistentes e confiáveis',f:'S'}, {t:'Na entrega de trabalho, foco em padrões elevados de qualidade',f:'C'}]},
+  {id:'a18',bloco:'adaptado',tema:'Prioridade',opts:[{t:'No trabalho, priorizo resultados rápidos e concretos',f:'D'}, {t:'No trabalho, priorizo boas relações e clima positivo',f:'I'}, {t:'No trabalho, priorizo estabilidade e previsibilidade',f:'S'}, {t:'No trabalho, priorizo fazer bem feito da primeira vez',f:'C'}]},
+  {id:'a19',bloco:'adaptado',tema:'Feedback',opts:[{t:'Ao receber feedback profissional, recebo bem feedbacks diretos e objetivos',f:'D'}, {t:'Ao receber feedback profissional, aprecio feedback que reconheça meu esforço',f:'I'}, {t:'Ao receber feedback profissional, prefiro feedback em particular e cuidadoso',f:'S'}, {t:'Ao receber feedback profissional, valorizo feedback específico baseado em fatos',f:'C'}]},
+  {id:'a20',bloco:'adaptado',tema:'Autonomia',opts:[{t:'No trabalho, gosto de autonomia para decidir como agir',f:'D'}, {t:'No trabalho, gosto de liberdade para expressar ideias',f:'I'}, {t:'No trabalho, gosto de saber exatamente o que se espera',f:'S'}, {t:'No trabalho, gosto de diretrizes e procedimentos claros',f:'C'}]},
+  {id:'a21',bloco:'adaptado',tema:'Desafio',opts:[{t:'Nos desafios profissionais, desafios difíceis me motivam',f:'D'}, {t:'Nos desafios profissionais, desafios criativos com pessoas me interessam',f:'I'}, {t:'Nos desafios profissionais, desafios previsíveis me trazem segurança',f:'S'}, {t:'Nos desafios profissionais, desafios analíticos me atraem',f:'C'}]},
+  {id:'a22',bloco:'adaptado',tema:'Rotina',opts:[{t:'Na rotina profissional, prefiro variedade a rotinas previsíveis',f:'D'}, {t:'Na rotina profissional, gosto quando cada dia traz situações diferentes',f:'I'}, {t:'Na rotina profissional, rotinas estabelecidas me trazem conforto',f:'S'}, {t:'Na rotina profissional, processos padronizados ajudam minha qualidade',f:'C'}]},
+  {id:'a23',bloco:'adaptado',tema:'Influência',opts:[{t:'Para influenciar no trabalho, costumo pela determinação e convicção',f:'D'}, {t:'Para influenciar no trabalho, costumo pelo entusiasmo e motivação',f:'I'}, {t:'Para influenciar no trabalho, costumo pela confiabilidade e consistência',f:'S'}, {t:'Para influenciar no trabalho, costumo pelo conhecimento técnico',f:'C'}]},
+  {id:'a24',bloco:'adaptado',tema:'Crise',opts:[{t:'Em crises no trabalho, em crise, ajo rápido para retomar controle',f:'D'}, {t:'Em crises no trabalho, em crise, busco unir as pessoas',f:'I'}, {t:'Em crises no trabalho, em crise, mantenho calma e rotina possível',f:'S'}, {t:'Em crises no trabalho, em crise, busco compreender causas antes de agir',f:'C'}]},
+  {id:'a25',bloco:'adaptado',tema:'Social',opts:[{t:'Em interações profissionais, em grupos, costumo liderar a conversa',f:'D'}, {t:'Em interações profissionais, em grupos, sou expansivo e me conecto fácil',f:'I'}, {t:'Em interações profissionais, em grupos, observo antes de interagir',f:'S'}, {t:'Em interações profissionais, em grupos, prefiro conversas com propósito',f:'C'}]},
+  {id:'a26',bloco:'adaptado',tema:'Liderança',opts:[{t:'Ao liderar ou ser liderado, lidero com metas claras e cobrança de resultados',f:'D'}, {t:'Ao liderar ou ser liderado, lidero inspirando e motivando',f:'I'}, {t:'Ao liderar ou ser liderado, lidero apoiando e garantindo bem-estar',f:'S'}, {t:'Ao liderar ou ser liderado, lidero definindo padrões e qualidade',f:'C'}]},
+  {id:'a27',bloco:'adaptado',tema:'Motivação',opts:[{t:'No trabalho, sou motivado por superação e conquistas',f:'D'}, {t:'No trabalho, sou motivado por reconhecimento e pertencimento',f:'I'}, {t:'No trabalho, sou motivado por segurança e estabilidade',f:'S'}, {t:'No trabalho, sou motivado por excelência técnica',f:'C'}]},
+  {id:'a28',bloco:'adaptado',tema:'Foco',opts:[{t:'No trabalho, meu foco está no resultado e meta final',f:'D'}, {t:'No trabalho, meu foco está nas pessoas e relacionamentos',f:'I'}, {t:'No trabalho, meu foco está no processo e consistência',f:'S'}, {t:'No trabalho, meu foco está nos detalhes e qualidade',f:'C'}]},
+];
+
+const PERGUNTAS = [...PERGUNTAS_NATURAL, ...PERGUNTAS_ADAPTADO];
+const TOTAL_POR_BLOCO = 28;
 // --- palavras-data.js ---
 // Gerado automaticamente por scripts/extract_knowledge.py
 const PALAVRAS_PDF = {
@@ -350,84 +391,100 @@ const PALAVRAS_FALLBACK = {
 };
 
 // --- scoring.js ---
-// ===== SCORING =====
+// ===== SCORING V2 — Natural + Adaptado =====
 
-function calcularScores(respostas) {
-  const raw = { D: 0, I: 0, S: 0, C: 0 };
-  respostas.forEach(q => {
-    if (q.mostIdx !== undefined && q.mostIdx !== -1) {
-      raw[q.mostFactor] += 1;
-    }
-    if (q.leastIdx !== undefined && q.leastIdx !== -1) {
-      raw[q.leastFactor] -= 1;
-    }
-  });
+function normalizeRaw(raw, itemCount) {
+  const divisor = itemCount / 10; // 28 itens → divisor 2.8 → range -10/+10
   const scores = {};
   FACTORES.forEach(f => {
-    scores[f] = Math.max(-10, Math.min(10, Math.round(raw[f] / 4 * 10) / 10));
+    scores[f] = Math.max(-10, Math.min(10, Math.round(raw[f] / divisor * 10) / 10));
   });
-  return { raw, scores };
+  return scores;
 }
 
-function calcularScoresFromState() {
-  const respostas = state.shuffled.map(q => ({
-    mostIdx: state.most[q.id],
-    leastIdx: state.least[q.id],
-    mostFactor: state.most[q.id] !== undefined && state.most[q.id] !== -1
-      ? q._shuffled[state.most[q.id]].f : null,
-    leastFactor: state.least[q.id] !== undefined && state.least[q.id] !== -1
-      ? q._shuffled[state.least[q.id]].f : null,
-  }));
-  return calcularScores(respostas).scores;
+function calcularScores(respostas, itemCount = TOTAL_POR_BLOCO) {
+  const raw = { D: 0, I: 0, S: 0, C: 0 };
+  respostas.forEach(q => {
+    if (q.mostFactor) raw[q.mostFactor] += 1;
+    if (q.leastFactor) raw[q.leastFactor] -= 1;
+  });
+  return { raw, scores: normalizeRaw(raw, itemCount) };
 }
 
-/** Lógica canônica de blend — única fonte de verdade */
+function respostasDoBloco(bloco) {
+  return state.shuffled
+    .filter(q => q.bloco === bloco)
+    .map(q => ({
+      mostFactor: state.most[q.id] !== undefined && state.most[q.id] !== -1
+        ? q._shuffled[state.most[q.id]].f : null,
+      leastFactor: state.least[q.id] !== undefined && state.least[q.id] !== -1
+        ? q._shuffled[state.least[q.id]].f : null,
+    }));
+}
+
+function calcularScoresDual() {
+  const natural = calcularScores(respostasDoBloco('natural'));
+  const adapted = calcularScores(respostasDoBloco('adaptado'));
+  const discrepancy = {};
+  const pressure = {};
+  FACTORES.forEach(f => {
+    discrepancy[f] = Math.round((adapted.scores[f] - natural.scores[f]) * 10) / 10;
+    pressure[f] = discrepancy[f];
+  });
+  return { natural: natural.scores, adapted: adapted.scores, discrepancy, pressure };
+}
+
 function determinarPerfil(scores) {
   const sorted = FACTORES.slice().sort((a, b) => scores[b] - scores[a]);
   const primario = sorted[0];
   const secundario = scores[sorted[1]] > 0 ? sorted[1] : null;
   const terciario = (
-    secundario &&
-    scores[sorted[2]] > 0 &&
+    secundario && scores[sorted[2]] > 0 &&
     Math.abs(scores[sorted[2]] - scores[sorted[1]]) < 2
   ) ? sorted[2] : null;
-
   let blend = primario;
   if (secundario) blend += secundario;
   if (terciario) blend += terciario;
-
   return { primario, secundario, terciario, blend, sorted };
 }
 
 function classificarScore(valor) {
-  if (Math.abs(valor) > 8) return 'Zona Cinzenta';
+  if (Math.abs(valor) > ZONA_CINZENTA) return 'Zona Cinzenta';
   if (valor > 5) return 'Alto';
   if (valor > 2) return 'Médio-Alto';
   if (valor > -2) return 'Médio';
   if (valor > -5) return 'Médio-Baixo';
-  if (valor > -8) return 'Baixo';
+  if (valor > -ZONA_CINZENTA) return 'Baixo';
   return 'Zona Cinzenta';
 }
 
-/** Fatores com influência significativa, ordenados por score */
 function getFatoresAtivos(scores, minScore = 0) {
-  return FACTORES
-    .filter(f => scores[f] > minScore)
-    .sort((a, b) => scores[b] - scores[a]);
+  return FACTORES.filter(f => scores[f] > minScore).sort((a, b) => scores[b] - scores[a]);
 }
 
-/** Fatores ponderados para devolutiva multi-fator */
 function getFatoresPonderados(scores, maxFatores = 2) {
   const ativos = getFatoresAtivos(scores, 1);
-  if (!ativos.length) {
-    const sorted = FACTORES.slice().sort((a, b) => scores[b] - scores[a]);
-    return [sorted[0]];
-  }
+  if (!ativos.length) return [FACTORES.slice().sort((a, b) => scores[b] - scores[a])[0]];
   const result = [ativos[0]];
-  if (ativos.length > 1 && scores[ativos[1]] >= scores[ativos[0]] - 3) {
-    result.push(ativos[1]);
-  }
+  if (ativos.length > 1 && scores[ativos[1]] >= scores[ativos[0]] - 3) result.push(ativos[1]);
   return result.slice(0, maxFatores);
+}
+
+function analisarDiscrepancia(dual) {
+  const alertas = [];
+  FACTORES.forEach(f => {
+    const d = dual.discrepancy[f];
+    const nat = dual.natural[f];
+    const adp = dual.adapted[f];
+    if (d <= -DISCREPANCY_THRESHOLD && nat > 2) {
+      alertas.push({ fator: f, tipo: 'supressao', delta: d,
+        texto: `Fator ${f}: possível supressão no trabalho (natural +${nat} → adaptado +${adp}). Pode indicar ambiente que não permite expressar esse traço.` });
+    } else if (d >= DISCREPANCY_THRESHOLD && nat < adp) {
+      alertas.push({ fator: f, tipo: 'hiperadaptacao', delta: d,
+        texto: `Fator ${f}: possível hiperadaptação (+${d}). Você pode estar forçando comportamentos além do seu perfil natural.` });
+    }
+  });
+  return alertas;
 }
 
 function validarRespostaQuestao(qid) {
@@ -439,353 +496,445 @@ function validarRespostaQuestao(qid) {
   return { ok: true };
 }
 // --- charts.js ---
-// ===== GRÁFICO =====
-function gerarGrafico(nome, scores, perfil) {
+// ===== GRÁFICOS I / II / III =====
+
+function gerarGraficosTriplos(dual) {
   return `
-    <div class="bg-white rounded-2xl shadow-sm p-5 sm:p-8 mb-6 fade-in">
-      <h3 class="text-lg font-bold mb-4 text-center">Gráfico de Perfil DISC</h3>
-      <div class="relative" style="height:320px">
-        <canvas id="chartDISC"></canvas>
+    <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-sm p-5 sm:p-8 mb-6 fade-in card">
+      <h3 class="text-lg font-bold mb-6 text-center">Gráficos DISC — Natural · Pressão · Adaptado</h3>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div>
+          <p class="text-xs font-bold text-center mb-2 text-green-700">III — Autoimagem (Natural)</p>
+          <div style="height:220px"><canvas id="chartNatural"></canvas></div>
+        </div>
+        <div>
+          <p class="text-xs font-bold text-center mb-2 text-purple-700">II — Pressão (Diferença)</p>
+          <div style="height:220px"><canvas id="chartPressure"></canvas></div>
+        </div>
+        <div>
+          <p class="text-xs font-bold text-center mb-2 text-blue-700">I — Adaptado (Trabalho)</p>
+          <div style="height:220px"><canvas id="chartAdapted"></canvas></div>
+        </div>
       </div>
-      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-4 text-center">
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-6 text-center">
         ${FACTORES.map(f => `
-          <div>
-            <div class="font-bold text-lg" style="color:${CORES[f]}">${f}</div>
-            <div class="text-2xl font-bold">${scores[f] > 0 ? '+' : ''}${scores[f]}</div>
-            <div class="text-xs text-gray-400">${classificarScore(scores[f])}</div>
-          </div>
-        `).join('')}
+          <div class="p-2 rounded-lg bg-gray-50 dark:bg-gray-800">
+            <div class="font-bold" style="color:${CORES[f]}">${f}</div>
+            <div class="text-xs text-gray-500">Nat: ${dual.natural[f] > 0 ? '+' : ''}${dual.natural[f]}</div>
+            <div class="text-xs text-gray-500">Adp: ${dual.adapted[f] > 0 ? '+' : ''}${dual.adapted[f]}</div>
+            <div class="text-xs ${Math.abs(dual.discrepancy[f]) >= DISCREPANCY_THRESHOLD ? 'text-red-500 font-bold' : 'text-gray-400'}">Δ ${dual.discrepancy[f] > 0 ? '+' : ''}${dual.discrepancy[f]}</div>
+          </div>`).join('')}
       </div>
     </div>`;
 }
 
-function initGrafico(scores) {
-  const ctx = document.getElementById('chartDISC');
+function makeChart(canvasId, data, windowKey, label) {
+  const ctx = document.getElementById(canvasId);
   if (!ctx) return;
-  if (window._chart) window._chart.destroy();
-
-  window._chart = new Chart(ctx, {
+  if (window[windowKey]) window[windowKey].destroy();
+  window[windowKey] = new Chart(ctx, {
     type: 'bar',
     data: {
       labels: FACTORES,
       datasets: [{
-        label: 'Score DISC',
-        data: FACTORES.map(f => scores[f]),
+        label,
+        data: FACTORES.map(f => data[f]),
         backgroundColor: FACTORES.map(f => CORES[f] + 'CC'),
         borderColor: FACTORES.map(f => CORES[f]),
-        borderWidth: 2,
-        borderRadius: 6,
-        barPercentage: 0.6
+        borderWidth: 2, borderRadius: 4, barPercentage: 0.65
       }]
     },
     options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: { display: false },
-        tooltip: {
-          callbacks: {
-            label: c => `Score: ${c.parsed.y > 0 ? '+' : ''}${c.parsed.y}`,
-            afterLabel: c => {
-              const f = FACTORES[c.dataIndex];
-              return classificarScore(scores[f]) + (Math.abs(scores[f]) > 8 ? '\n⚠️ Zona Cinzenta' : '');
-            }
-          }
-        }
-      },
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
       scales: {
-        y: {
-          min: -11, max: 11,
-          ticks: {
-            stepSize: 2,
-            callback: v => v === -10 ? '-10 (↓ Baixo)' : v === 0 ? '0 (Neutro)' : v === 10 ? '10 (↑ Alto)' : v
-          },
-          grid: {
-            color: c => c.tick.value === 0 ? '#333' : c.tick.value % 4 === 0 ? '#ddd' : '#eee'
-          }
-        }
+        y: { min: -11, max: 11, ticks: { stepSize: 5 },
+          grid: { color: c => c.tick.value === 0 ? '#333' : '#eee' } }
       }
-    },
-    plugins: [{
-      id: 'zoneLines',
-      afterDraw(chart) {
-        const yScale = chart.scales.y;
-        const c = chart.ctx;
-        [-8, 8].forEach(val => {
-          const y = yScale.getPixelForValue(val);
-          c.save();
-          c.setLineDash([5, 5]);
-          c.strokeStyle = val > 0 ? '#E74C3C' : '#2980B9';
-          c.lineWidth = 1.5;
-          c.beginPath();
-          c.moveTo(chart.chartArea.left, y);
-          c.lineTo(chart.chartArea.right, y);
-          c.stroke();
-          c.restore();
-        });
-      }
-    }]
+    }
   });
 }
+
+function initGraficosTriplos(dual) {
+  makeChart('chartNatural', dual.natural, '_chartNat', 'Natural');
+  makeChart('chartAdapted', dual.adapted, '_chartAdp', 'Adaptado');
+  makeChart('chartPressure', dual.discrepancy, '_chartPress', 'Pressão');
+}
 // --- devolutiva.js ---
-// ===== TEXTOS DEVOLUTIVA =====
+// ===== DEVOLUTIVA V2 — 12 SEÇÕES =====
+
+const ONTOLOGY_UI = {
+  D: { motivacao: 'Desafios, autonomia, resultados tangíveis e oportunidades de liderar.',
+       enfase: 'Posições com metas claras, decisões rápidas e autonomia para agir.',
+       comunicar_fazer: 'Seja direto, objetivo e focado em resultados.',
+       comunicar_evitar: 'Evite rodeios, burocracia excessiva e reuniões longas sem decisão.',
+       medo: 'Perder controle ou ser explorado por outros.' },
+  I: { motivacao: 'Reconhecimento, interação social, variedade e ambiente positivo.',
+       enfase: 'Funções com contato humano, criatividade e espaço para se expressar.',
+       comunicar_fazer: 'Seja aberto, entusiasta e reconheça contribuições.',
+       comunicar_evitar: 'Evite isolamento, críticas públicas e ambientes frios.',
+       medo: 'Rejeição social ou perda de influência.' },
+  S: { motivacao: 'Segurança, estabilidade, reconhecimento sincero e rotina previsível.',
+       enfase: 'Funções com processos claros, equipe estável e mudanças graduais.',
+       comunicar_fazer: 'Seja paciente, ofereça segurança e explique mudanças com antecedência.',
+       comunicar_evitar: 'Evite pressa, mudanças abruptas e tom agressivo.',
+       medo: 'Mudanças inesperadas e instabilidade.' },
+  C: { motivacao: 'Precisão, qualidade, expertise técnica e padrões bem definidos.',
+       enfase: 'Funções analíticas com tempo para análise e critérios objetivos.',
+       comunicar_fazer: 'Traga dados, seja específico e respeite padrões.',
+       comunicar_evitar: 'Evite generalizações, improviso e pressão por decisões sem dados.',
+       medo: 'Críticas à qualidade do trabalho ou erros públicos.' },
+};
+
 const TEXTOS = {
   descricao: {
-    D: { alto: 'Pessoas com D alto são diretas, orientadas a resultados, gostam de desafios e tomam decisões rápidas. Têm alta energia para superar obstáculos.', baixo: 'D baixo sugere perfil mais cooperativo, que prefere evitar confrontos e valoriza consenso em vez de competição direta.' },
-    I: { alto: 'Pessoas com I alto são comunicativas, entusiasmadas, gostam de interagir e influenciar pessoas. Trazem energia positiva aos grupos.', baixo: 'I baixo sugere perfil mais reservado, que prefere profundidade nas relações em vez de amplitude social.' },
-    S: { alto: 'Pessoas com S alto são estáveis, consistentes, leais e valorizam harmonia. Trazem segurança e confiabilidade às equipes.', baixo: 'S baixo sugere preferência por dinamismo, mudanças e variedade em vez de rotinas previsíveis.' },
-    C: { alto: 'Pessoas com C alto são analíticas, precisas, criteriosas e valorizam qualidade. Seguem padrões e buscam excelência técnica.', baixo: 'C baixo sugere perfil mais flexível com regras, que prefere autonomia e não se prende a procedimentos rígidos.' }
+    D: { alto: 'Perfil direto, orientado a resultados, com energia para superar obstáculos e tomar decisões rápidas.',
+         baixo: 'Perfil cooperativo que valoriza consenso e evita confrontos desnecessários.' },
+    I: { alto: 'Perfil comunicativo e entusiasmado, que energiza grupos e constrói conexões.',
+         baixo: 'Perfil mais reservado, com preferência por relações profundas em vez de amplitude social.' },
+    S: { alto: 'Perfil estável, leal e consistente, que traz segurança e harmonia às equipes.',
+         baixo: 'Perfil dinâmico que prefere variedade e mudanças a rotinas rígidas.' },
+    C: { alto: 'Perfil analítico e criterioso, orientado a qualidade, precisão e padrões elevados.',
+         baixo: 'Perfil flexível com regras, que prefere autonomia a procedimentos rígidos.' },
   },
   forcas: {
-    D: ['Capacidade de tomar decisões rápidas', 'Orientação a resultados e metas', 'Iniciativa e proatividade', 'Enfrenta desafios com determinação'],
-    I: ['Comunicação persuasiva e envolvente', 'Capacidade de motivar equipes', 'Criatividade e otimismo', 'Facilidade para networking'],
-    S: ['Confiabilidade e consistência', 'Paciência e capacidade de ouvir', 'Lealdade à equipe', 'Estabilidade em momentos de crise'],
-    C: ['Precisão e atenção aos detalhes', 'Pensamento analítico e crítico', 'Compromisso com qualidade', 'Seguimento de padrões e processos']
+    D: ['Decisões rápidas', 'Orientação a resultados', 'Iniciativa', 'Determinação'],
+    I: ['Comunicação persuasiva', 'Motivação de equipes', 'Criatividade', 'Networking'],
+    S: ['Confiabilidade', 'Paciência', 'Lealdade', 'Estabilidade em crises'],
+    C: ['Precisão analítica', 'Atenção a detalhes', 'Qualidade', 'Rigor técnico'],
   },
   atencao: {
-    D: ['Pode ser visto como autoritário ou impaciente', 'Risco de atropelar processos e pessoas', 'Dificuldade com burocracia e detalhes', 'Pode se frustrar com ritmos mais lentos'],
-    I: ['Pode ser visto como disperso ou superficial', 'Dificuldade com follow-through e prazos', 'Evita confrontos necessários', 'Pode ser excessivamente otimista'],
-    S: ['Resistência a mudanças necessárias', 'Dificuldade com decisões rápidas', 'Pode evitar conflitos importantes', 'Dificuldade em se posicionar'],
-    C: ['Paralisia por análise', 'Pode ser visto como crítico ou frio', 'Dificuldade com ambiguidade', 'Perfeccionismo pode atrasar entregas']
+    D: ['Pode parecer impaciente', 'Risco de atropelar processos', 'Dificuldade com detalhes', 'Frustração com ritmos lentos'],
+    I: ['Pode parecer disperso', 'Dificuldade com prazos', 'Evita confrontos', 'Otimismo excessivo'],
+    S: ['Resistência a mudanças', 'Hesitação em decisões rápidas', 'Evita conflitos', 'Dificuldade em se posicionar'],
+    C: ['Paralisia por análise', 'Pode parecer crítico', 'Dificuldade com ambiguidade', 'Perfeccionismo'],
   },
   comunicacao: {
-    D: 'Comunicação direta, objetiva e focada em resultados. Prefere mensagens claras sem rodeios.',
-    I: 'Comunicação expressiva, entusiasta e persuasiva. Valoriza troca de ideias e reconhecimento.',
-    S: 'Comunicação calma, acolhedora e consistente. Prefere diálogos harmoniosos e sem pressa.',
-    C: 'Comunicação técnica, precisa e fundamentada em dados. Valoriza argumentos lógicos e específicos.'
+    D: 'Comunicação direta e orientada a resultados.',
+    I: 'Comunicação expressiva, entusiasta e persuasiva.',
+    S: 'Comunicação calma, acolhedora e consistente.',
+    C: 'Comunicação técnica, precisa e fundamentada em dados.',
   },
   pressao: {
-    D: 'Sob pressão, tende a assumir o controle e buscar soluções rápidas. Risco de impaciência e decisões impulsivas.',
-    I: 'Sob pressão, busca apoio social e validação. Risco de dispersão se isolado ou sem reconhecimento.',
-    S: 'Sob pressão, tende a se retrair e buscar estabilidade. Risco de hesitação em decisões urgentes.',
-    C: 'Sob pressão, se aprofunda na análise. Risco de paralisia por excesso de informação.'
+    D: 'Assume controle e busca soluções rápidas. Risco de impulsividade.',
+    I: 'Busca apoio social. Risco de dispersão se isolado.',
+    S: 'Busca estabilidade. Risco de hesitação em urgências.',
+    C: 'Aprofunda análise. Risco de paralisia por excesso de informação.',
   },
   percepcao: {
-    D: 'Projeta confiança, determinação e objetividade. Pode ser percebido como assertivo ou, em excesso, autoritário.',
-    I: 'Percebido como carismático, entusiasta e comunicativo. Pode ser visto como energizador ou, em excesso, superficial.',
-    S: 'Transmite calma, confiabilidade e consistência. Pode ser visto como estável ou, em excesso, resistente a mudanças.',
-    C: 'Percebido como criterioso, preciso e analítico. Pode ser visto como competente ou, em excesso, excessivamente crítico.'
+    D: 'Projeta confiança e objetividade. Pode ser visto como assertivo ou autoritário.',
+    I: 'Percebido como carismático e comunicativo. Pode parecer superficial em excesso.',
+    S: 'Transmite calma e confiabilidade. Pode parecer resistente a mudanças.',
+    C: 'Percebido como criterioso e competente. Pode parecer excessivamente crítico.',
   },
   recomendacoes: {
-    D: ['Pratique escuta ativa antes de decidir', 'Valorize contribuições de perfis mais analíticos', 'Faça pausas para reflexão', 'Delegue mais e confie na equipe'],
-    I: ['Equilibre entusiasmo com disciplina de prazos', 'Documente acordos e decisões', 'Desenvolva resiliência a críticas', 'Aprofunde temas antes de compartilhar'],
-    S: ['Comunique-se abertamente sobre mudanças', 'Pratique sair da zona de conforto gradualmente', 'Desenvolva assertividade', 'Compartilhe suas opiniões mais cedo'],
-    C: ['Equilibre análise com ação', 'Aceite que informação parcial é ok para começar', 'Pratique decisões com prazos curtos', 'Compartilhe conhecimento com a equipe']
+    D: ['Pratique escuta ativa', 'Valorize perfis analíticos', 'Faça pausas antes de decidir', 'Delegue mais'],
+    I: ['Equilibre entusiasmo com prazos', 'Documente acordos', 'Desenvolva resiliência a críticas', 'Aprofunde antes de compartilhar'],
+    S: ['Comunique mudanças abertamente', 'Saia da zona de conforto gradualmente', 'Desenvolva assertividade', 'Posicione-se mais cedo'],
+    C: ['Equilibre análise com ação', 'Aceite informação parcial', 'Pratique decisões com prazo', 'Compartilhe conhecimento'],
   },
   equipe: {
-    D: ['Direcionamento e foco em resultados', 'Capacidade de tomar decisões difíceis', 'Energia para superar obstáculos', 'Visão estratégica e ambição'],
-    I: ['Energia positiva e motivação', 'Criatividade e geração de ideias', 'Conexão e networking', 'Comunicação e engajamento'],
-    S: ['Estabilidade e confiabilidade', 'Apoio e suporte à equipe', 'Memória institucional e consistência', 'Harmonia e cooperação'],
-    C: ['Análise crítica e qualidade', 'Precisão e atenção a detalhes', 'Padrões elevados de excelência', 'Rigor técnico e metodologia']
-  }
+    D: ['Direcionamento e resultados', 'Decisões difíceis', 'Energia para obstáculos', 'Visão estratégica'],
+    I: ['Motivação e energia', 'Ideias criativas', 'Networking', 'Engajamento'],
+    S: ['Estabilidade', 'Suporte à equipe', 'Consistência', 'Harmonia'],
+    C: ['Análise crítica', 'Qualidade', 'Padrões elevados', 'Rigor técnico'],
+  },
 };
 
 const blendDescriptions = {
-  D: 'Foco em resultados e ação direta',
-  I: 'Foco em pessoas e comunicação',
-  S: 'Foco em estabilidade e harmonia',
-  C: 'Foco em qualidade e análise',
-  DI: 'Ação combinada com influência — orientado a resultados através de pessoas',
-  ID: 'Influência combinada com ação — comunicação direcionada a metas',
-  DS: 'Determinação equilibrada com estabilidade',
-  SD: 'Estabilidade com capacidade de ação',
-  DC: 'Ação com critério — resultados com qualidade',
-  CD: 'Critério com ação — qualidade orientada a resultados',
-  IS: 'Influência com estabilidade — comunicação acolhedora',
-  SI: 'Estabilidade com influência — conexão consistente',
-  SC: 'Estabilidade com critério — análise consistente',
-  CS: 'Critério com estabilidade — qualidade consistente',
-  IC: 'Influência com critério — comunicação analítica',
-  CI: 'Critério com influência — análise comunicativa'
+  D: 'Foco em resultados e ação', I: 'Foco em pessoas e comunicação',
+  S: 'Foco em estabilidade e harmonia', C: 'Foco em qualidade e análise',
+  DI: 'Resultados através de influência', ID: 'Comunicação direcionada a metas',
+  DS: 'Determinação com estabilidade', SD: 'Estabilidade com ação',
+  DC: 'Resultados com critério', CD: 'Qualidade orientada a resultados',
+  IS: 'Influência acolhedora', SI: 'Conexão consistente',
+  SC: 'Análise consistente', CS: 'Qualidade estável',
+  IC: 'Comunicação analítica', CI: 'Análise comunicativa',
 };
 
 function getTextoPorScore(f, score) {
   return score > 0 ? TEXTOS.descricao[f].alto : TEXTOS.descricao[f].baixo;
 }
 
-function capitalizar(s) {
-  return s.charAt(0).toUpperCase() + s.slice(1);
-}
+function capitalizar(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
 
-/** Seleciona palavras descritivas por fator e intensidade (corrigido) */
 function palavrasPorFator(f, score) {
   const pdf = (PALAVRAS_PDF && PALAVRAS_PDF[f]) || [];
   const fb = PALAVRAS_FALLBACK[f];
   const intensidade = score > 5 ? 'alto' : score > 0 ? 'medio' : 'baixo';
   const qtd = score > 5 ? 4 : score > 0 ? 3 : 2;
-  const fromPdf = pdf
-    .filter(w => !w.startsWith('não ') && w.length > 2)
-    .slice(0, qtd)
-    .map(capitalizar);
+  const fromPdf = pdf.filter(w => !w.startsWith('não ')).slice(0, qtd).map(capitalizar);
   const fromFb = (fb[intensidade] || []).slice(0, qtd);
   return [...new Set([...fromPdf, ...fromFb])].slice(0, qtd);
 }
 
 function gerarDescritivo(scores, sorted) {
   const palavras = [];
-  sorted.forEach(f => {
-    palavras.push(...palavrasPorFator(f, scores[f]));
-  });
-  const unicas = [...new Set(palavras)].slice(0, 12);
-  return `
-    <div class="bg-white rounded-2xl shadow-sm p-5 sm:p-8 mb-6 fade-in">
-      <h3 class="text-lg font-bold mb-4">🏷️ Palavras Descritivas</h3>
-      <p class="text-xs text-gray-400 mb-3">Baseado em padrões identificados em 66 perfis profissionais DISC</p>
-      <div class="flex flex-wrap gap-2">
-        ${unicas.map(p => `<span class="px-3 py-1.5 bg-gray-100 rounded-full text-sm font-medium">${p}</span>`).join('')}
-      </div>
-    </div>`;
+  sorted.forEach(f => palavras.push(...palavrasPorFator(f, scores[f])));
+  return `<div class="card bg-white dark:bg-gray-900 rounded-2xl shadow-sm p-5 sm:p-8 mb-6 fade-in">
+    <h3 class="text-lg font-bold mb-4">4. Palavras Descritivas</h3>
+    <div class="flex flex-wrap gap-2">${[...new Set(palavras)].slice(0, 12).map(p =>
+      `<span class="px-3 py-1.5 bg-gray-100 dark:bg-gray-800 rounded-full text-sm font-medium">${p}</span>`).join('')}</div>
+  </div>`;
 }
 
-function gerarSecaoMultiFator(titulo, scores, fonteTextos) {
+function gerarSecaoMultiFator(titulo, num, scores, fonte) {
   const fatores = getFatoresPonderados(scores);
   const blocos = fatores.map(f => `
-    <div class="mb-3 ${fatores.length > 1 ? 'pl-3 border-l-4' : ''}" style="${fatores.length > 1 ? 'border-color:' + CORES[f] : ''}">
-      ${fatores.length > 1 ? `<span class="text-xs font-bold uppercase" style="color:${CORES[f]}">Fator ${f}</span>` : ''}
-      <p class="text-gray-600 leading-relaxed ${fatores.length > 1 ? 'mt-1' : ''}">${fonteTextos[f]}</p>
+    <div class="mb-3 ${fatores.length > 1 ? 'pl-3 border-l-4' : ''}" style="${fatores.length > 1 ? 'border-color:'+CORES[f] : ''}">
+      ${fatores.length > 1 ? `<span class="text-xs font-bold" style="color:${CORES[f]}">${f}</span>` : ''}
+      <p class="text-gray-600 dark:text-gray-300 text-sm mt-1">${fonte[f]}</p>
     </div>`).join('');
-  return `
-    <div class="bg-white rounded-2xl shadow-sm p-5 sm:p-8 mb-6 fade-in">
-      <h3 class="text-lg font-bold mb-4">${titulo}</h3>
-      ${blocos}
-    </div>`;
+  return `<div class="card bg-white dark:bg-gray-900 rounded-2xl shadow-sm p-5 sm:p-8 mb-6 fade-in">
+    <h3 class="text-lg font-bold mb-4">${num}. ${titulo}</h3>${blocos}</div>`;
+}
+
+function gerarMotivacao(perfil) {
+  const f = perfil.primario;
+  const o = ONTOLOGY_UI[f];
+  return `<div class="card bg-white dark:bg-gray-900 rounded-2xl shadow-sm p-5 sm:p-8 mb-6 fade-in">
+    <h3 class="text-lg font-bold mb-4">5. Auto Motivação</h3>
+    <p class="text-gray-600 dark:text-gray-300">${o.motivacao}</p>
+    <p class="text-sm text-gray-400 mt-2">Medo fundamental: ${o.medo}</p>
+  </div>`;
+}
+
+function gerarEnfaseTrabalho(perfil) {
+  const o = ONTOLOGY_UI[perfil.primario];
+  return `<div class="card bg-white dark:bg-gray-900 rounded-2xl shadow-sm p-5 sm:p-8 mb-6 fade-in">
+    <h3 class="text-lg font-bold mb-4">6. Ênfase no Trabalho</h3>
+    <p class="text-gray-600 dark:text-gray-300">${o.enfase}</p>
+  </div>`;
+}
+
+function gerarComunicacaoGuia(perfil) {
+  const f = perfil.primario;
+  const o = ONTOLOGY_UI[f];
+  return `<div class="card bg-white dark:bg-gray-900 rounded-2xl shadow-sm p-5 sm:p-8 mb-6 fade-in">
+    <h3 class="text-lg font-bold mb-4">9. Guia de Comunicação</h3>
+    <p class="text-sm mb-2"><strong class="text-green-600">Faça:</strong> ${o.comunicar_fazer}</p>
+    <p class="text-sm"><strong class="text-red-600">Evite:</strong> ${o.comunicar_evitar}</p>
+  </div>`;
+}
+
+function gerarDiscrepancia(dual) {
+  const alertas = analisarDiscrepancia(dual);
+  if (!alertas.length) return `<div class="card bg-white dark:bg-gray-900 rounded-2xl shadow-sm p-5 sm:p-8 mb-6 fade-in">
+    <h3 class="text-lg font-bold mb-4">10. Análise de Discrepância (Natural vs Adaptado)</h3>
+    <p class="text-gray-600 text-sm">Seu comportamento natural e adaptado estão alinhados. O ambiente parece compatível com seu perfil.</p>
+  </div>`;
+  return `<div class="card bg-white dark:bg-gray-900 rounded-2xl shadow-sm p-5 sm:p-8 mb-6 border-2 border-amber-200 fade-in">
+    <h3 class="text-lg font-bold mb-4">10. Análise de Discrepância (Natural vs Adaptado)</h3>
+    ${alertas.map(a => `<div class="p-3 mb-2 rounded-lg bg-amber-50 dark:bg-amber-900/20 text-sm">${a.texto}</div>`).join('')}
+  </div>`;
+}
+
+function gerarInferenciaAPI(apiResult) {
+  if (!apiResult) return '';
+  return `<div class="card bg-white dark:bg-gray-900 rounded-2xl shadow-sm p-5 sm:p-8 mb-6 border-l-4 border-blue-500 fade-in">
+    <h3 class="text-lg font-bold mb-4">12. Interpretação Avançada</h3>
+    <p class="text-gray-700 dark:text-gray-200 font-medium">${apiResult.interpretation}</p>
+    ${apiResult.matched_rules?.length ? `<p class="text-xs text-gray-400 mt-2">Regras: ${apiResult.matched_rules.join(', ')}</p>` : ''}
+    ${apiResult.share_hash ? `<button onclick="copiarLink('${apiResult.share_hash}')" class="mt-3 text-sm text-blue-600 underline">Copiar link para compartilhar</button>` : ''}
+  </div>`;
+}
+
+function gerarListaSecao(titulo, num, scores, fonte) {
+  const itens = [];
+  getFatoresAtivos(scores, 0).forEach(f => { if (fonte[f]) itens.push(...fonte[f]); });
+  return `<div class="card bg-white dark:bg-gray-900 rounded-2xl shadow-sm p-5 sm:p-8 mb-6 fade-in">
+    <h3 class="text-lg font-bold mb-4">${num}. ${titulo}</h3>
+    <ul class="space-y-2">${itens.slice(0, 8).map(i =>
+      `<li class="flex gap-2 text-sm text-gray-600 dark:text-gray-300"><span class="text-green-500">✓</span>${i}</li>`).join('')}</ul>
+  </div>`;
 }
 
 function gerarSecaoPerfil(perfil, scores) {
-  const { primario, secundario, blend } = perfil;
-  const desc = TEXTOS.descricao[primario];
-  const descTexto = scores[primario] > 0 ? desc.alto : desc.baixo;
-  return `
-    <div class="bg-white rounded-2xl shadow-sm p-5 sm:p-8 mb-6 fade-in">
-      <h3 class="text-lg font-bold mb-4">📋 Visão Geral do Perfil</h3>
-      <div class="flex items-center gap-3 mb-4 flex-wrap">
-        <span class="px-4 py-1.5 rounded-full text-white font-bold text-sm" style="background:${CORES[primario]}">${blend}</span>
-        <span class="text-gray-600">${blendDescriptions[blend] || 'Perfil combinado'}</span>
-      </div>
-      <p class="text-gray-600 leading-relaxed">${descTexto}</p>
-      ${secundario && scores[secundario] > 0 ? `
-        <div class="mt-4 p-4 bg-gray-50 rounded-xl">
-          <p class="text-sm"><strong>Influência secundária de ${secundario}:</strong> ${getTextoPorScore(secundario, scores[secundario])}</p>
-        </div>` : ''}
-    </div>`;
-}
-
-function gerarListaSecao(titulo, scores, fonte) {
-  const itens = [];
-  getFatoresAtivos(scores, 0).forEach(f => {
-    if (fonte[f]) itens.push(...fonte[f]);
-  });
-  return `
-    <div class="bg-white rounded-2xl shadow-sm p-5 sm:p-8 mb-6 fade-in">
-      <h3 class="text-lg font-bold mb-4">${titulo}</h3>
-      <ul class="space-y-2">
-        ${itens.slice(0, 8).map(i => `<li class="flex items-start gap-2"><span class="text-green-500 mt-1">✓</span><span class="text-gray-600 text-sm">${i}</span></li>`).join('')}
-      </ul>
-    </div>`;
+  const desc = getTextoPorScore(perfil.primario, scores[perfil.primario]);
+  return `<div class="card bg-white dark:bg-gray-900 rounded-2xl shadow-sm p-5 sm:p-8 mb-6 fade-in">
+    <h3 class="text-lg font-bold mb-4">3. Visão Geral do Perfil</h3>
+    <div class="flex items-center gap-3 mb-4 flex-wrap">
+      <span class="px-4 py-1.5 rounded-full text-white font-bold text-sm" style="background:${CORES[perfil.primario]}">${perfil.blend}</span>
+      <span class="text-gray-600 dark:text-gray-300">${blendDescriptions[perfil.blend] || 'Perfil combinado'}</span>
+    </div>
+    <p class="text-gray-600 dark:text-gray-300">${desc}</p>
+  </div>`;
 }
 
 function gerarSecaoZona(scores) {
-  const naZona = FACTORES.filter(f => Math.abs(scores[f]) > 8);
+  const naZona = FACTORES.filter(f => Math.abs(scores[f]) > ZONA_CINZENTA);
   if (!naZona.length) return '';
-  return `
-    <div class="bg-white rounded-2xl shadow-sm p-5 sm:p-8 mb-6 border-2 border-red-200 fade-in">
-      <h3 class="text-lg font-bold mb-4">⚠️ Zona Cinzenta — Linha de Ênfase</h3>
-      <p class="text-gray-600 text-sm mb-4">Fatores com |score| > 8 estão na zona cinzenta. São traços muito pronunciados — grandes forças que podem exigir moderação para evitar excessos.</p>
-      ${naZona.map(f => `
-        <div class="p-4 rounded-xl mb-3" style="background:${CORES[f]}15;border-left:4px solid ${CORES[f]}">
-          <strong style="color:${CORES[f]}">Fator ${f} (${scores[f] > 0 ? '+' : ''}${scores[f]}):</strong>
-          <p class="text-sm text-gray-600 mt-1">${scores[f] > 0 ? 'Intensidade muito elevada. Grande força que pede atenção para não se tornar excesso.' : 'Intensidade muito baixa. Pode indicar área que requer desenvolvimento consciente.'}</p>
-        </div>`).join('')}
-    </div>`;
-}
-
-function gerarSecaoSI(scores) {
-  const sScore = scores.S;
-  const iScore = scores.I;
-  const outrosMedio = FACTORES.filter(f => f !== 'S' && f !== 'I')
-    .reduce((acc, f) => acc + Math.abs(scores[f]), 0) / 2;
-
-  let interpretacao = '';
-  if (Math.abs(sScore) < 2 && outrosMedio > 4) {
-    interpretacao += '⚠️ Seu fator S (Estabilidade) está próximo do neutro enquanto outros fatores têm intensidade maior. Isso pode indicar desconforto com falta de estabilidade ou ritmo inadequado.<br><br>';
-  }
-  if (Math.abs(iScore) < 2 && outrosMedio > 4) {
-    interpretacao += '⚠️ Seu fator I (Influência) está próximo do neutro enquanto outros fatores têm intensidade maior. Isso pode indicar frustração na expressão social ou dificuldade em exercer influência.<br><br>';
-  }
-  if (Math.abs(sScore) >= 5) {
-    interpretacao += `✓ Fator S (${sScore > 0 ? '+' : ''}${sScore}): ${sScore > 0 ? 'forte necessidade de estabilidade e consistência' : 'preferência por dinamismo e variedade'}.`;
-  }
-  if (Math.abs(iScore) >= 5) {
-    interpretacao += `<br>✓ Fator I (${iScore > 0 ? '+' : ''}${iScore}): ${iScore > 0 ? 'forte orientação social e comunicativa' : 'preferência por interações mais reservadas'}.`;
-  }
-  if (!interpretacao) {
-    interpretacao = 'Seus fatores S e I estão alinhados com os demais, sem indicadores significativos de frustração ou desconforto.';
-  }
-
-  return `
-    <div class="bg-white rounded-2xl shadow-sm p-5 sm:p-8 mb-6 fade-in">
-      <h3 class="text-lg font-bold mb-4">📊 Análise Comparativa — Fatores S e I</h3>
-      <p class="text-gray-600 text-sm leading-relaxed">${interpretacao}</p>
-    </div>`;
+  return `<div class="card bg-white dark:bg-gray-900 rounded-2xl shadow-sm p-5 sm:p-8 mb-6 border-2 border-red-200 fade-in">
+    <h3 class="text-lg font-bold mb-4">11. Zona Cinzenta</h3>
+    ${naZona.map(f => `<div class="p-3 mb-2 rounded-xl" style="background:${CORES[f]}15;border-left:4px solid ${CORES[f]}">
+      <strong style="color:${CORES[f]}">${f} (${scores[f] > 0 ? '+' : ''}${scores[f]})</strong>
+      <p class="text-sm text-gray-600 mt-1">${scores[f] > 0 ? 'Traço muito pronunciado — moderação recomendada.' : 'Traço muito baixo — área de desenvolvimento.'}</p>
+    </div>`).join('')}
+  </div>`;
 }
 
 function gerarDisclaimer() {
-  return `
-    <div class="text-center text-xs text-gray-400 mt-8 pt-4 border-t space-y-2">
-      <p><strong>Instrumento de autoconhecimento comportamental</strong> inspirado no modelo DISC (Dominância, Influência, Estabilidade, Conformidade).</p>
-      <p>Este teste <strong>não substitui</strong> avaliação psicológica, psicométrica ou de RH conduzida por profissional habilitado. Resultados são indicativos, contextuais e baseados em autorrelato.</p>
-      <p>Não possui normas populacionais validadas. Versão do instrumento: ${INSTRUMENT_VERSION}</p>
-    </div>`;
+  return `<div class="text-center text-xs text-gray-400 mt-8 pt-4 border-t space-y-1">
+    <p>Instrumento de autoconhecimento DISC v${INSTRUMENT_VERSION}. Não substitui avaliação psicológica profissional.</p>
+    <p>Normas populacionais em coleta — resultados indicativos baseados em autorrelato.</p>
+  </div>`;
 }
 
-// ===== RENDERIZAR RESULTADO =====
-function calcularERenderizar(nome) {
-  const scores = calcularScoresFromState();
-  const perfil = determinarPerfil(scores);
+async function calcularERenderizar(nome, dualPrecomputed, apiPrecomputed) {
+  const dual = dualPrecomputed || calcularScoresDual();
+  const perfilNat = determinarPerfil(dual.natural);
+  const perfilAdp = determinarPerfil(dual.adapted);
   const hoje = new Date().toLocaleDateString('pt-BR');
+
+  let apiResult = apiPrecomputed;
+  if (!apiResult) {
+    apiResult = await inferirViaAPI(dual);
+    salvarResultadoAnonimo(dual, perfilNat);
+  }
 
   document.getElementById('resultadoContainer').innerHTML = `
     <div id="printArea">
       <div class="text-center mb-8">
         <h2 class="text-2xl font-bold">Perfil Comportamental DISC</h2>
         <p class="text-gray-500 mt-1">${nome} · ${hoje}</p>
-        <div class="inline-block bg-[#1a1a2e] text-white px-5 py-2 rounded-full text-sm font-bold mt-3">Perfil Principal: ${perfil.blend}</div>
+        <div class="flex flex-wrap justify-center gap-2 mt-3">
+          <span class="bg-green-700 text-white px-4 py-1.5 rounded-full text-sm font-bold">Natural: ${perfilNat.blend}</span>
+          <span class="bg-blue-700 text-white px-4 py-1.5 rounded-full text-sm font-bold">Adaptado: ${perfilAdp.blend}</span>
+        </div>
       </div>
-
-      ${gerarGrafico(nome, scores, perfil)}
-      ${gerarSecaoPerfil(perfil, scores)}
-      ${gerarDescritivo(scores, perfil.sorted)}
-      ${gerarListaSecao('Forças / Pontos Fortes', scores, TEXTOS.forcas)}
-      ${gerarSecaoMultiFator('💬 Estilo de Comunicação', scores, TEXTOS.comunicacao)}
-      ${gerarListaSecao('Pontos de Atenção / Áreas de Desenvolvimento', scores, TEXTOS.atencao)}
-      ${gerarListaSecao('Recomendações Práticas', scores, TEXTOS.recomendacoes)}
-      ${gerarSecaoMultiFator('🔥 Comportamento sob Pressão', scores, TEXTOS.pressao)}
-      ${gerarSecaoMultiFator('👀 Como os Outros Veem Você', scores, TEXTOS.percepcao)}
-      ${gerarListaSecao('O que você traz para a equipe', scores, TEXTOS.equipe)}
-      ${gerarSecaoZona(scores)}
-      ${gerarSecaoSI(scores)}
+      ${gerarGraficosTriplos(dual)}
+      ${gerarSecaoPerfil(perfilNat, dual.natural)}
+      ${gerarDescritivo(dual.natural, perfilNat.sorted)}
+      ${gerarMotivacao(perfilNat)}
+      ${gerarEnfaseTrabalho(perfilNat)}
+      ${gerarListaSecao('Forças / Pontos Fortes', 7, dual.natural, TEXTOS.forcas)}
+      ${gerarListaSecao('Pontos de Atenção', 8, dual.natural, TEXTOS.atencao)}
+      ${gerarComunicacaoGuia(perfilNat)}
+      ${gerarSecaoMultiFator('Comportamento sob Pressão', 10, dual.adapted, TEXTOS.pressao)}
+      ${gerarDiscrepancia(dual)}
+      ${gerarSecaoZona(dual.natural)}
+      ${gerarListaSecao('Recomendações Práticas', 11, dual.natural, TEXTOS.recomendacoes)}
+      ${gerarInferenciaAPI(apiResult)}
       ${gerarDisclaimer()}
-
       <div class="flex flex-wrap justify-center gap-3 mt-8 no-print">
-        <button onclick="window.print()" class="bg-[#1a1a2e] text-white px-6 py-2.5 rounded-full font-semibold shadow hover:shadow-lg transition-all btn-scale">🖨️ Imprimir / Salvar PDF</button>
-        <button onclick="refazer()" class="bg-gray-200 text-gray-700 px-6 py-2.5 rounded-full font-semibold hover:bg-gray-300 transition-all btn-scale">Refazer Teste</button>
+        <button onclick="exportarPDF()" class="bg-[#1a1a2e] text-white px-6 py-2.5 rounded-full font-semibold">PDF / Imprimir</button>
+        <button onclick="toggleDarkMode()" class="bg-gray-200 px-6 py-2.5 rounded-full font-semibold">Modo Escuro</button>
+        ${apiResult?.share_hash ? `<button onclick="copiarLink('${apiResult.share_hash}')" class="bg-blue-600 text-white px-6 py-2.5 rounded-full font-semibold">Compartilhar</button>` : ''}
+        <button onclick="refazer()" class="bg-gray-200 px-6 py-2.5 rounded-full font-semibold">Refazer</button>
       </div>
     </div>`;
 
   document.getElementById('resultado').style.display = 'block';
   window.scrollTo({ top: 0, behavior: 'smooth' });
-  setTimeout(() => initGrafico(scores), 100);
+  setTimeout(() => initGraficosTriplos(dual), 100);
 }
+// --- features.js ---
+// ===== FEATURES: Dark mode, Share, PDF, PWA =====
+
+function initDarkMode() {
+  const saved = localStorage.getItem('disc-theme');
+  if (saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+    document.documentElement.classList.add('dark');
+  }
+}
+
+function toggleDarkMode() {
+  document.documentElement.classList.toggle('dark');
+  localStorage.setItem('disc-theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
+}
+
+async function salvarResultadoAnonimo(dual, perfil) {
+  if (!API_BASE) return;
+  try {
+    await fetch(`${API_BASE}/responses`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        session_id: state.sessionId,
+        instrument_version: INSTRUMENT_VERSION,
+        natural: dual.natural,
+        adapted: dual.adapted,
+        blend: perfil.blend,
+      }),
+    });
+  } catch (_) { /* offline ok */ }
+}
+
+async function inferirViaAPI(dual) {
+  if (!API_BASE) return null;
+  try {
+    const resp = await fetch(`${API_BASE}/infer`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ natural: dual.natural, adapted: dual.adapted, share: true }),
+    });
+    if (!resp.ok) return null;
+    return await resp.json();
+  } catch (_) { return null; }
+}
+
+function gerarLinkCompartilhamento(hash) {
+  if (!hash) return '';
+  const url = `${window.location.origin}${window.location.pathname}?r=${hash}`;
+  return url;
+}
+
+async function copiarLink(hash) {
+  const url = gerarLinkCompartilhamento(hash);
+  if (!url) { alert('Link não disponível (modo offline).'); return; }
+  try {
+    await navigator.clipboard.writeText(url);
+    alert('Link copiado para a área de transferência!');
+  } catch (_) {
+    prompt('Copie o link:', url);
+  }
+}
+
+function exportarPDF() {
+  window.print();
+}
+
+async function carregarResultadoCompartilhado() {
+  const params = new URLSearchParams(window.location.search);
+  const hash = params.get('r');
+  if (!hash || !API_BASE) return false;
+  try {
+    const resp = await fetch(`${API_BASE}/result/${hash}`);
+    if (!resp.ok) return false;
+    const data = await resp.json();
+    const dual = { natural: data.natural, adapted: data.adapted,
+      discrepancy: {}, pressure: {} };
+    FACTORES.forEach(f => {
+      dual.discrepancy[f] = Math.round((data.adapted[f] - data.natural[f]) * 10) / 10;
+      dual.pressure[f] = dual.discrepancy[f];
+    });
+    document.getElementById('home').style.display = 'none';
+    calcularERenderizar(data.name || 'Resultado Compartilhado', dual, data);
+    return true;
+  } catch (_) { return false; }
+}
+
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js').catch(() => {});
+  });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  initDarkMode();
+  carregarResultadoCompartilhado();
+});
 // --- app.js ---
 // ===== STATE =====
 const state = {
   passo: 0,
+  bloco: 'natural',
   most: {},
   least: {},
-  shuffled: []
+  shuffled: [],
+  sessionId: crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(36),
 };
 
-// ===== SHUFFLE =====
 function shuffleArray(a) {
   for (let i = a.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -794,18 +943,27 @@ function shuffleArray(a) {
   return a;
 }
 
-function shufflePerguntas() {
-  state.shuffled = shuffleArray([...PERGUNTAS]);
-  state.shuffled.forEach(q => {
-    q._shuffled = shuffleArray([...q.opts]);
+function perguntasDoBloco(bloco) {
+  const src = bloco === 'natural' ? PERGUNTAS_NATURAL : PERGUNTAS_ADAPTADO;
+  return shuffleArray([...src]).map(q => {
+    const copy = { ...q, opts: [...q.opts], _shuffled: shuffleArray([...q.opts]) };
+    return copy;
   });
 }
 
-// ===== INICIAR =====
+function shufflePerguntas() {
+  state.shuffled = [...perguntasDoBloco('natural'), ...perguntasDoBloco('adaptado')];
+}
+
+function questoesAtivas() {
+  return state.shuffled.filter(q => q.bloco === state.bloco);
+}
+
 function iniciar() {
   document.getElementById('home').style.display = 'none';
   document.getElementById('quiz').style.display = 'block';
   state.passo = 0;
+  state.bloco = 'natural';
   state.most = {};
   state.least = {};
   shufflePerguntas();
@@ -813,29 +971,35 @@ function iniciar() {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-// ===== QUIZ UI =====
 function mostrarPergunta() {
-  const total = state.shuffled.length;
+  const ativas = questoesAtivas();
   const idx = state.passo;
-  if (idx >= total) { mostrarFormNome(); return; }
+  if (idx >= ativas.length) {
+    if (state.bloco === 'natural') { mostrarPausaBloco(); return; }
+    mostrarFormNome();
+    return;
+  }
 
-  const q = state.shuffled[idx];
-  document.getElementById('progressText').textContent = `${idx + 1} de ${total}`;
-  document.getElementById('progressBar').style.width = `${(idx / total) * 100}%`;
+  const q = ativas[idx];
+  const blocoLabel = state.bloco === 'natural' ? 'Perfil Natural' : 'Perfil Adaptado (Trabalho)';
+  const totalGeral = TOTAL_POR_BLOCO * 2;
+  const offset = state.bloco === 'natural' ? 0 : TOTAL_POR_BLOCO;
+  const globalIdx = offset + idx;
+
+  document.getElementById('progressText').textContent = `${globalIdx + 1} de ${totalGeral}`;
+  document.getElementById('progressBar').style.width = `${(globalIdx / totalGeral) * 100}%`;
+  document.getElementById('blocoLabel').textContent = blocoLabel;
 
   const container = document.getElementById('quizContainer');
   const optLetters = ['A', 'B', 'C', 'D'];
-  const validacao = validarRespostaQuestao(q.id);
-  const alertHtml = !validacao.ok && (state.most[q.id] !== undefined || state.least[q.id] !== undefined)
-    ? `<div class="text-amber-600 text-sm mb-3 bg-amber-50 p-3 rounded-lg">${validacao.msg}</div>` : '';
 
   let optsHtml = q._shuffled.map((opt, oi) => {
     const isMost = state.most[q.id] === oi;
     const isLeast = state.least[q.id] === oi;
-    return `<div class="opt-card bg-gray-50 rounded-xl p-3 sm:p-4 mb-2 ${isMost ? 'most' : ''} ${isLeast ? 'least' : ''}">
+    return `<div class="opt-card bg-gray-50 dark:bg-gray-800 rounded-xl p-3 sm:p-4 mb-2 ${isMost ? 'most' : ''} ${isLeast ? 'least' : ''}">
       <div class="flex items-center gap-3">
-        <span class="w-7 h-7 rounded-full bg-gray-200 flex items-center justify-center text-xs font-bold flex-shrink-0">${optLetters[oi]}</span>
-        <span class="text-sm text-gray-700">${opt.t}</span>
+        <span class="w-7 h-7 rounded-full bg-gray-200 dark:bg-gray-600 flex items-center justify-center text-xs font-bold flex-shrink-0">${optLetters[oi]}</span>
+        <span class="text-sm text-gray-700 dark:text-gray-200">${opt.t}</span>
       </div>
       <div class="flex gap-2 mt-2 ml-10">
         <button class="btn-most text-xs font-semibold px-3 py-1 rounded-full ${isMost ? 'bg-[#1a1a2e] text-white' : 'bg-gray-200 text-gray-500'} transition-all" data-q="${q.id}" data-idx="${oi}">+ Mais</button>
@@ -844,21 +1008,24 @@ function mostrarPergunta() {
     </div>`;
   }).join('');
 
+  const instrucao = state.bloco === 'natural'
+    ? 'Responda como você <strong>naturalmente é</strong> na maioria das situações:'
+    : 'Responda como você <strong>age no seu ambiente de trabalho atual</strong>:';
+
   container.innerHTML = `
-    <div class="bg-white rounded-2xl shadow-sm p-5 sm:p-8 fade-in">
-      <div class="flex items-center gap-2 mb-4">
-        <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">${q.tema}</span>
-        <span class="text-gray-300">·</span>
-        <span class="text-xs text-gray-400">Questão ${idx + 1} de ${total}</span>
+    <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-sm p-5 sm:p-8 fade-in card">
+      <div class="flex items-center gap-2 mb-4 flex-wrap">
+        <span class="text-xs font-bold uppercase tracking-wider px-2 py-1 rounded-full ${state.bloco === 'natural' ? 'bg-green-100 text-green-800' : 'bg-blue-100 text-blue-800'}">${blocoLabel}</span>
+        <span class="text-xs text-gray-400">${q.tema} · ${idx + 1}/${TOTAL_POR_BLOCO}</span>
       </div>
-      <p class="text-base sm:text-lg font-semibold mb-5 leading-relaxed">Escolha uma opção para <strong>MAIS</strong> e uma para <strong>MENOS</strong> se parece com você:</p>
-      ${alertHtml}
+      <p class="text-base sm:text-lg font-semibold mb-5 leading-relaxed">${instrucao}</p>
+      <p class="text-sm text-gray-500 mb-4">Escolha uma opção <strong>MAIS</strong> e uma <strong>MENOS</strong> parecida com você.</p>
       ${optsHtml}
     </div>
     <div class="flex justify-center gap-3 mt-4">
       ${idx > 0 ? '<button onclick="voltar()" class="bg-gray-200 text-gray-700 px-6 py-2.5 rounded-full font-semibold hover:bg-gray-300 transition-all">Voltar</button>' : ''}
-      <button onclick="avancar()" class="bg-[#1a1a2e] text-white px-8 py-2.5 rounded-full font-semibold shadow hover:shadow-lg transition-all" id="btnAvancar">
-        ${idx < total - 1 ? 'Próxima →' : 'Ver Resultado →'}
+      <button onclick="avancar()" class="bg-[#1a1a2e] text-white px-8 py-2.5 rounded-full font-semibold shadow hover:shadow-lg transition-all">
+        ${idx < ativas.length - 1 ? 'Próxima →' : (state.bloco === 'natural' ? 'Continuar →' : 'Ver Resultado →')}
       </button>
     </div>`;
 
@@ -866,9 +1033,9 @@ function mostrarPergunta() {
     btn.onclick = function(e) {
       e.stopPropagation();
       const qid = this.dataset.q;
-      const idx = parseInt(this.dataset.idx);
-      if (state.least[qid] === idx) state.least[qid] = -1;
-      state.most[qid] = state.most[qid] === idx ? -1 : idx;
+      const i = parseInt(this.dataset.idx);
+      if (state.least[qid] === i) state.least[qid] = -1;
+      state.most[qid] = state.most[qid] === i ? -1 : i;
       mostrarPergunta();
     };
   });
@@ -876,12 +1043,26 @@ function mostrarPergunta() {
     btn.onclick = function(e) {
       e.stopPropagation();
       const qid = this.dataset.q;
-      const idx = parseInt(this.dataset.idx);
-      if (state.most[qid] === idx) state.most[qid] = -1;
-      state.least[qid] = state.least[qid] === idx ? -1 : idx;
+      const i = parseInt(this.dataset.idx);
+      if (state.most[qid] === i) state.most[qid] = -1;
+      state.least[qid] = state.least[qid] === i ? -1 : i;
       mostrarPergunta();
     };
   });
+}
+
+function mostrarPausaBloco() {
+  document.getElementById('quiz').style.display = 'none';
+  document.getElementById('pausaBloco').style.display = 'block';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function iniciarBlocoAdaptado() {
+  document.getElementById('pausaBloco').style.display = 'none';
+  document.getElementById('quiz').style.display = 'block';
+  state.bloco = 'adaptado';
+  state.passo = 0;
+  mostrarPergunta();
 }
 
 function voltar() {
@@ -889,17 +1070,13 @@ function voltar() {
 }
 
 function avancar() {
-  const q = state.shuffled[state.passo];
-  const validacao = validarRespostaQuestao(q.id);
-  if (!validacao.ok) {
-    alert(validacao.msg);
-    return;
-  }
+  const q = questoesAtivas()[state.passo];
+  const v = validarRespostaQuestao(q.id);
+  if (!v.ok) { alert(v.msg); return; }
   state.passo++;
   mostrarPergunta();
 }
 
-// ===== FORM NOME =====
 function mostrarFormNome() {
   document.getElementById('progressBar').style.width = '100%';
   document.getElementById('quiz').style.display = 'none';
@@ -918,11 +1095,12 @@ function gerarRelatorio() {
   calcularERenderizar(nome);
 }
 
-// ===== REFAZER =====
 function refazer() {
   document.getElementById('resultado').style.display = 'none';
   document.getElementById('home').style.display = 'block';
-  if (window._chart) { window._chart.destroy(); window._chart = null; }
+  ['_chartNat', '_chartAdp', '_chartPress'].forEach(k => {
+    if (window[k]) { window[k].destroy(); window[k] = null; }
+  });
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 </script>

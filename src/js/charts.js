@@ -1,88 +1,64 @@
-// ===== GRÁFICO =====
-function gerarGrafico(nome, scores, perfil) {
+// ===== GRÁFICOS I / II / III =====
+
+function gerarGraficosTriplos(dual) {
   return `
-    <div class="bg-white rounded-2xl shadow-sm p-5 sm:p-8 mb-6 fade-in">
-      <h3 class="text-lg font-bold mb-4 text-center">Gráfico de Perfil DISC</h3>
-      <div class="relative" style="height:320px">
-        <canvas id="chartDISC"></canvas>
+    <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-sm p-5 sm:p-8 mb-6 fade-in card">
+      <h3 class="text-lg font-bold mb-6 text-center">Gráficos DISC — Natural · Pressão · Adaptado</h3>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div>
+          <p class="text-xs font-bold text-center mb-2 text-green-700">III — Autoimagem (Natural)</p>
+          <div style="height:220px"><canvas id="chartNatural"></canvas></div>
+        </div>
+        <div>
+          <p class="text-xs font-bold text-center mb-2 text-purple-700">II — Pressão (Diferença)</p>
+          <div style="height:220px"><canvas id="chartPressure"></canvas></div>
+        </div>
+        <div>
+          <p class="text-xs font-bold text-center mb-2 text-blue-700">I — Adaptado (Trabalho)</p>
+          <div style="height:220px"><canvas id="chartAdapted"></canvas></div>
+        </div>
       </div>
-      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-4 text-center">
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-6 text-center">
         ${FACTORES.map(f => `
-          <div>
-            <div class="font-bold text-lg" style="color:${CORES[f]}">${f}</div>
-            <div class="text-2xl font-bold">${scores[f] > 0 ? '+' : ''}${scores[f]}</div>
-            <div class="text-xs text-gray-400">${classificarScore(scores[f])}</div>
-          </div>
-        `).join('')}
+          <div class="p-2 rounded-lg bg-gray-50 dark:bg-gray-800">
+            <div class="font-bold" style="color:${CORES[f]}">${f}</div>
+            <div class="text-xs text-gray-500">Nat: ${dual.natural[f] > 0 ? '+' : ''}${dual.natural[f]}</div>
+            <div class="text-xs text-gray-500">Adp: ${dual.adapted[f] > 0 ? '+' : ''}${dual.adapted[f]}</div>
+            <div class="text-xs ${Math.abs(dual.discrepancy[f]) >= DISCREPANCY_THRESHOLD ? 'text-red-500 font-bold' : 'text-gray-400'}">Δ ${dual.discrepancy[f] > 0 ? '+' : ''}${dual.discrepancy[f]}</div>
+          </div>`).join('')}
       </div>
     </div>`;
 }
 
-function initGrafico(scores) {
-  const ctx = document.getElementById('chartDISC');
+function makeChart(canvasId, data, windowKey, label) {
+  const ctx = document.getElementById(canvasId);
   if (!ctx) return;
-  if (window._chart) window._chart.destroy();
-
-  window._chart = new Chart(ctx, {
+  if (window[windowKey]) window[windowKey].destroy();
+  window[windowKey] = new Chart(ctx, {
     type: 'bar',
     data: {
       labels: FACTORES,
       datasets: [{
-        label: 'Score DISC',
-        data: FACTORES.map(f => scores[f]),
+        label,
+        data: FACTORES.map(f => data[f]),
         backgroundColor: FACTORES.map(f => CORES[f] + 'CC'),
         borderColor: FACTORES.map(f => CORES[f]),
-        borderWidth: 2,
-        borderRadius: 6,
-        barPercentage: 0.6
+        borderWidth: 2, borderRadius: 4, barPercentage: 0.65
       }]
     },
     options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: { display: false },
-        tooltip: {
-          callbacks: {
-            label: c => `Score: ${c.parsed.y > 0 ? '+' : ''}${c.parsed.y}`,
-            afterLabel: c => {
-              const f = FACTORES[c.dataIndex];
-              return classificarScore(scores[f]) + (Math.abs(scores[f]) > 8 ? '\n⚠️ Zona Cinzenta' : '');
-            }
-          }
-        }
-      },
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
       scales: {
-        y: {
-          min: -11, max: 11,
-          ticks: {
-            stepSize: 2,
-            callback: v => v === -10 ? '-10 (↓ Baixo)' : v === 0 ? '0 (Neutro)' : v === 10 ? '10 (↑ Alto)' : v
-          },
-          grid: {
-            color: c => c.tick.value === 0 ? '#333' : c.tick.value % 4 === 0 ? '#ddd' : '#eee'
-          }
-        }
+        y: { min: -11, max: 11, ticks: { stepSize: 5 },
+          grid: { color: c => c.tick.value === 0 ? '#333' : '#eee' } }
       }
-    },
-    plugins: [{
-      id: 'zoneLines',
-      afterDraw(chart) {
-        const yScale = chart.scales.y;
-        const c = chart.ctx;
-        [-8, 8].forEach(val => {
-          const y = yScale.getPixelForValue(val);
-          c.save();
-          c.setLineDash([5, 5]);
-          c.strokeStyle = val > 0 ? '#E74C3C' : '#2980B9';
-          c.lineWidth = 1.5;
-          c.beginPath();
-          c.moveTo(chart.chartArea.left, y);
-          c.lineTo(chart.chartArea.right, y);
-          c.stroke();
-          c.restore();
-        });
-      }
-    }]
+    }
   });
+}
+
+function initGraficosTriplos(dual) {
+  makeChart('chartNatural', dual.natural, '_chartNat', 'Natural');
+  makeChart('chartAdapted', dual.adapted, '_chartAdp', 'Adaptado');
+  makeChart('chartPressure', dual.discrepancy, '_chartPress', 'Pressão');
 }

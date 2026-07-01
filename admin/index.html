@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TESTEDISC Admin</title>
+<style>
+body{font-family:system-ui,sans-serif;margin:2rem;background:#f8f9fa}
+.card{background:#fff;border-radius:12px;padding:1.5rem;margin-bottom:1rem;box-shadow:0 1px 3px rgba(0,0,0,.1)}
+h1{color:#1a1a2e}table{width:100%;border-collapse:collapse}td,th{padding:.5rem;text-align:left;border-bottom:1px solid #eee}
+</style>
+</head>
+<body>
+<h1>TESTEDISC — Painel Admin</h1>
+<div class="card">
+  <h2>Estatísticas</h2>
+  <div id="stats">Carregando...</div>
+</div>
+<div class="card">
+  <h2>Regras de Inferência</h2>
+  <div id="rules">Carregando...</div>
+</div>
+<script>
+const API = location.hostname === 'localhost' ? 'http://localhost:8000' : '';
+async function load() {
+  try {
+    const [a, r] = await Promise.all([
+      fetch(API + '/analytics').then(x => x.json()),
+      fetch(API + '/rules/meta').then(x => x.json()),
+    ]);
+    document.getElementById('stats').innerHTML = `
+      <p><strong>Total de respostas:</strong> ${a.total_responses || 0}</p>
+      <p><strong>Resultados compartilhados:</strong> ${a.total_shared || 0}</p>
+      <p><strong>Médias Natural:</strong> D=${a.avg_natural?.D||0} I=${a.avg_natural?.I||0} S=${a.avg_natural?.S||0} C=${a.avg_natural?.C||0}</p>
+      <p><strong>Médias Adaptado:</strong> D=${a.avg_adapted?.D||0} I=${a.avg_adapted?.I||0} S=${a.avg_adapted?.S||0} C=${a.avg_adapted?.C||0}</p>`;
+    document.getElementById('rules').innerHTML = `<p><strong>${r.count || 0}</strong> regras ativas (v${r.version || '?'})</p>`;
+  } catch(e) {
+    document.getElementById('stats').textContent = 'API offline. Inicie: uvicorn api.main:app --reload';
+    document.getElementById('rules').textContent = '—';
+  }
+}
+load();
+</script>
+</body>
+</html>

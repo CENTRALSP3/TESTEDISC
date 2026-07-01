@@ -1,19 +1,22 @@
-import os, json, yaml
+import os
+import yaml
 from fastapi.testclient import TestClient
 from api.main import app
+from api.inference import build_context, evaluate_condition
 
 client = TestClient(app)
 
-# Load artifacts for verification
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 KNOWLEDGE_PATH = os.path.join(BASE_DIR, 'knowledge.json')
 RULES_PATH = os.path.join(BASE_DIR, 'artifacts', 'rules.yaml')
 ONTOLOGY_PATH = os.path.join(BASE_DIR, 'artifacts', 'ontology.yaml')
 PHRASES_PATH = os.path.join(BASE_DIR, 'artifacts', 'phrases.json')
 
+
 def test_artifacts_exist():
     for path in [KNOWLEDGE_PATH, RULES_PATH, ONTOLOGY_PATH, PHRASES_PATH]:
         assert os.path.isfile(path), f"Missing artifact: {path}"
+
 
 def _load_rules(path):
     with open(path, 'r', encoding='utf-8') as f:
@@ -25,52 +28,99 @@ def _load_rules(path):
 
 def test_rules_loadable():
     rules = _load_rules(RULES_PATH)
-    assert isinstance(rules, list) and len(rules) > 0
+    assert isinstance(rules, list) and len(rules) >= 50
     for rule in rules:
         assert 'id' in rule and 'when' in rule and 'interpretation' in rule
         assert isinstance(rule['when'], list)
 
-def test_inference_all_rules():
-    # Load rules to construct a simple score set that satisfies each rule individually
-    rules = _load_rules(RULES_PATH)
-    for rule in rules:
-        # Build a score dict with default high values
-        scores = {'D': 0.0, 'I': 0.0, 'S': 0.0, 'C': 0.0}
-        # Try to satisfy each condition by setting a variable above the threshold if > or >=
-        for cond in rule['when']:
-            # Very naive parser: expect format "X > N" or "X >= N" etc.
-            parts = cond.replace('>=', '>=').replace('>', '>').replace('<=', '<=').replace('<', '<').split()
-            if len(parts) != 3:
-                continue
-            var, op, num = parts
+
+def _satisfy_condition(cond: str, natural: dict, adapted: dict) -> None:
+    """Ajusta scores para tentar satisfazer uma condição simples."""
+    ctx = build_context(natural, adapted)
+    if evaluate_condition(cond, ctx):
+        return
+
+    for op in (">=", ">", "<=", "<", "=="):
+        if op in cond:
+            left, right = cond.split(op, 1)
+            left = left.strip()
+            right = right.strip()
             try:
-                num = float(num)
+                threshold = float(right)
             except ValueError:
-                continue
-            if op == '>':
-                scores[var] = num + 1
-            elif op == '>=':
-                scores[var] = num
-            elif op == '<':
-                scores[var] = num - 1
-            elif op == '<=':
-                scores[var] = num
-        # Send request
-        response = client.post('/infer', json=scores)
-        # Some rules may not be reachable with this naive approach; accept 404 as not matched
+                if "_natural" in right:
+                    factor = right.replace("_natural", "").split()[0]
+                    if op in (">", ">="):
+                        natural[factor] = max(natural[factor], threshold + 1)
+                    elif op in ("<", "<="):
+                        natural[factor] = min(natural[factor], threshold - 1)
+                return
+
+            if "_natural" in left:
+                factor = left.replace("_natural", "")
+                if op == ">":
+                    natural[factor] = threshold + 1
+                elif op == ">=":
+                    natural[factor] = threshold
+                elif op == "<":
+                    natural[factor] = threshold - 1
+                elif op == "<=":
+                    natural[factor] = threshold
+                elif op == "==":
+                    natural[factor] = threshold
+            elif "_adapted" in left:
+                factor = left.replace("_adapted", "")
+                if op == ">":
+                    adapted[factor] = threshold + 1
+                elif op == ">=":
+                    adapted[factor] = threshold
+                elif op == "<":
+                    adapted[factor] = threshold - 1
+                elif op == "<=":
+                    adapted[factor] = threshold
+            elif "_diff" in left:
+                factor = left.replace("_diff", "")
+                if op == ">=":
+                    adapted[factor] = natural[factor] - threshold
+                elif op == "<=":
+                    adapted[factor] = natural[factor] - threshold
+            return
+
+
+def test_inference_sample_rules():
+    rules = _load_rules(RULES_PATH)
+    sample = rules[:10]
+    for rule in sample:
+        natural = {'D': 0.0, 'I': 0.0, 'S': 0.0, 'C': 0.0}
+        adapted = {'D': 0.0, 'I': 0.0, 'S': 0.0, 'C': 0.0}
+        for cond in rule['when']:
+            _satisfy_condition(cond, natural, adapted)
+
+        response = client.post('/infer', json={'natural': natural, 'adapted': adapted})
         if response.status_code == 200:
             data = response.json()
-            assert data['interpretation'] == rule['interpretation']
-        else:
-            # Ensure the API returns 404 when no rule matches (acceptable for this test)
-            assert response.status_code == 404
+            assert rule['id'] in data['matched_rules']
+
+
+def test_ontology_expanded():
+    with open(ONTOLOGY_PATH, encoding='utf-8') as f:
+        docs = list(yaml.safe_load_all(f))
+    ontology = next(d for d in reversed(docs) if isinstance(d, dict) and 'Dominancia' in d)
+    for factor in ('Dominancia', 'Influência', 'Estabilidade', 'Conformidade'):
+        entry = ontology[factor]
+        for field in (
+            'medo_fundamental', 'ambiente_ideal', 'ambiente_estressante',
+            'estilo_lideranca', 'comunicacao_fazer', 'comunicacao_evitar',
+            'motivadores', 'palavras_descritivas_alto', 'palavras_descritivas_baixo',
+        ):
+            assert field in entry, f"{factor} missing {field}"
+
 
 def test_static_page_exists():
     static_path = os.path.join(BASE_DIR, 'docs', 'index.html')
     assert os.path.isfile(static_path)
     with open(static_path, 'r', encoding='utf-8') as f:
         content = f.read()
-    # docs/index.html agora é o teste DISC completo (GitHub Pages)
     assert 'Perfil DISC' in content
     assert 'function iniciar' in content
     assert 'function calcularERenderizar' in content

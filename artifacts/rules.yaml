@@ -1,24 +1,682 @@
 ---
 name: disc-rules
-description: Rule engine definitions for DISC interpretations
+description: Rule engine definitions for DISC interpretations (scale -10 to +10)
+version: 2.0.0
+scale:
+  min: -10
+  max: 10
+  gray_zone: 8
+  discrepancy_threshold: 4
 ---
-- id: RULE_001
+- id: RULE_DOM_D
+  category: blend
   when:
-    - "D > 15"
-    - "C > 15"
-  interpretation: "Perfil extremamente lógico"
-  confidence: 0.94
-  evidence:
-    - "relatório_04"
-    - "relatório_09"
-    - "relatório_17"
-
-- id: RULE_002
-  when:
-    - "I >= 20"
-    - "S <= 10"
-  interpretation: "Perfil influente e dinâmico"
+  - D_natural > 5
+  - I_natural <= 2
+  - S_natural <= 2
+  - C_natural <= 2
+  interpretation: Perfil com Dominância elevada no natural — traço dominante com pouca interferência dos demais fatores.
   confidence: 0.88
   evidence:
-    - "relatório_03"
-    - "relatório_12"
+  - ALINE CARRAZEDO.pdf
+  - allan.moratori@dynamis-br.com_.pdf
+  - andre.lisboa@dynamis-br.com_.pdf
+- id: RULE_DOM_I
+  category: blend
+  when:
+  - I_natural > 5
+  - D_natural <= 2
+  - S_natural <= 2
+  - C_natural <= 2
+  interpretation: Perfil com Influência elevada no natural — traço dominante com pouca interferência dos demais fatores.
+  confidence: 0.88
+  evidence:
+  - alisson.dias@dynamis-br.com;.pdf
+  - allan.moratori@dynamis-br.com_.pdf
+  - andre.lisboa@dynamis-br.com_.pdf
+- id: RULE_DOM_S
+  category: blend
+  when:
+  - S_natural > 5
+  - D_natural <= 2
+  - I_natural <= 2
+  - C_natural <= 2
+  interpretation: Perfil com Estabilidade elevada no natural — traço dominante com pouca interferência dos demais fatores.
+  confidence: 0.88
+  evidence:
+  - adriano.ribeiro@dynamis-br.com_.pdf
+  - ALINE CARRAZEDO.pdf
+  - alisson.dias@dynamis-br.com;.pdf
+- id: RULE_DOM_C
+  category: blend
+  when:
+  - C_natural > 5
+  - D_natural <= 2
+  - I_natural <= 2
+  - S_natural <= 2
+  interpretation: Perfil com Conformidade elevada no natural — traço dominante com pouca interferência dos demais fatores.
+  confidence: 0.88
+  evidence:
+  - adriano.ribeiro@dynamis-br.com_.pdf
+  - ALINE CARRAZEDO.pdf
+  - alisson.dias@dynamis-br.com;.pdf
+- id: RULE_BLEND_DI
+  category: blend
+  when:
+  - D_natural > 3
+  - I_natural > 3
+  - D_natural >= I_natural - 2
+  - S_natural <= 2
+  - C_natural <= 2
+  interpretation: Perfil orientado a resultados com forte capacidade de influência — combina ação direta com persuasão.
+  confidence: 0.84
+  evidence:
+  - ALINE CARRAZEDO.pdf
+  - alisson.dias@dynamis-br.com;.pdf
+  - allan.moratori@dynamis-br.com_.pdf
+- id: RULE_BLEND_ID
+  category: blend
+  when:
+  - I_natural > 3
+  - D_natural > 3
+  - I_natural >= D_natural - 2
+  - S_natural <= 2
+  - C_natural <= 2
+  interpretation: Perfil comunicativo com direcionamento a metas — usa relacionamentos para acelerar entregas.
+  confidence: 0.84
+  evidence:
+  - ALINE CARRAZEDO.pdf
+  - alisson.dias@dynamis-br.com;.pdf
+  - allan.moratori@dynamis-br.com_.pdf
+- id: RULE_BLEND_DS
+  category: blend
+  when:
+  - D_natural > 3
+  - S_natural > 3
+  - D_natural >= S_natural - 2
+  - I_natural <= 2
+  - C_natural <= 2
+  interpretation: Perfil determinado com base estável — persiste com ritmo consistente em direção a objetivos.
+  confidence: 0.84
+  evidence:
+  - adriano.ribeiro@dynamis-br.com_.pdf
+  - ALINE CARRAZEDO.pdf
+  - alisson.dias@dynamis-br.com;.pdf
+- id: RULE_BLEND_SD
+  category: blend
+  when:
+  - S_natural > 3
+  - D_natural > 3
+  - S_natural >= D_natural - 2
+  - I_natural <= 2
+  - C_natural <= 2
+  interpretation: Perfil estável com capacidade de ação — mantém constância sem abrir mão de iniciativa.
+  confidence: 0.84
+  evidence:
+  - adriano.ribeiro@dynamis-br.com_.pdf
+  - ALINE CARRAZEDO.pdf
+  - alisson.dias@dynamis-br.com;.pdf
+- id: RULE_BLEND_DC
+  category: blend
+  when:
+  - D_natural > 3
+  - C_natural > 3
+  - D_natural >= C_natural - 2
+  - I_natural <= 2
+  - S_natural <= 2
+  interpretation: Perfil lógico e orientado a resultados — une assertividade com rigor analítico.
+  confidence: 0.84
+  evidence:
+  - adriano.ribeiro@dynamis-br.com_.pdf
+  - ALINE CARRAZEDO.pdf
+  - alisson.dias@dynamis-br.com;.pdf
+- id: RULE_BLEND_CD
+  category: blend
+  when:
+  - C_natural > 3
+  - D_natural > 3
+  - C_natural >= D_natural - 2
+  - I_natural <= 2
+  - S_natural <= 2
+  interpretation: Perfil analítico com foco em performance — prioriza qualidade orientada a metas.
+  confidence: 0.84
+  evidence:
+  - adriano.ribeiro@dynamis-br.com_.pdf
+  - ALINE CARRAZEDO.pdf
+  - alisson.dias@dynamis-br.com;.pdf
+- id: RULE_BLEND_IS
+  category: blend
+  when:
+  - I_natural > 3
+  - S_natural > 3
+  - I_natural >= S_natural - 2
+  - D_natural <= 2
+  - C_natural <= 2
+  interpretation: Perfil sociável e acolhedor — comunica com empatia e constrói harmonia.
+  confidence: 0.84
+  evidence:
+  - adriano.ribeiro@dynamis-br.com_.pdf
+  - ALINE CARRAZEDO.pdf
+  - alisson.dias@dynamis-br.com;.pdf
+- id: RULE_BLEND_SI
+  category: blend
+  when:
+  - S_natural > 3
+  - I_natural > 3
+  - S_natural >= I_natural - 2
+  - D_natural <= 2
+  - C_natural <= 2
+  interpretation: Perfil cooperativo com influência moderada — estabiliza equipes com conexão humana.
+  confidence: 0.84
+  evidence:
+  - adriano.ribeiro@dynamis-br.com_.pdf
+  - ALINE CARRAZEDO.pdf
+  - alisson.dias@dynamis-br.com;.pdf
+- id: RULE_BLEND_SC
+  category: blend
+  when:
+  - S_natural > 3
+  - C_natural > 3
+  - S_natural >= C_natural - 2
+  - D_natural <= 2
+  - I_natural <= 2
+  interpretation: Perfil consistente e criterioso — valoriza padrões com abordagem paciente.
+  confidence: 0.84
+  evidence:
+  - adriano.ribeiro@dynamis-br.com_.pdf
+  - ALINE CARRAZEDO.pdf
+  - alisson.dias@dynamis-br.com;.pdf
+- id: RULE_BLEND_CS
+  category: blend
+  when:
+  - C_natural > 3
+  - S_natural > 3
+  - C_natural >= S_natural - 2
+  - D_natural <= 2
+  - I_natural <= 2
+  interpretation: Perfil metódico e confiável — aplica critério técnico com constância.
+  confidence: 0.84
+  evidence:
+  - adriano.ribeiro@dynamis-br.com_.pdf
+  - ALINE CARRAZEDO.pdf
+  - alisson.dias@dynamis-br.com;.pdf
+- id: RULE_BLEND_IC
+  category: blend
+  when:
+  - I_natural > 3
+  - C_natural > 3
+  - I_natural >= C_natural - 2
+  - D_natural <= 2
+  - S_natural <= 2
+  interpretation: Perfil comunicativo e analítico — articula ideias com fundamentação lógica.
+  confidence: 0.84
+  evidence:
+  - adriano.ribeiro@dynamis-br.com_.pdf
+  - ALINE CARRAZEDO.pdf
+  - alisson.dias@dynamis-br.com;.pdf
+- id: RULE_BLEND_CI
+  category: blend
+  when:
+  - C_natural > 3
+  - I_natural > 3
+  - C_natural >= I_natural - 2
+  - D_natural <= 2
+  - S_natural <= 2
+  interpretation: Perfil técnico com habilidade relacional — traduz dados em mensagens compreensíveis.
+  confidence: 0.84
+  evidence:
+  - adriano.ribeiro@dynamis-br.com_.pdf
+  - ALINE CARRAZEDO.pdf
+  - alisson.dias@dynamis-br.com;.pdf
+- id: RULE_SUPPRESS_D
+  category: discrepancia
+  when:
+  - D_natural > 5
+  - D_adapted < D_natural - 4
+  interpretation: 'Supressão de Dominância no ambiente de trabalho: o natural é significativamente maior que o adaptado (diferença
+    > 4). Pode indicar repressão, perda de autonomia ou máscara comportamental sustentada.'
+  confidence: 0.91
+  evidence:
+  - ALINE CARRAZEDO.pdf
+  - allan.moratori@dynamis-br.com_.pdf
+  - andre.lisboa@dynamis-br.com_.pdf
+- id: RULE_AMPLIFY_D
+  category: discrepancia
+  when:
+  - D_adapted > D_natural + 4
+  interpretation: 'Amplificação de Dominância no trabalho: adaptado excede o natural em mais de 4 pontos. Pessoa enfatiza
+    este traço para atender demandas do cargo ou cultura organizacional.'
+  confidence: 0.87
+  evidence:
+  - adriano.ribeiro@dynamis-br.com_.pdf
+  - ALINE CARRAZEDO.pdf
+  - allan.moratori@dynamis-br.com_.pdf
+- id: RULE_GRAY_HIGH_D
+  category: zona_cinzenta
+  when:
+  - D_natural > 8
+  interpretation: 'Zona cinzenta alta em Dominância (|score| > 8): traço extremamente pronunciado. Grande força com risco
+    de excesso — recomenda-se moderação consciente.'
+  confidence: 0.86
+  evidence:
+  - ALINE CARRAZEDO.pdf
+  - allan.moratori@dynamis-br.com_.pdf
+  - andre.lisboa@dynamis-br.com_.pdf
+- id: RULE_GRAY_LOW_D
+  category: zona_cinzenta
+  when:
+  - D_natural < -8
+  interpretation: 'Zona cinzenta baixa em Dominância (|score| > 8): rejeição forte deste estilo. Pode gerar tensão quando
+    o ambiente exige este comportamento.'
+  confidence: 0.83
+  evidence:
+  - ALINE CARRAZEDO.pdf
+  - allan.moratori@dynamis-br.com_.pdf
+  - andre.lisboa@dynamis-br.com_.pdf
+- id: RULE_SUPPRESS_I
+  category: discrepancia
+  when:
+  - I_natural > 5
+  - I_adapted < I_natural - 4
+  interpretation: 'Supressão de Influência no ambiente de trabalho: o natural é significativamente maior que o adaptado (diferença
+    > 4). Pode indicar repressão, perda de autonomia ou máscara comportamental sustentada.'
+  confidence: 0.91
+  evidence:
+  - ALINE CARRAZEDO.pdf
+  - alisson.dias@dynamis-br.com;.pdf
+  - allan.moratori@dynamis-br.com_.pdf
+- id: RULE_AMPLIFY_I
+  category: discrepancia
+  when:
+  - I_adapted > I_natural + 4
+  interpretation: 'Amplificação de Influência no trabalho: adaptado excede o natural em mais de 4 pontos. Pessoa enfatiza
+    este traço para atender demandas do cargo ou cultura organizacional.'
+  confidence: 0.87
+  evidence:
+  - adriano.ribeiro@dynamis-br.com_.pdf
+  - alisson.dias@dynamis-br.com;.pdf
+  - allan.moratori@dynamis-br.com_.pdf
+- id: RULE_GRAY_HIGH_I
+  category: zona_cinzenta
+  when:
+  - I_natural > 8
+  interpretation: 'Zona cinzenta alta em Influência (|score| > 8): traço extremamente pronunciado. Grande força com risco
+    de excesso — recomenda-se moderação consciente.'
+  confidence: 0.86
+  evidence:
+  - alisson.dias@dynamis-br.com;.pdf
+  - allan.moratori@dynamis-br.com_.pdf
+  - andre.lisboa@dynamis-br.com_.pdf
+- id: RULE_GRAY_LOW_I
+  category: zona_cinzenta
+  when:
+  - I_natural < -8
+  interpretation: 'Zona cinzenta baixa em Influência (|score| > 8): rejeição forte deste estilo. Pode gerar tensão quando
+    o ambiente exige este comportamento.'
+  confidence: 0.83
+  evidence:
+  - alisson.dias@dynamis-br.com;.pdf
+  - allan.moratori@dynamis-br.com_.pdf
+  - andre.lisboa@dynamis-br.com_.pdf
+- id: RULE_SUPPRESS_S
+  category: discrepancia
+  when:
+  - S_natural > 5
+  - S_adapted < S_natural - 4
+  interpretation: 'Supressão de Estabilidade no ambiente de trabalho: o natural é significativamente maior que o adaptado
+    (diferença > 4). Pode indicar repressão, perda de autonomia ou máscara comportamental sustentada.'
+  confidence: 0.91
+  evidence:
+  - adriano.ribeiro@dynamis-br.com_.pdf
+  - ALINE CARRAZEDO.pdf
+  - alisson.dias@dynamis-br.com;.pdf
+- id: RULE_AMPLIFY_S
+  category: discrepancia
+  when:
+  - S_adapted > S_natural + 4
+  interpretation: 'Amplificação de Estabilidade no trabalho: adaptado excede o natural em mais de 4 pontos. Pessoa enfatiza
+    este traço para atender demandas do cargo ou cultura organizacional.'
+  confidence: 0.87
+  evidence:
+  - adriano.ribeiro@dynamis-br.com_.pdf
+  - ALINE CARRAZEDO.pdf
+  - alisson.dias@dynamis-br.com;.pdf
+- id: RULE_GRAY_HIGH_S
+  category: zona_cinzenta
+  when:
+  - S_natural > 8
+  interpretation: 'Zona cinzenta alta em Estabilidade (|score| > 8): traço extremamente pronunciado. Grande força com risco
+    de excesso — recomenda-se moderação consciente.'
+  confidence: 0.86
+  evidence:
+  - adriano.ribeiro@dynamis-br.com_.pdf
+  - ALINE CARRAZEDO.pdf
+  - alisson.dias@dynamis-br.com;.pdf
+- id: RULE_GRAY_LOW_S
+  category: zona_cinzenta
+  when:
+  - S_natural < -8
+  interpretation: 'Zona cinzenta baixa em Estabilidade (|score| > 8): rejeição forte deste estilo. Pode gerar tensão quando
+    o ambiente exige este comportamento.'
+  confidence: 0.83
+  evidence:
+  - adriano.ribeiro@dynamis-br.com_.pdf
+  - ALINE CARRAZEDO.pdf
+  - alisson.dias@dynamis-br.com;.pdf
+- id: RULE_SUPPRESS_C
+  category: discrepancia
+  when:
+  - C_natural > 5
+  - C_adapted < C_natural - 4
+  interpretation: 'Supressão de Conformidade no ambiente de trabalho: o natural é significativamente maior que o adaptado
+    (diferença > 4). Pode indicar repressão, perda de autonomia ou máscara comportamental sustentada.'
+  confidence: 0.91
+  evidence:
+  - adriano.ribeiro@dynamis-br.com_.pdf
+  - ALINE CARRAZEDO.pdf
+  - alisson.dias@dynamis-br.com;.pdf
+- id: RULE_AMPLIFY_C
+  category: discrepancia
+  when:
+  - C_adapted > C_natural + 4
+  interpretation: 'Amplificação de Conformidade no trabalho: adaptado excede o natural em mais de 4 pontos. Pessoa enfatiza
+    este traço para atender demandas do cargo ou cultura organizacional.'
+  confidence: 0.87
+  evidence:
+  - adriano.ribeiro@dynamis-br.com_.pdf
+  - ALINE CARRAZEDO.pdf
+  - alisson.dias@dynamis-br.com;.pdf
+- id: RULE_GRAY_HIGH_C
+  category: zona_cinzenta
+  when:
+  - C_natural > 8
+  interpretation: 'Zona cinzenta alta em Conformidade (|score| > 8): traço extremamente pronunciado. Grande força com risco
+    de excesso — recomenda-se moderação consciente.'
+  confidence: 0.86
+  evidence:
+  - adriano.ribeiro@dynamis-br.com_.pdf
+  - ALINE CARRAZEDO.pdf
+  - alisson.dias@dynamis-br.com;.pdf
+- id: RULE_GRAY_LOW_C
+  category: zona_cinzenta
+  when:
+  - C_natural < -8
+  interpretation: 'Zona cinzenta baixa em Conformidade (|score| > 8): rejeição forte deste estilo. Pode gerar tensão quando
+    o ambiente exige este comportamento.'
+  confidence: 0.83
+  evidence:
+  - adriano.ribeiro@dynamis-br.com_.pdf
+  - ALINE CARRAZEDO.pdf
+  - alisson.dias@dynamis-br.com;.pdf
+- id: RULE_HARMONY
+  category: discrepancia
+  when:
+  - D_diff >= -2
+  - D_diff <= 2
+  - I_diff >= -2
+  - I_diff <= 2
+  - S_diff >= -2
+  - S_diff <= 2
+  - C_diff >= -2
+  - C_diff <= 2
+  interpretation: 'Alinhamento natural-adaptado: discrepância ≤ 2 em todos os fatores. Comportamento no trabalho compatível
+    com a auto-imagem.'
+  confidence: 0.8
+  evidence:
+  - adriano.ribeiro@dynamis-br.com_.pdf
+  - ALINE CARRAZEDO.pdf
+  - arthur.schoba@dynamis-br.com;.pdf
+- id: RULE_DC_EQUALIZED
+  category: combinacao
+  when:
+  - D_natural > 3
+  - C_natural > 3
+  - D_diff >= -2
+  - D_diff <= 2
+  - C_diff >= -2
+  - C_diff <= 2
+  interpretation: 'Dominância e Conformidade niveladas: perfil analítico-decisivo. Pode indicar indecisão sob pressão quando
+    ambos fatores competem.'
+  confidence: 0.82
+  evidence:
+  - bruno.aboud@dynamis-br.com;.pdf
+  - diogo.vieira@dynamis-br.com;.pdf
+  - gabriel.leal@dynamis-br.com;.pdf
+- id: RULE_IS_SUPPORT
+  category: combinacao
+  when:
+  - I_natural > 4
+  - S_natural > 4
+  - D_natural <= 1
+  interpretation: 'Perfil de suporte relacional: combina empatia com constância, ideal para papéis de acolhimento e mediação.'
+  confidence: 0.81
+  evidence:
+  - ALINE CARRAZEDO.pdf
+  - alisson.dias@dynamis-br.com;.pdf
+  - allan.moratori@dynamis-br.com_.pdf
+- id: RULE_SC_QUALITY
+  category: combinacao
+  when:
+  - S_natural > 4
+  - C_natural > 4
+  - I_natural <= 1
+  interpretation: 'Perfil de qualidade consistente: aplica padrões com paciência e método, forte em processos e auditoria.'
+  confidence: 0.83
+  evidence:
+  - adriano.ribeiro@dynamis-br.com_.pdf
+  - ALINE CARRAZEDO.pdf
+  - alisson.dias@dynamis-br.com;.pdf
+- id: RULE_DI_SALES
+  category: combinacao
+  when:
+  - D_natural > 4
+  - I_natural > 4
+  - C_natural <= 0
+  interpretation: 'Perfil comercial assertivo: combina direcionamento a metas com persuasão interpessoal.'
+  confidence: 0.85
+  evidence:
+  - ALINE CARRAZEDO.pdf
+  - alisson.dias@dynamis-br.com;.pdf
+  - allan.moratori@dynamis-br.com_.pdf
+- id: RULE_CS_TECHNICAL
+  category: combinacao
+  when:
+  - C_natural > 5
+  - S_natural > 2
+  - I_natural <= 0
+  interpretation: 'Perfil técnico-especialista: prefere profundidade analítica com ritmo estável e baixa exposição social.'
+  confidence: 0.84
+  evidence:
+  - adriano.ribeiro@dynamis-br.com_.pdf
+  - ALINE CARRAZEDO.pdf
+  - ARTHUR GASPARI.pdf
+- id: RULE_D_STRESS_UP
+  category: pressao
+  when:
+  - D_adapted > D_natural + 2
+  - D_natural > 0
+  interpretation: Sob demanda do cargo, aumenta dominância adaptada — pode melhorar desempenho com pressão moderada.
+  confidence: 0.78
+  evidence:
+  - adriano.ribeiro@dynamis-br.com_.pdf
+  - ALINE CARRAZEDO.pdf
+  - alisson.dias@dynamis-br.com;.pdf
+- id: RULE_I_STRESS_DOWN
+  category: pressao
+  when:
+  - I_adapted < I_natural - 3
+  - I_natural > 3
+  interpretation: 'Influência natural suprimida sob pressão: risco de retração social e queda de motivação interpessoal.'
+  confidence: 0.79
+  evidence:
+  - adriano.ribeiro@dynamis-br.com_.pdf
+  - ALINE CARRAZEDO.pdf
+  - alisson.dias@dynamis-br.com;.pdf
+- id: RULE_BALANCED
+  category: blend
+  when:
+  - D_natural >= -2
+  - D_natural <= 2
+  - I_natural >= -2
+  - I_natural <= 2
+  - S_natural >= -2
+  - S_natural <= 2
+  - C_natural >= -2
+  - C_natural <= 2
+  interpretation: 'Perfil equilibrado: scores próximos de zero em todos os fatores — flexibilidade comportamental ampla.'
+  confidence: 0.75
+  evidence:
+  - adriano.ribeiro@dynamis-br.com_.pdf
+  - alisson.dias@dynamis-br.com;.pdf
+  - allan.moratori@dynamis-br.com_.pdf
+- id: RULE_TRIPLE_DIS
+  category: combinacao
+  when:
+  - D_natural > 3
+  - I_natural > 2
+  - S_natural > 2
+  - C_natural <= 0
+  interpretation: 'Blend DIS: líder operacional com energia, influência moderada e base estável.'
+  confidence: 0.8
+  evidence:
+  - ALINE CARRAZEDO.pdf
+  - alisson.dias@dynamis-br.com;.pdf
+  - allan.moratori@dynamis-br.com_.pdf
+- id: RULE_TRIPLE_ICD
+  category: combinacao
+  when:
+  - I_natural > 2
+  - C_natural > 3
+  - D_natural > 2
+  - S_natural <= 0
+  interpretation: 'Blend ICD: comunicador analítico com orientação a entregas e baixa necessidade de rotina.'
+  confidence: 0.79
+  evidence:
+  - adriano.ribeiro@dynamis-br.com_.pdf
+  - ALINE CARRAZEDO.pdf
+  - alisson.dias@dynamis-br.com;.pdf
+- id: RULE_MEDIUM_D
+  category: intensidade
+  when:
+  - D_natural > 2
+  - D_natural <= 5
+  interpretation: 'Dominância em intensidade média-alta: traço presente sem dominar o perfil.'
+  confidence: 0.72
+  evidence:
+  - ALINE CARRAZEDO.pdf
+  - allan.moratori@dynamis-br.com_.pdf
+- id: RULE_LOW_D
+  category: intensidade
+  when:
+  - D_natural < -3
+  - D_natural > -8
+  interpretation: 'Dominância rejeitado moderadamente: evita comportamentos associados a este fator.'
+  confidence: 0.71
+  evidence:
+  - ALINE CARRAZEDO.pdf
+  - allan.moratori@dynamis-br.com_.pdf
+- id: RULE_MEDIUM_I
+  category: intensidade
+  when:
+  - I_natural > 2
+  - I_natural <= 5
+  interpretation: 'Influência em intensidade média-alta: traço presente sem dominar o perfil.'
+  confidence: 0.72
+  evidence:
+  - alisson.dias@dynamis-br.com;.pdf
+  - allan.moratori@dynamis-br.com_.pdf
+- id: RULE_LOW_I
+  category: intensidade
+  when:
+  - I_natural < -3
+  - I_natural > -8
+  interpretation: 'Influência rejeitado moderadamente: evita comportamentos associados a este fator.'
+  confidence: 0.71
+  evidence:
+  - alisson.dias@dynamis-br.com;.pdf
+  - allan.moratori@dynamis-br.com_.pdf
+- id: RULE_MEDIUM_S
+  category: intensidade
+  when:
+  - S_natural > 2
+  - S_natural <= 5
+  interpretation: 'Estabilidade em intensidade média-alta: traço presente sem dominar o perfil.'
+  confidence: 0.72
+  evidence:
+  - adriano.ribeiro@dynamis-br.com_.pdf
+  - ALINE CARRAZEDO.pdf
+- id: RULE_LOW_S
+  category: intensidade
+  when:
+  - S_natural < -3
+  - S_natural > -8
+  interpretation: 'Estabilidade rejeitado moderadamente: evita comportamentos associados a este fator.'
+  confidence: 0.71
+  evidence:
+  - adriano.ribeiro@dynamis-br.com_.pdf
+  - ALINE CARRAZEDO.pdf
+- id: RULE_MEDIUM_C
+  category: intensidade
+  when:
+  - C_natural > 2
+  - C_natural <= 5
+  interpretation: 'Conformidade em intensidade média-alta: traço presente sem dominar o perfil.'
+  confidence: 0.72
+  evidence:
+  - adriano.ribeiro@dynamis-br.com_.pdf
+  - ALINE CARRAZEDO.pdf
+- id: RULE_LOW_C
+  category: intensidade
+  when:
+  - C_natural < -3
+  - C_natural > -8
+  interpretation: 'Conformidade rejeitado moderadamente: evita comportamentos associados a este fator.'
+  confidence: 0.71
+  evidence:
+  - adriano.ribeiro@dynamis-br.com_.pdf
+  - ALINE CARRAZEDO.pdf
+- id: RULE_ADAPT_MASK_HIGH_C
+  category: discrepancia
+  when:
+  - C_natural > 0
+  - C_adapted > C_natural + 3
+  - C_adapted > 6
+  interpretation: 'Máscara de conformidade no trabalho: adaptado significativamente mais criterioso que o natural.'
+  confidence: 0.8
+  evidence:
+  - adriano.ribeiro@dynamis-br.com_.pdf
+  - ALINE CARRAZEDO.pdf
+  - alisson.dias@dynamis-br.com;.pdf
+- id: RULE_ADAPT_MASK_HIGH_I
+  category: discrepancia
+  when:
+  - I_natural < 2
+  - I_adapted > 5
+  interpretation: 'Máscara social no trabalho: exibe mais influência adaptada do que o estilo natural sugere.'
+  confidence: 0.78
+  evidence:
+  - alisson.dias@dynamis-br.com;.pdf
+  - allan.moratori@dynamis-br.com_.pdf
+  - andre.lisboa@dynamis-br.com_.pdf
+- id: RULE_CONFLICT_DS
+  category: combinacao
+  when:
+  - D_natural > 5
+  - S_natural > 5
+  interpretation: 'Tensão D-S: impulso por ação rápida convive com necessidade de estabilidade e ritmo constante.'
+  confidence: 0.77
+  evidence:
+  - adriano.ribeiro@dynamis-br.com_.pdf
+  - alisson.dias@dynamis-br.com;.pdf
+  - allan.moratori@dynamis-br.com_.pdf
+- id: RULE_CONFLICT_IC
+  category: combinacao
+  when:
+  - I_natural > 5
+  - C_natural > 5
+  interpretation: 'Tensão I-C: desejo de expressividade social com exigência de precisão e controle analítico.'
+  confidence: 0.76
+  evidence:
+  - adriano.ribeiro@dynamis-br.com_.pdf
+  - ALINE CARRAZEDO.pdf
+  - alisson.dias@dynamis-br.com;.pdf

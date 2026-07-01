@@ -1,85 +1,57 @@
-# Perfil DISC - Análise Comportamental TeclaPonto
+# TESTEDISC V2 — Perfil Comportamental DISC
 
-Teste psicométrico inspirado no modelo DISC (Dominância, Influência, Estabilidade, Conformidade). Pronto para deploy no GitHub Pages.
+Teste psicométrico completo com perfil **Natural + Adaptado**, devolutiva profissional em 12 seções e API de inferência.
 
-**Versão do instrumento:** 0.9.0 (Fase 0 concluída)
+**Versão:** 2.0.0
 
 ## Funcionalidades
 
-- **40 questões forced-choice** com opções randomizadas
-- **Scoring -10 a +10** por fator (normalizado de -40 a +40)
-- **Gráfico interativo** Chart.js com zona cinzenta (|score| > 8)
-- **Devolutiva em 10 seções** com palavras descritivas extraídas de 66 perfis profissionais
-- **Devolutiva multi-fator** (comunicação, pressão, percepção ponderadas)
-- Design responsivo, impressão/PDF via navegador
+- **56 questões** (28 Natural + 28 Adaptado) forced-choice
+- **3 gráficos DISC** (Autoimagem · Pressão · Adaptado)
+- **Análise de discrepância** Natural vs Adaptado
+- **12 seções de devolutiva** inspiradas em relatórios profissionais
+- **55 regras de inferência** via API
+- Modo escuro, PWA offline, compartilhamento por link
+- Coleta anônima para analytics (`/responses`)
+- Painel admin em `admin/index.html`
 
 ## Desenvolvimento
 
-### Estrutura modular
-
-```
-TESTEDISC/
-├── index.html              # gerado — não editar diretamente
-├── build_complete.py       # gera index.html a partir dos módulos
-├── run_tests.py            # executa todos os testes
-├── src/js/
-│   ├── constants.js        # fatores, cores, versão
-│   ├── questions.js        # 40 questões
-│   ├── palavras-data.js    # palavras dos 66 PDFs
-│   ├── scoring.js          # scoring, blend, validação
-│   ├── charts.js           # gráfico Chart.js
-│   ├── devolutiva.js       # textos e renderização
-│   └── app.js              # UI do quiz
-├── artifacts/
-│   ├── phrases.json        # biblioteca extraída dos PDFs
-│   ├── palavras_por_fator.json
-│   └── rules.yaml          # regras da API
-└── tests/
-    ├── test_scoring.py
-    └── test_extraction.py
-```
-
-### Workflow
-
 ```bash
-# 1. Editar módulos em src/js/
-# 2. Regenerar index.html
-python build_complete.py
+# Pipeline completo (na raiz do projeto)
+python build_all.py
 
-# 3. Rodar testes
+# Ou manualmente:
+python ../scripts/generate_questions.py
+python ../scripts/generate_rules.py
+python build_complete.py
 python run_tests.py
 ```
 
-### Extrair dados dos PDFs (projeto pai)
-
-```bash
-cd ..
-python scripts/extract_knowledge.py
-python TESTEDISC/build_complete.py
-```
-
-## Deploy no GitHub Pages
-
-1. Push para o GitHub
-2. **Settings > Pages** → branch `main`, pasta `/`
-3. Site em `https://SEU_USUARIO.github.io/TESTEDISC/`
-
-## API (opcional)
+## API
 
 ```bash
 pip install -r requirements.txt
 uvicorn api.main:app --reload
 ```
 
-## Limitações
+Endpoints: `POST /infer`, `POST /responses`, `GET /analytics`, `GET /result/{hash}`
 
-- Instrumento de autoconhecimento — não substitui avaliação psicológica profissional
-- Sem normas populacionais validadas (previsto na Fase 3)
-- Versão Natural vs Adaptado em desenvolvimento (Fase 1)
+## Estrutura
 
-## Roadmap
+```
+src/js/
+├── constants.js, questions.js, scoring.js
+├── charts.js, devolutiva.js, features.js, app.js
+api/
+├── main.py, inference.py, database.py
+admin/index.html
+manifest.json, sw.js
+```
 
-Ver `../PLANEJAMENTO_V2.md` para o plano completo de evolução.
+## Deploy
+
+GitHub Pages publica `docs/`. Branch `enhanced-platform`.
 
 ## Licença
 
