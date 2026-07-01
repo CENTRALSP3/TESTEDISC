@@ -70,4 +70,7 @@ def test_static_page_exists():
     assert os.path.isfile(static_path)
     with open(static_path, 'r', encoding='utf-8') as f:
         content = f.read()
-    assert '<form' in content and 'fetch' in content
+    # docs/index.html agora é o teste DISC completo (GitHub Pages)
+    assert 'Perfil DISC' in content
+    assert 'function iniciar' in content
+    assert 'function calcularERenderizar' in content
