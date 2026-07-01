@@ -127,7 +127,14 @@ def build():
 
     content = "".join(parts)
     OUTPUT.write_text(content, encoding="utf-8")
+
+    # GitHub Pages publica a pasta docs/
+    docs_output = BASE / "docs" / "index.html"
+    docs_output.parent.mkdir(parents=True, exist_ok=True)
+    docs_output.write_text(content, encoding="utf-8")
+
     print(f"✓ Gerado: {OUTPUT} ({len(content) // 1024} KB, {len(JS_ORDER)} módulos)")
+    print(f"✓ Copiado para: {docs_output} (GitHub Pages)")
 
 
 if __name__ == "__main__":
