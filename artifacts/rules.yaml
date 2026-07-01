@@ -1,0 +1,24 @@
+---
+name: disc-rules
+description: Rule engine definitions for DISC interpretations
+---
+- id: RULE_001
+  when:
+    - "D > 15"
+    - "C > 15"
+  interpretation: "Perfil extremamente lógico"
+  confidence: 0.94
+  evidence:
+    - "relatório_04"
+    - "relatório_09"
+    - "relatório_17"
+
+- id: RULE_002
+  when:
+    - "I >= 20"
+    - "S <= 10"
+  interpretation: "Perfil influente e dinâmico"
+  confidence: 0.88
+  evidence:
+    - "relatório_03"
+    - "relatório_12"

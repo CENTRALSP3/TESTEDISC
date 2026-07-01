@@ -1,0 +1,63 @@
+---
+name: disc-ontology
+description: Ontology of DISC behavioral dimensions
+---
+Dominancia:
+  descricao: "Comportamento orientado a resultados, foco em ação e competição."
+  motivadores:
+    - "Desafio"
+    - "Autonomia"
+  comportamento:
+    - "Busca desafios"
+    - "Assume liderança"
+  riscos:
+    - "Impaciência"
+    - "Conflito"
+  fortalezas:
+    - "Decisão rápida"
+    - "Iniciativa"
+
+Influência:
+  descricao: "Comportamento sociável, persuasivo e orientado a pessoas."
+  motivadores:
+    - "Reconhecimento"
+    - "Interação"
+  comportamento:
+    - "Constrói relacionamento"
+    - "Comunica ideias"
+  riscos:
+    - "Superficialidade"
+    - "Busca aprovação"
+  fortalezas:
+    - "Carisma"
+    - "Colaboração"
+
+Estabilidade:
+  descricao: "Comportamento estável, paciente e confiável."
+  motivadores:
+    - "Segurança"
+    - "Rotina"
+  comportamento:
+    - "Mantém consistência"
+    - "Suporta equipe"
+  riscos:
+    - "Resistência a mudanças"
+    - "Passividade"
+  fortalezas:
+    - "Confiabilidade"
+    - "Persistência"
+
+Conformidade:
+  descricao: "Comportamento analítico, orientado a regras e qualidade."
+  motivadores:
+    - "Precisão"
+    - "Conformidade"
+  comportamento:
+    - "Segue processos"
+    - "Busca perfeição"
+  riscos:
+    - "Perfeccionismo"
+    - "Rigidez"
+  fortalezas:
+    - "Atenção ao detalhe"
+    - "Qualidade"
