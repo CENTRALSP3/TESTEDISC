@@ -19,49 +19,56 @@
 .dark .opt-card.most{background:#2d3748}
 .opt-card.least{border-color:#E74C3C;background:#fde8e8}
 .dark .opt-card.least{background:#4a2020}
-@keyframes fIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
-.fade-in{animation:fIn .35s ease}
-.progress-bar{transition:width .5s ease}
+@keyframes fIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulseGlow{0%,100%{box-shadow:0 4px 18px rgba(26,26,46,.2)}50%{box-shadow:0 8px 28px rgba(243,156,18,.35)}}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.fade-in{animation:fIn .4s ease}
+.home-card{animation:fIn .55s ease}
+.btn-primary{animation:pulseGlow 2.8s ease-in-out infinite}
+.progress-bar{transition:width .5s ease;background:linear-gradient(90deg,#f59e0b,#ef4444,#f59e0b);background-size:200% 100%;animation:shimmer 3s linear infinite}
+.factor-badge{transition:transform .2s ease,box-shadow .2s ease}
+.factor-badge:hover{transform:scale(1.06);box-shadow:0 4px 12px rgba(0,0,0,.12)}
+.opt-card{transition:transform .15s ease,border-color .15s,background .15s,box-shadow .15s}
+.opt-card:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,.06)}
 html.dark body{background:#111827;color:#f3f4f6}
 html.dark .card{background:#1f2937!important}
+.nav-pill{transition:all .2s ease}
+.nav-pill:hover{transform:translateY(-1px)}
 @media print{.no-print{display:none!important}}
 </style>
 </head>
 <body class="bg-gray-50 text-gray-900 dark:bg-gray-900 dark:text-gray-100 min-h-screen flex flex-col">
 
-<header class="bg-gradient-to-r from-[#1a1a2e] to-[#16213e] text-white py-6 px-4 text-center">
-  <h1 class="text-xl font-bold tracking-wider">Perfil <span class="text-amber-400">DISC</span></h1>
-  <p class="text-sm text-white/60 mt-1">Análise Comportamental | TeclaPonto</p>
+<header class="bg-gradient-to-r from-[#1a1a2e] to-[#16213e] text-white py-6 px-4 text-center relative">
+  <nav class="absolute top-3 left-3 right-3 flex justify-between items-center no-print" aria-label="Navegação entre testes">
+    <a href="https://centralsp3.github.io/central/" class="nav-pill text-xs text-white/50 hover:text-white/90">← Central</a>
+    <a href="https://centralsp3.github.io/PERSONALIDADE/" class="nav-pill text-xs font-semibold px-3 py-1.5 rounded-full bg-white/10 hover:bg-white/20 border border-purple-400/50 text-purple-200">Personalidade OCEAN →</a>
+  </nav>
+  <h1 class="text-xl font-bold tracking-wider mt-6">Perfil <span class="text-amber-400">DISC</span></h1>
+  <p class="text-sm text-white/60 mt-1">Comportamento observável · Método DISC (forced-choice)</p>
+  <p class="text-xs text-white/40 mt-1 max-w-md mx-auto">Mede <strong>D, I, S e C</strong> — distinto do teste de traços Big Five (Likert)</p>
 </header>
 
 <main class="flex-1" id="app">
 
 <section id="home" class="py-12 px-4">
-  <div class="max-w-2xl mx-auto bg-white rounded-2xl shadow-sm p-8 text-center">
+  <div class="max-w-2xl mx-auto bg-white dark:bg-gray-800 rounded-2xl shadow-sm p-8 text-center home-card card">
     <h2 class="text-2xl font-bold mb-3">Descubra seu Perfil Comportamental</h2>
-    <p class="text-gray-500 text-sm leading-relaxed mb-2">O método DISC mapeia quatro dimensões do comportamento: <strong>Dominância (D)</strong>, <strong>Influência (I)</strong>, <strong>Estabilidade (S)</strong> e <strong>Conformidade (C)</strong>.</p>
-    <p class="text-gray-500 dark:text-gray-400 text-sm leading-relaxed mb-4">São <strong>56 afirmações</strong> sobre comportamento. Em cada uma, escolha a opção <strong>mais</strong> e <strong>menos</strong> parecida com você. Responda com sinceridade — não há respostas certas ou erradas.</p>
+    <p class="text-gray-500 dark:text-gray-400 text-sm leading-relaxed mb-2">O método <strong>DISC</strong> mapeia quatro dimensões do <strong>comportamento observável</strong>: Dominância (D), Influência (I), Estabilidade (S) e Conformidade (C).</p>
+    <p class="text-gray-500 dark:text-gray-400 text-sm leading-relaxed mb-4">São <strong>56 afirmações</strong> em formato <strong>escolha forçada</strong> (mais/menos). Não é questionário de traços de personalidade — cada instrumento mede constructos diferentes.</p>
     <div class="grid grid-cols-4 gap-2 max-w-xs mx-auto mb-6">
-      <div class="bg-d text-white rounded-xl p-3 font-bold text-center text-sm">D<br><span class="font-normal text-xs">Dominância</span></div>
-      <div class="bg-i text-white rounded-xl p-3 font-bold text-center text-sm">I<br><span class="font-normal text-xs">Influência</span></div>
-      <div class="bg-s text-white rounded-xl p-3 font-bold text-center text-sm">S<br><span class="font-normal text-xs">Estabilidade</span></div>
-      <div class="bg-c text-white rounded-xl p-3 font-bold text-center text-sm">C<br><span class="font-normal text-xs">Conformidade</span></div>
+      <div class="factor-badge bg-d text-white rounded-xl p-3 font-bold text-center text-sm">D<br><span class="font-normal text-xs">Dominância</span></div>
+      <div class="factor-badge bg-i text-white rounded-xl p-3 font-bold text-center text-sm">I<br><span class="font-normal text-xs">Influência</span></div>
+      <div class="factor-badge bg-s text-white rounded-xl p-3 font-bold text-center text-sm">S<br><span class="font-normal text-xs">Estabilidade</span></div>
+      <div class="factor-badge bg-c text-white rounded-xl p-3 font-bold text-center text-sm">C<br><span class="font-normal text-xs">Conformidade</span></div>
     </div>
-    <button onclick="iniciar()" class="bg-[#1a1a2e] text-white px-12 py-3.5 rounded-full font-semibold shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all">Iniciar Teste</button>
+    <button onclick="iniciar()" class="btn-primary bg-[#1a1a2e] text-white px-12 py-3.5 rounded-full font-semibold shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all">Iniciar Teste DISC</button>
     <div class="flex justify-center gap-3 mt-5 flex-wrap">
       <span class="bg-white dark:bg-gray-800 border rounded-full px-4 py-1.5 text-xs text-gray-500"><strong>56</strong> questões</span>
       <span class="bg-white dark:bg-gray-800 border rounded-full px-4 py-1.5 text-xs text-gray-500"><strong>~15</strong> min</span>
       <span class="bg-white dark:bg-gray-800 border rounded-full px-4 py-1.5 text-xs text-gray-500">v<strong>2.1</strong></span>
     </div>
     <button onclick="toggleDarkMode()" class="mt-4 text-xs text-gray-400 underline">Alternar modo escuro</button>
-    <div class="mt-8 pt-6 border-t border-gray-100 dark:border-gray-700">
-      <p class="text-xs text-gray-400 mb-3 uppercase tracking-wider">Instrumentos TeclaPonto</p>
-      <div class="flex flex-col sm:flex-row gap-3 justify-center max-w-lg mx-auto">
-        <a href="https://centralsp3.github.io/TESTEDISC/" class="flex-1 px-6 py-3 rounded-full font-semibold text-sm bg-[#1a1a2e] text-white shadow-lg text-center transition-all ring-2 ring-amber-400 ring-offset-2 dark:ring-offset-gray-800">Perfil DISC</a>
-        <a href="https://centralsp3.github.io/PERSONALIDADE/" class="flex-1 px-6 py-3 rounded-full font-semibold text-sm bg-white dark:bg-gray-700 border-2 border-purple-400 text-purple-700 dark:text-purple-300 hover:bg-purple-50 dark:hover:bg-gray-600 text-center transition-all">Personalidade OCEAN</a>
-      </div>
-      <a href="https://centralsp3.github.io/central/" class="inline-block mt-4 text-xs text-gray-400 underline hover:text-gray-600">← Hub CENTRAL SP3</a>
-    </div>
   </div>
 </section>
 
@@ -104,7 +111,7 @@ html.dark .card{background:#1f2937!important}
 </main>
 
 <footer class="bg-[#1a1a2e] text-white/60 text-center py-4 text-xs mt-auto">
-  <p>TeclaPonto — Análise Comportamental DISC. Instrumento de autoconhecimento. Não substitui avaliação psicológica profissional.</p>
+  <p>Perfil Comportamental DISC — instrumento de autoconhecimento. Não substitui avaliação psicológica profissional.</p>
 </footer>
 
 <script>

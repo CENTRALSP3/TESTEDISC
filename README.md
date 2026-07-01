@@ -58,4 +58,4 @@ docs/            — GitHub Pages (deploy automático)
 
 ## Licença
 
-TeclaPonto — Análise Comportamental DISC
+Perfil Comportamental DISC — CENTRAL SP3
