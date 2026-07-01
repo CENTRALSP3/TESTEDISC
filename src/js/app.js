@@ -1,12 +1,15 @@
 // ===== STATE =====
 const state = {
   passo: 0,
-  bloco: 'natural',
   most: {},
   least: {},
   shuffled: [],
+  pausaVista: false,
   sessionId: crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(36),
 };
+
+const TOTAL_QUESTOES = TOTAL_POR_BLOCO * 2;
+const PAUSA_EM = TOTAL_POR_BLOCO;
 
 function shuffleArray(a) {
   for (let i = a.length - 1; i > 0; i--) {
@@ -16,57 +19,57 @@ function shuffleArray(a) {
   return a;
 }
 
-function perguntasDoBloco(bloco) {
-  const src = bloco === 'natural' ? PERGUNTAS_NATURAL : PERGUNTAS_ADAPTADO;
-  return shuffleArray([...src]).map(q => {
-    const copy = { ...q, opts: [...q.opts], _shuffled: shuffleArray([...q.opts]) };
-    return copy;
-  });
+function prepararQuestao(q, rotOffset) {
+  const opts = [...q.opts];
+  const n = opts.length;
+  const rotated = [...opts.slice(rotOffset % n), ...opts.slice(0, rotOffset % n)];
+  return { ...q, opts: [...q.opts], _shuffled: shuffleArray(rotated) };
+}
+
+function perguntasEmbaralhadas() {
+  const natural = shuffleArray(PERGUNTAS_NATURAL.map((q, i) => prepararQuestao(q, i * 3 + 1)));
+  const adaptado = shuffleArray(PERGUNTAS_ADAPTADO.map((q, i) => prepararQuestao(q, i * 5 + 2)));
+  const slots = shuffleArray([...Array(TOTAL_QUESTOES).keys()]);
+  const natSlots = slots.slice(0, TOTAL_POR_BLOCO).sort((a, b) => a - b);
+  const adpSlots = slots.slice(TOTAL_POR_BLOCO).sort((a, b) => a - b);
+  const merged = new Array(TOTAL_QUESTOES);
+  natural.forEach((q, i) => { merged[natSlots[i]] = q; });
+  adaptado.forEach((q, i) => { merged[adpSlots[i]] = q; });
+  return merged;
 }
 
 function shufflePerguntas() {
-  state.shuffled = [...perguntasDoBloco('natural'), ...perguntasDoBloco('adaptado')];
-}
-
-function questoesAtivas() {
-  return state.shuffled.filter(q => q.bloco === state.bloco);
+  state.shuffled = perguntasEmbaralhadas();
 }
 
 function iniciar() {
   document.getElementById('home').style.display = 'none';
   document.getElementById('quiz').style.display = 'block';
   state.passo = 0;
-  state.bloco = 'natural';
   state.most = {};
   state.least = {};
+  state.pausaVista = false;
   shufflePerguntas();
   mostrarPergunta();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function mostrarPergunta() {
-  const ativas = questoesAtivas();
   const idx = state.passo;
-  if (idx >= ativas.length) {
-    if (state.bloco === 'natural') { mostrarPausaBloco(); return; }
+  if (idx >= TOTAL_QUESTOES) {
     mostrarFormNome();
     return;
   }
 
-  const q = ativas[idx];
-  const blocoLabel = state.bloco === 'natural' ? 'Perfil Natural' : 'Perfil Adaptado (Trabalho)';
-  const totalGeral = TOTAL_POR_BLOCO * 2;
-  const offset = state.bloco === 'natural' ? 0 : TOTAL_POR_BLOCO;
-  const globalIdx = offset + idx;
+  const q = state.shuffled[idx];
 
-  document.getElementById('progressText').textContent = `${globalIdx + 1} de ${totalGeral}`;
-  document.getElementById('progressBar').style.width = `${(globalIdx / totalGeral) * 100}%`;
-  document.getElementById('blocoLabel').textContent = blocoLabel;
+  document.getElementById('progressText').textContent = `${idx + 1} de ${TOTAL_QUESTOES}`;
+  document.getElementById('progressBar').style.width = `${((idx + 1) / TOTAL_QUESTOES) * 100}%`;
 
   const container = document.getElementById('quizContainer');
   const optLetters = ['A', 'B', 'C', 'D'];
 
-  let optsHtml = q._shuffled.map((opt, oi) => {
+  const optsHtml = q._shuffled.map((opt, oi) => {
     const isMost = state.most[q.id] === oi;
     const isLeast = state.least[q.id] === oi;
     return `<div class="opt-card bg-gray-50 dark:bg-gray-800 rounded-xl p-3 sm:p-4 mb-2 ${isMost ? 'most' : ''} ${isLeast ? 'least' : ''}">
@@ -81,24 +84,16 @@ function mostrarPergunta() {
     </div>`;
   }).join('');
 
-  const instrucao = state.bloco === 'natural'
-    ? 'Responda como você <strong>naturalmente é</strong> na maioria das situações:'
-    : 'Responda como você <strong>age no seu ambiente de trabalho atual</strong>:';
-
   container.innerHTML = `
     <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-sm p-5 sm:p-8 fade-in card">
-      <div class="flex items-center gap-2 mb-4 flex-wrap">
-        <span class="text-xs font-bold uppercase tracking-wider px-2 py-1 rounded-full ${state.bloco === 'natural' ? 'bg-green-100 text-green-800' : 'bg-blue-100 text-blue-800'}">${blocoLabel}</span>
-        <span class="text-xs text-gray-400">${q.tema} · ${idx + 1}/${TOTAL_POR_BLOCO}</span>
-      </div>
-      <p class="text-base sm:text-lg font-semibold mb-5 leading-relaxed">${instrucao}</p>
-      <p class="text-sm text-gray-500 mb-4">Escolha uma opção <strong>MAIS</strong> e uma <strong>MENOS</strong> parecida com você.</p>
+      <p class="text-base sm:text-lg font-semibold mb-5 leading-relaxed">Leia as afirmações abaixo e indique quais são <strong>mais</strong> e <strong>menos</strong> parecidas com você.</p>
+      <p class="text-sm text-gray-500 mb-4">Responda com sinceridade — não há respostas certas ou erradas.</p>
       ${optsHtml}
     </div>
     <div class="flex justify-center gap-3 mt-4">
       ${idx > 0 ? '<button onclick="voltar()" class="bg-gray-200 text-gray-700 px-6 py-2.5 rounded-full font-semibold hover:bg-gray-300 transition-all">Voltar</button>' : ''}
       <button onclick="avancar()" class="bg-[#1a1a2e] text-white px-8 py-2.5 rounded-full font-semibold shadow hover:shadow-lg transition-all">
-        ${idx < ativas.length - 1 ? 'Próxima →' : (state.bloco === 'natural' ? 'Continuar →' : 'Ver Resultado →')}
+        ${idx < TOTAL_QUESTOES - 1 ? 'Próxima →' : 'Concluir →'}
       </button>
     </div>`;
 
@@ -130,23 +125,35 @@ function mostrarPausaBloco() {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-function iniciarBlocoAdaptado() {
+function continuarAposPausa() {
+  state.pausaVista = true;
   document.getElementById('pausaBloco').style.display = 'none';
   document.getElementById('quiz').style.display = 'block';
-  state.bloco = 'adaptado';
-  state.passo = 0;
   mostrarPergunta();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function voltar() {
-  if (state.passo > 0) { state.passo--; mostrarPergunta(); }
+  if (state.passo > 0) {
+    if (state.passo === PAUSA_EM && state.pausaVista) {
+      state.pausaVista = false;
+      document.getElementById('pausaBloco').style.display = 'none';
+      document.getElementById('quiz').style.display = 'block';
+    }
+    state.passo--;
+    mostrarPergunta();
+  }
 }
 
 function avancar() {
-  const q = questoesAtivas()[state.passo];
+  const q = state.shuffled[state.passo];
   const v = validarRespostaQuestao(q.id);
   if (!v.ok) { alert(v.msg); return; }
   state.passo++;
+  if (state.passo === PAUSA_EM && !state.pausaVista) {
+    mostrarPausaBloco();
+    return;
+  }
   mostrarPergunta();
 }
 

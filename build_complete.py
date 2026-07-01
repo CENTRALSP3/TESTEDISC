@@ -10,6 +10,7 @@ JS_ORDER = [
     "constants.js",
     "questions.js",
     "palavras-data.js",
+    "devolutiva-templates.js",
     "scoring.js",
     "charts.js",
     "devolutiva.js",
@@ -59,7 +60,7 @@ html.dark .card{background:#1f2937!important}
   <div class="max-w-2xl mx-auto bg-white rounded-2xl shadow-sm p-8 text-center">
     <h2 class="text-2xl font-bold mb-3">Descubra seu Perfil Comportamental</h2>
     <p class="text-gray-500 text-sm leading-relaxed mb-2">O método DISC mapeia quatro dimensões do comportamento: <strong>Dominância (D)</strong>, <strong>Influência (I)</strong>, <strong>Estabilidade (S)</strong> e <strong>Conformidade (C)</strong>.</p>
-    <p class="text-gray-500 dark:text-gray-400 text-sm leading-relaxed mb-4">São <strong>56 questões</strong> em dois blocos: <strong>Perfil Natural</strong> (como você é) e <strong>Perfil Adaptado</strong> (como age no trabalho). Em cada uma, escolha a opção <strong>mais</strong> e <strong>menos</strong> parecida com você.</p>
+    <p class="text-gray-500 dark:text-gray-400 text-sm leading-relaxed mb-4">São <strong>56 afirmações</strong> sobre comportamento. Em cada uma, escolha a opção <strong>mais</strong> e <strong>menos</strong> parecida com você. Responda com sinceridade — não há respostas certas ou erradas.</p>
     <div class="grid grid-cols-4 gap-2 max-w-xs mx-auto mb-6">
       <div class="bg-d text-white rounded-xl p-3 font-bold text-center text-sm">D<br><span class="font-normal text-xs">Dominância</span></div>
       <div class="bg-i text-white rounded-xl p-3 font-bold text-center text-sm">I<br><span class="font-normal text-xs">Influência</span></div>
@@ -69,9 +70,8 @@ html.dark .card{background:#1f2937!important}
     <button onclick="iniciar()" class="bg-[#1a1a2e] text-white px-12 py-3.5 rounded-full font-semibold shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all">Iniciar Teste</button>
     <div class="flex justify-center gap-3 mt-5 flex-wrap">
       <span class="bg-white dark:bg-gray-800 border rounded-full px-4 py-1.5 text-xs text-gray-500"><strong>56</strong> questões</span>
-      <span class="bg-white dark:bg-gray-800 border rounded-full px-4 py-1.5 text-xs text-gray-500"><strong>2</strong> blocos</span>
       <span class="bg-white dark:bg-gray-800 border rounded-full px-4 py-1.5 text-xs text-gray-500"><strong>~15</strong> min</span>
-      <span class="bg-white dark:bg-gray-800 border rounded-full px-4 py-1.5 text-xs text-gray-500">v<strong>2.0</strong></span>
+      <span class="bg-white dark:bg-gray-800 border rounded-full px-4 py-1.5 text-xs text-gray-500">v<strong>2.1</strong></span>
     </div>
     <button onclick="toggleDarkMode()" class="mt-4 text-xs text-gray-400 underline">Alternar modo escuro</button>
   </div>
@@ -79,9 +79,8 @@ html.dark .card{background:#1f2937!important}
 
 <section id="quiz" class="py-8 px-4" style="display:none">
   <div class="max-w-2xl mx-auto">
-    <div class="bg-white rounded-xl shadow-sm p-5 mb-5">
-      <div class="flex justify-between items-center mb-3">
-        <span id="blocoLabel" class="bg-[#1a1a2e] text-white text-xs font-bold px-3 py-1 rounded-full">Perfil Natural</span>
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-5 mb-5">
+      <div class="flex justify-end items-center mb-3">
         <span id="progressText" class="text-sm font-semibold text-gray-400">1 de 56</span>
       </div>
       <div class="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
@@ -94,10 +93,9 @@ html.dark .card{background:#1f2937!important}
 
 <section id="pausaBloco" class="py-12 px-4" style="display:none">
   <div class="max-w-lg mx-auto bg-white dark:bg-gray-800 rounded-2xl shadow-sm p-8 text-center fade-in card">
-    <h2 class="text-xl font-bold mb-2">Bloco 1 Concluído!</h2>
-    <p class="text-gray-500 dark:text-gray-400 text-sm mb-2">Você completou o <strong>Perfil Natural</strong> (como você é).</p>
-    <p class="text-gray-500 dark:text-gray-400 text-sm mb-6">Agora responda o <strong>Perfil Adaptado</strong> — como você age no seu ambiente de trabalho atual.</p>
-    <button onclick="iniciarBlocoAdaptado()" class="bg-[#1a1a2e] text-white px-10 py-3 rounded-full font-semibold shadow-lg">Iniciar Bloco 2 →</button>
+    <h2 class="text-xl font-bold mb-2">Metade do questionário!</h2>
+    <p class="text-gray-500 dark:text-gray-400 text-sm mb-6">Você completou 28 de 56 afirmações. Faça uma pausa breve se precisar — suas respostas anteriores estão salvas.</p>
+    <button onclick="continuarAposPausa()" class="bg-[#1a1a2e] text-white px-10 py-3 rounded-full font-semibold shadow-lg">Continuar →</button>
   </div>
 </section>
 

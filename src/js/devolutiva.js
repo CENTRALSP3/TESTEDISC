@@ -1,97 +1,4 @@
-// ===== DEVOLUTIVA V2 — 12 SEÇÕES =====
-
-const ONTOLOGY_UI = {
-  D: { motivacao: 'Desafios, autonomia, resultados tangíveis e oportunidades de liderar.',
-       enfase: 'Posições com metas claras, decisões rápidas e autonomia para agir.',
-       comunicar_fazer: 'Seja direto, objetivo e focado em resultados.',
-       comunicar_evitar: 'Evite rodeios, burocracia excessiva e reuniões longas sem decisão.',
-       medo: 'Perder controle ou ser explorado por outros.' },
-  I: { motivacao: 'Reconhecimento, interação social, variedade e ambiente positivo.',
-       enfase: 'Funções com contato humano, criatividade e espaço para se expressar.',
-       comunicar_fazer: 'Seja aberto, entusiasta e reconheça contribuições.',
-       comunicar_evitar: 'Evite isolamento, críticas públicas e ambientes frios.',
-       medo: 'Rejeição social ou perda de influência.' },
-  S: { motivacao: 'Segurança, estabilidade, reconhecimento sincero e rotina previsível.',
-       enfase: 'Funções com processos claros, equipe estável e mudanças graduais.',
-       comunicar_fazer: 'Seja paciente, ofereça segurança e explique mudanças com antecedência.',
-       comunicar_evitar: 'Evite pressa, mudanças abruptas e tom agressivo.',
-       medo: 'Mudanças inesperadas e instabilidade.' },
-  C: { motivacao: 'Precisão, qualidade, expertise técnica e padrões bem definidos.',
-       enfase: 'Funções analíticas com tempo para análise e critérios objetivos.',
-       comunicar_fazer: 'Traga dados, seja específico e respeite padrões.',
-       comunicar_evitar: 'Evite generalizações, improviso e pressão por decisões sem dados.',
-       medo: 'Críticas à qualidade do trabalho ou erros públicos.' },
-};
-
-const TEXTOS = {
-  descricao: {
-    D: { alto: 'Perfil direto, orientado a resultados, com energia para superar obstáculos e tomar decisões rápidas.',
-         baixo: 'Perfil cooperativo que valoriza consenso e evita confrontos desnecessários.' },
-    I: { alto: 'Perfil comunicativo e entusiasmado, que energiza grupos e constrói conexões.',
-         baixo: 'Perfil mais reservado, com preferência por relações profundas em vez de amplitude social.' },
-    S: { alto: 'Perfil estável, leal e consistente, que traz segurança e harmonia às equipes.',
-         baixo: 'Perfil dinâmico que prefere variedade e mudanças a rotinas rígidas.' },
-    C: { alto: 'Perfil analítico e criterioso, orientado a qualidade, precisão e padrões elevados.',
-         baixo: 'Perfil flexível com regras, que prefere autonomia a procedimentos rígidos.' },
-  },
-  forcas: {
-    D: ['Decisões rápidas', 'Orientação a resultados', 'Iniciativa', 'Determinação'],
-    I: ['Comunicação persuasiva', 'Motivação de equipes', 'Criatividade', 'Networking'],
-    S: ['Confiabilidade', 'Paciência', 'Lealdade', 'Estabilidade em crises'],
-    C: ['Precisão analítica', 'Atenção a detalhes', 'Qualidade', 'Rigor técnico'],
-  },
-  atencao: {
-    D: ['Pode parecer impaciente', 'Risco de atropelar processos', 'Dificuldade com detalhes', 'Frustração com ritmos lentos'],
-    I: ['Pode parecer disperso', 'Dificuldade com prazos', 'Evita confrontos', 'Otimismo excessivo'],
-    S: ['Resistência a mudanças', 'Hesitação em decisões rápidas', 'Evita conflitos', 'Dificuldade em se posicionar'],
-    C: ['Paralisia por análise', 'Pode parecer crítico', 'Dificuldade com ambiguidade', 'Perfeccionismo'],
-  },
-  comunicacao: {
-    D: 'Comunicação direta e orientada a resultados.',
-    I: 'Comunicação expressiva, entusiasta e persuasiva.',
-    S: 'Comunicação calma, acolhedora e consistente.',
-    C: 'Comunicação técnica, precisa e fundamentada em dados.',
-  },
-  pressao: {
-    D: 'Assume controle e busca soluções rápidas. Risco de impulsividade.',
-    I: 'Busca apoio social. Risco de dispersão se isolado.',
-    S: 'Busca estabilidade. Risco de hesitação em urgências.',
-    C: 'Aprofunda análise. Risco de paralisia por excesso de informação.',
-  },
-  percepcao: {
-    D: 'Projeta confiança e objetividade. Pode ser visto como assertivo ou autoritário.',
-    I: 'Percebido como carismático e comunicativo. Pode parecer superficial em excesso.',
-    S: 'Transmite calma e confiabilidade. Pode parecer resistente a mudanças.',
-    C: 'Percebido como criterioso e competente. Pode parecer excessivamente crítico.',
-  },
-  recomendacoes: {
-    D: ['Pratique escuta ativa', 'Valorize perfis analíticos', 'Faça pausas antes de decidir', 'Delegue mais'],
-    I: ['Equilibre entusiasmo com prazos', 'Documente acordos', 'Desenvolva resiliência a críticas', 'Aprofunde antes de compartilhar'],
-    S: ['Comunique mudanças abertamente', 'Saia da zona de conforto gradualmente', 'Desenvolva assertividade', 'Posicione-se mais cedo'],
-    C: ['Equilibre análise com ação', 'Aceite informação parcial', 'Pratique decisões com prazo', 'Compartilhe conhecimento'],
-  },
-  equipe: {
-    D: ['Direcionamento e resultados', 'Decisões difíceis', 'Energia para obstáculos', 'Visão estratégica'],
-    I: ['Motivação e energia', 'Ideias criativas', 'Networking', 'Engajamento'],
-    S: ['Estabilidade', 'Suporte à equipe', 'Consistência', 'Harmonia'],
-    C: ['Análise crítica', 'Qualidade', 'Padrões elevados', 'Rigor técnico'],
-  },
-};
-
-const blendDescriptions = {
-  D: 'Foco em resultados e ação', I: 'Foco em pessoas e comunicação',
-  S: 'Foco em estabilidade e harmonia', C: 'Foco em qualidade e análise',
-  DI: 'Resultados através de influência', ID: 'Comunicação direcionada a metas',
-  DS: 'Determinação com estabilidade', SD: 'Estabilidade com ação',
-  DC: 'Resultados com critério', CD: 'Qualidade orientada a resultados',
-  IS: 'Influência acolhedora', SI: 'Conexão consistente',
-  SC: 'Análise consistente', CS: 'Qualidade estável',
-  IC: 'Comunicação analítica', CI: 'Análise comunicativa',
-};
-
-function getTextoPorScore(f, score) {
-  return score > 0 ? TEXTOS.descricao[f].alto : TEXTOS.descricao[f].baixo;
-}
+// ===== DEVOLUTIVA V2.1 — Estrutura Thomas (66 relatórios) =====
 
 function capitalizar(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
 
@@ -105,115 +12,203 @@ function palavrasPorFator(f, score) {
   return [...new Set([...fromPdf, ...fromFb])].slice(0, qtd);
 }
 
-function gerarDescritivo(scores, sorted) {
-  const palavras = [];
-  sorted.forEach(f => palavras.push(...palavrasPorFator(f, scores[f])));
-  return `<div class="card bg-white dark:bg-gray-900 rounded-2xl shadow-sm p-5 sm:p-8 mb-6 fade-in">
-    <h3 class="text-lg font-bold mb-4">4. Palavras Descritivas</h3>
-    <div class="flex flex-wrap gap-2">${[...new Set(palavras)].slice(0, 12).map(p =>
-      `<span class="px-3 py-1.5 bg-gray-100 dark:bg-gray-800 rounded-full text-sm font-medium">${p}</span>`).join('')}</div>
-  </div>`;
+function hashScores(scores) {
+  const s = FACTORES.map(f => scores[f]).join('');
+  let h = 0;
+  for (let i = 0; i < s.length; i++) h = ((h << 5) - h + s.charCodeAt(i)) | 0;
+  return Math.abs(h);
 }
 
-function gerarSecaoMultiFator(titulo, num, scores, fonte) {
-  const fatores = getFatoresPonderados(scores);
-  const blocos = fatores.map(f => `
-    <div class="mb-3 ${fatores.length > 1 ? 'pl-3 border-l-4' : ''}" style="${fatores.length > 1 ? 'border-color:'+CORES[f] : ''}">
-      ${fatores.length > 1 ? `<span class="text-xs font-bold" style="color:${CORES[f]}">${f}</span>` : ''}
-      <p class="text-gray-600 dark:text-gray-300 text-sm mt-1">${fonte[f]}</p>
-    </div>`).join('');
-  return `<div class="card bg-white dark:bg-gray-900 rounded-2xl shadow-sm p-5 sm:p-8 mb-6 fade-in">
-    <h3 class="text-lg font-bold mb-4">${num}. ${titulo}</h3>${blocos}</div>`;
+function pickFromList(list, seed, offset = 0) {
+  if (!list || !list.length) return '';
+  return list[(seed + offset) % list.length];
 }
 
-function gerarMotivacao(perfil) {
-  const f = perfil.primario;
-  const o = ONTOLOGY_UI[f];
-  return `<div class="card bg-white dark:bg-gray-900 rounded-2xl shadow-sm p-5 sm:p-8 mb-6 fade-in">
-    <h3 class="text-lg font-bold mb-4">5. Auto Motivação</h3>
-    <p class="text-gray-600 dark:text-gray-300">${o.motivacao}</p>
-    <p class="text-sm text-gray-400 mt-2">Medo fundamental: ${o.medo}</p>
-  </div>`;
+function pickFactorTemplate(fator, campo, seed, offset = 0) {
+  const tpl = DEVOLUTIVA_TEMPLATES?.fatores?.[fator]?.[campo];
+  if (!tpl || !tpl.length) return '';
+  const item = tpl[(seed + offset) % tpl.length];
+  if (typeof item === 'string') return item;
+  if (Array.isArray(item)) return item;
+  return item;
 }
 
-function gerarEnfaseTrabalho(perfil) {
-  const o = ONTOLOGY_UI[perfil.primario];
-  return `<div class="card bg-white dark:bg-gray-900 rounded-2xl shadow-sm p-5 sm:p-8 mb-6 fade-in">
-    <h3 class="text-lg font-bold mb-4">6. Ênfase no Trabalho</h3>
-    <p class="text-gray-600 dark:text-gray-300">${o.enfase}</p>
-  </div>`;
+function formatParagrafos(texto) {
+  if (!texto) return '';
+  return texto.split(/\n\n+/).filter(p => p.trim().length > 20)
+    .map(p => `<p class="text-gray-600 dark:text-gray-300 text-sm leading-relaxed mb-3">${p.trim()}</p>`)
+    .join('');
 }
 
-function gerarComunicacaoGuia(perfil) {
-  const f = perfil.primario;
-  const o = ONTOLOGY_UI[f];
-  return `<div class="card bg-white dark:bg-gray-900 rounded-2xl shadow-sm p-5 sm:p-8 mb-6 fade-in">
-    <h3 class="text-lg font-bold mb-4">9. Guia de Comunicação</h3>
-    <p class="text-sm mb-2"><strong class="text-green-600">Faça:</strong> ${o.comunicar_fazer}</p>
-    <p class="text-sm"><strong class="text-red-600">Evite:</strong> ${o.comunicar_evitar}</p>
-  </div>`;
-}
-
-function gerarDiscrepancia(dual) {
-  const alertas = analisarDiscrepancia(dual);
-  if (!alertas.length) return `<div class="card bg-white dark:bg-gray-900 rounded-2xl shadow-sm p-5 sm:p-8 mb-6 fade-in">
-    <h3 class="text-lg font-bold mb-4">10. Análise de Discrepância (Natural vs Adaptado)</h3>
-    <p class="text-gray-600 text-sm">Seu comportamento natural e adaptado estão alinhados. O ambiente parece compatível com seu perfil.</p>
-  </div>`;
-  return `<div class="card bg-white dark:bg-gray-900 rounded-2xl shadow-sm p-5 sm:p-8 mb-6 border-2 border-amber-200 fade-in">
-    <h3 class="text-lg font-bold mb-4">10. Análise de Discrepância (Natural vs Adaptado)</h3>
-    ${alertas.map(a => `<div class="p-3 mb-2 rounded-lg bg-amber-50 dark:bg-amber-900/20 text-sm">${a.texto}</div>`).join('')}
-  </div>`;
-}
-
-function gerarInferenciaAPI(apiResult) {
-  if (!apiResult) return '';
-  return `<div class="card bg-white dark:bg-gray-900 rounded-2xl shadow-sm p-5 sm:p-8 mb-6 border-l-4 border-blue-500 fade-in">
-    <h3 class="text-lg font-bold mb-4">12. Interpretação Avançada</h3>
-    <p class="text-gray-700 dark:text-gray-200 font-medium">${apiResult.interpretation}</p>
-    ${apiResult.matched_rules?.length ? `<p class="text-xs text-gray-400 mt-2">Regras: ${apiResult.matched_rules.join(', ')}</p>` : ''}
-    ${apiResult.share_hash ? `<button onclick="copiarLink('${apiResult.share_hash}')" class="mt-3 text-sm text-blue-600 underline">Copiar link para compartilhar</button>` : ''}
-  </div>`;
-}
-
-function gerarListaSecao(titulo, num, scores, fonte) {
-  const itens = [];
-  getFatoresAtivos(scores, 0).forEach(f => { if (fonte[f]) itens.push(...fonte[f]); });
-  return `<div class="card bg-white dark:bg-gray-900 rounded-2xl shadow-sm p-5 sm:p-8 mb-6 fade-in">
-    <h3 class="text-lg font-bold mb-4">${num}. ${titulo}</h3>
-    <ul class="space-y-2">${itens.slice(0, 8).map(i =>
-      `<li class="flex gap-2 text-sm text-gray-600 dark:text-gray-300"><span class="text-green-500">✓</span>${i}</li>`).join('')}</ul>
-  </div>`;
-}
-
-function gerarSecaoPerfil(perfil, scores) {
-  const desc = getTextoPorScore(perfil.primario, scores[perfil.primario]);
-  return `<div class="card bg-white dark:bg-gray-900 rounded-2xl shadow-sm p-5 sm:p-8 mb-6 fade-in">
-    <h3 class="text-lg font-bold mb-4">3. Visão Geral do Perfil</h3>
-    <div class="flex items-center gap-3 mb-4 flex-wrap">
-      <span class="px-4 py-1.5 rounded-full text-white font-bold text-sm" style="background:${CORES[perfil.primario]}">${perfil.blend}</span>
-      <span class="text-gray-600 dark:text-gray-300">${blendDescriptions[perfil.blend] || 'Perfil combinado'}</span>
+function cardSecao(num, titulo, conteudo, extraClass = '') {
+  return `<div class="card bg-white dark:bg-gray-900 rounded-2xl shadow-sm p-5 sm:p-8 mb-6 fade-in ${extraClass}">
+    <div class="flex items-center gap-3 mb-4 pb-3 border-b border-gray-100 dark:border-gray-700">
+      <span class="w-8 h-8 rounded-full bg-[#1a1a2e] text-white text-sm font-bold flex items-center justify-center flex-shrink-0">${num}</span>
+      <h3 class="text-lg font-bold">${titulo}</h3>
     </div>
-    <p class="text-gray-600 dark:text-gray-300">${desc}</p>
+    ${conteudo}
   </div>`;
+}
+
+function gerarSumario(nome, hoje, perfilNat, perfilAdp, dual) {
+  const blendDesc = DEVOLUTIVA_TEMPLATES?.blends?.[perfilNat.blend] || 'Perfil comportamental combinado';
+  return `<div class="text-center mb-8 pb-6 border-b border-gray-200 dark:border-gray-700">
+    <p class="text-xs uppercase tracking-widest text-gray-400 mb-2">Análise de Perfil Pessoal</p>
+    <h2 class="text-2xl font-bold">Perfil Comportamental DISC</h2>
+    <p class="text-gray-500 mt-1">${nome} · ${hoje}</p>
+    <div class="flex flex-wrap justify-center gap-2 mt-4">
+      <span class="px-4 py-1.5 rounded-full text-white text-sm font-bold" style="background:${CORES[perfilNat.primario]}">${perfilNat.blend}</span>
+      <span class="text-sm text-gray-500 self-center">${blendDesc}</span>
+    </div>
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 mt-4 max-w-lg mx-auto text-xs">
+      ${FACTORES.map(f => `<div class="p-2 rounded-lg bg-gray-50 dark:bg-gray-800">
+        <span class="font-bold" style="color:${CORES[f]}">${f}</span>
+        <span class="text-gray-500 ml-1">${dual.natural[f] > 0 ? '+' : ''}${dual.natural[f]}</span>
+      </div>`).join('')}
+    </div>
+  </div>`;
+}
+
+function gerarAutoImagem(perfil, scores, seed) {
+  const f = perfil.primario;
+  const texto = pickFactorTemplate(f, 'auto_imagem', seed);
+  const sec = perfil.secundario ? ` com traços de <strong style="color:${CORES[perfil.secundario]}">${perfil.secundario}</strong>` : '';
+  const intro = texto
+    ? formatParagrafos(texto)
+    : `<p class="text-gray-600 dark:text-gray-300 text-sm">Perfil com predominância de <strong style="color:${CORES[f]}">${f}</strong>${sec}.</p>`;
+  return cardSecao(1, 'Autoimagem — Gráfico III', `
+    <p class="text-xs text-gray-400 mb-3 uppercase tracking-wide">Comportamento natural</p>
+    ${intro}
+    <div class="mt-4 flex flex-wrap gap-2">
+      <span class="text-xs px-2 py-1 rounded-full bg-gray-100 dark:bg-gray-800">Primário: <strong style="color:${CORES[f]}">${f}</strong> (${scores[f] > 0 ? '+' : ''}${scores[f]})</span>
+      ${perfil.secundario ? `<span class="text-xs px-2 py-1 rounded-full bg-gray-100 dark:bg-gray-800">Secundário: <strong style="color:${CORES[perfil.secundario]}">${perfil.secundario}</strong></span>` : ''}
+    </div>`);
+}
+
+function gerarPalavrasDescritivas(perfil, scores, seed) {
+  const palavras = [];
+  perfil.sorted.forEach((f, i) => {
+    const fromTpl = pickFactorTemplate(f, 'palavras', seed, i);
+    if (Array.isArray(fromTpl)) palavras.push(...fromTpl);
+    palavras.push(...palavrasPorFator(f, scores[f]));
+  });
+  const unicas = [...new Set(palavras)].slice(0, 16);
+  return cardSecao(2, 'Palavras Descritivas', `
+    <p class="text-xs text-gray-400 mb-3">Baseado em ${DEVOLUTIVA_TEMPLATES?.meta?.source_documents || 66} perfis de referência</p>
+    <div class="flex flex-wrap gap-2">${unicas.map(p =>
+      `<span class="px-3 py-1.5 bg-gray-100 dark:bg-gray-800 rounded-full text-sm font-medium">${p}</span>`).join('')}</div>`);
+}
+
+function gerarAutoMotivacao(perfil, seed) {
+  const f = perfil.primario;
+  const texto = pickFactorTemplate(f, 'auto_motivacao', seed);
+  const motivadores = pickFactorTemplate(f, 'motivadores', seed, 1);
+  return cardSecao(3, 'Auto Motivação', `
+    ${texto ? formatParagrafos(texto) : `<p class="text-gray-600 text-sm">Motivação orientada pelo fator <strong style="color:${CORES[f]}">${f}</strong>.</p>`}
+    ${motivadores ? `<div class="mt-3 p-3 rounded-lg bg-amber-50 dark:bg-amber-900/20 text-sm text-gray-600 dark:text-gray-300">${typeof motivadores === 'string' ? motivadores : ''}</div>` : ''}`);
+}
+
+function gerarEnfaseTrabalho(perfil, seed) {
+  const f = perfil.primario;
+  const enfase = pickFactorTemplate(f, 'enfase_trabalho', seed);
+  let html = '';
+  if (enfase && typeof enfase === 'object' && enfase.titulo) {
+    html = `<p class="font-semibold text-gray-800 dark:text-gray-200 mb-2">${enfase.titulo}</p>${formatParagrafos(enfase.corpo)}`;
+  } else if (typeof enfase === 'string') {
+    html = formatParagrafos(enfase);
+  } else {
+    html = `<p class="text-gray-600 text-sm">Ênfase profissional alinhada ao perfil <strong>${perfil.blend}</strong>.</p>`;
+  }
+  return cardSecao(4, 'Ênfase no Trabalho', html);
+}
+
+function gerarCaracteristicas(perfil, seed) {
+  const bullets = [];
+  [perfil.primario, perfil.secundario].filter(Boolean).forEach((f, i) => {
+    const tpl = DEVOLUTIVA_TEMPLATES?.fatores?.[f]?.caracteristicas;
+    if (!tpl?.length) return;
+    const start = (seed + i * 3) % tpl.length;
+    for (let j = 0; j < 5 && j < tpl.length; j++) bullets.push(tpl[(start + j) % tpl.length]);
+  });
+  const unicos = [...new Set(bullets)].slice(0, 10);
+  if (!unicos.length) return '';
+  return cardSecao(5, 'Características Gerais', `
+    <ul class="space-y-2">${unicos.map(b =>
+      `<li class="flex gap-2 text-sm text-gray-600 dark:text-gray-300"><span class="text-[#1a1a2e] dark:text-amber-400 font-bold">•</span><span>${b}</span></li>`).join('')}</ul>`);
+}
+
+function gerarPercepcaoAdaptada(perfilAdp, dual, seed) {
+  const disc = analisarDiscrepancia(dual);
+  let texto = '';
+  if (!disc.length) {
+    const alinhados = DEVOLUTIVA_TEMPLATES?.discrepancia?.alinhado || [];
+    texto = pickFromList(alinhados, seed) || 'O comportamento no ambiente profissional está alinhado com a autoimagem natural, sugerindo compatibilidade com o papel desempenhado.';
+  } else {
+    texto = disc.map(d => d.texto).join(' ');
+  }
+  return cardSecao(6, 'Percepção no Ambiente Profissional — Gráfico I', `
+    <p class="text-xs text-gray-400 mb-3">Perfil adaptado: <strong>${perfilAdp.blend}</strong></p>
+    <p class="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">${texto}</p>`);
+}
+
+function gerarSobPressao(perfil, seed) {
+  const f = perfil.primario;
+  const texto = pickFactorTemplate(f, 'sob_pressao', seed);
+  return cardSecao(7, 'Comportamento sob Pressão — Gráfico II', `
+    ${texto ? formatParagrafos(texto) : `<p class="text-gray-600 text-sm">Sob pressão, tende a reforçar características do fator <strong style="color:${CORES[f]}">${f}</strong>.</p>`}`);
+}
+
+function gerarEstimulos(perfil, seed) {
+  const f = perfil.primario;
+  const texto = pickFactorTemplate(f, 'estimulos', seed);
+  if (!texto) return '';
+  return cardSecao(8, 'Estímulos e Orientações ao Gestor', formatParagrafos(typeof texto === 'string' ? texto : ''));
+}
+
+function gerarValorOrganizacao(perfil, seed) {
+  const f = perfil.primario;
+  const texto = pickFactorTemplate(f, 'valor_organizacao', seed);
+  if (!texto) return '';
+  return cardSecao(9, 'Valor para a Organização', formatParagrafos(typeof texto === 'string' ? texto : ''));
+}
+
+function gerarDiscrepancia(dual, seed) {
+  const alertas = analisarDiscrepancia(dual);
+  if (!alertas.length) {
+    const tpl = pickFromList(DEVOLUTIVA_TEMPLATES?.discrepancia?.alinhado, seed);
+    return cardSecao(10, 'Análise de Discrepância (Natural vs Adaptado)', `
+      <p class="text-gray-600 text-sm leading-relaxed">${tpl || 'Seu comportamento natural e adaptado estão alinhados. O ambiente parece compatível com seu perfil.'}</p>`);
+  }
+  return cardSecao(10, 'Análise de Discrepância (Natural vs Adaptado)', `
+    ${alertas.map(a => `<div class="p-3 mb-2 rounded-lg bg-amber-50 dark:bg-amber-900/20 text-sm text-gray-700 dark:text-gray-300 border-l-4 border-amber-400">${a.texto}</div>`).join('')}`,
+    'border-2 border-amber-100');
 }
 
 function gerarSecaoZona(scores) {
   const naZona = FACTORES.filter(f => Math.abs(scores[f]) > ZONA_CINZENTA);
   if (!naZona.length) return '';
-  return `<div class="card bg-white dark:bg-gray-900 rounded-2xl shadow-sm p-5 sm:p-8 mb-6 border-2 border-red-200 fade-in">
-    <h3 class="text-lg font-bold mb-4">11. Zona Cinzenta</h3>
-    ${naZona.map(f => `<div class="p-3 mb-2 rounded-xl" style="background:${CORES[f]}15;border-left:4px solid ${CORES[f]}">
+  return cardSecao(11, 'Indicadores de Zona Cinzenta', `
+    <p class="text-xs text-gray-400 mb-3">Fatores com intensidade extrema — requerem atenção especial na interpretação</p>
+    ${naZona.map(f => `<div class="p-3 mb-2 rounded-xl" style="background:${CORES[f]}12;border-left:4px solid ${CORES[f]}">
       <strong style="color:${CORES[f]}">${f} (${scores[f] > 0 ? '+' : ''}${scores[f]})</strong>
-      <p class="text-sm text-gray-600 mt-1">${scores[f] > 0 ? 'Traço muito pronunciado — moderação recomendada.' : 'Traço muito baixo — área de desenvolvimento.'}</p>
-    </div>`).join('')}
-  </div>`;
+      <p class="text-sm text-gray-600 mt-1">${scores[f] > 0 ? 'Traço muito pronunciado — moderação e autoconsciência recomendadas.' : 'Traço muito baixo — área potencial de desenvolvimento.'}</p>
+    </div>`).join('')}`, 'border-2 border-red-100');
+}
+
+function gerarInferenciaAPI(apiResult) {
+  if (!apiResult) return '';
+  return cardSecao(12, 'Interpretação Avançada', `
+    <p class="text-gray-700 dark:text-gray-200 font-medium leading-relaxed">${apiResult.interpretation}</p>
+    ${apiResult.matched_rules?.length ? `<p class="text-xs text-gray-400 mt-3">Regras aplicadas: ${apiResult.matched_rules.join(', ')}</p>` : ''}
+    ${apiResult.share_hash ? `<button onclick="copiarLink('${apiResult.share_hash}')" class="mt-3 text-sm text-blue-600 underline">Copiar link para compartilhar</button>` : ''}`,
+    'border-l-4 border-blue-500');
 }
 
 function gerarDisclaimer() {
   return `<div class="text-center text-xs text-gray-400 mt-8 pt-4 border-t space-y-1">
     <p>Instrumento de autoconhecimento DISC v${INSTRUMENT_VERSION}. Não substitui avaliação psicológica profissional.</p>
-    <p>Normas populacionais em coleta — resultados indicativos baseados em autorrelato.</p>
+    <p>Devolutiva baseada em ${DEVOLUTIVA_TEMPLATES?.meta?.source_documents || 66} relatórios de referência. Resultados indicativos baseados em autorrelato.</p>
+    <p class="italic">Este relatório deve servir como guia e ser complementado por entrevista e avaliação contextual.</p>
   </div>`;
 }
 
@@ -222,6 +217,7 @@ async function calcularERenderizar(nome, dualPrecomputed, apiPrecomputed) {
   const perfilNat = determinarPerfil(dual.natural);
   const perfilAdp = determinarPerfil(dual.adapted);
   const hoje = new Date().toLocaleDateString('pt-BR');
+  const seed = hashScores(dual.natural);
 
   let apiResult = apiPrecomputed;
   if (!apiResult) {
@@ -231,26 +227,19 @@ async function calcularERenderizar(nome, dualPrecomputed, apiPrecomputed) {
 
   document.getElementById('resultadoContainer').innerHTML = `
     <div id="printArea">
-      <div class="text-center mb-8">
-        <h2 class="text-2xl font-bold">Perfil Comportamental DISC</h2>
-        <p class="text-gray-500 mt-1">${nome} · ${hoje}</p>
-        <div class="flex flex-wrap justify-center gap-2 mt-3">
-          <span class="bg-green-700 text-white px-4 py-1.5 rounded-full text-sm font-bold">Natural: ${perfilNat.blend}</span>
-          <span class="bg-blue-700 text-white px-4 py-1.5 rounded-full text-sm font-bold">Adaptado: ${perfilAdp.blend}</span>
-        </div>
-      </div>
+      ${gerarSumario(nome, hoje, perfilNat, perfilAdp, dual)}
       ${gerarGraficosTriplos(dual)}
-      ${gerarSecaoPerfil(perfilNat, dual.natural)}
-      ${gerarDescritivo(dual.natural, perfilNat.sorted)}
-      ${gerarMotivacao(perfilNat)}
-      ${gerarEnfaseTrabalho(perfilNat)}
-      ${gerarListaSecao('Forças / Pontos Fortes', 7, dual.natural, TEXTOS.forcas)}
-      ${gerarListaSecao('Pontos de Atenção', 8, dual.natural, TEXTOS.atencao)}
-      ${gerarComunicacaoGuia(perfilNat)}
-      ${gerarSecaoMultiFator('Comportamento sob Pressão', 10, dual.adapted, TEXTOS.pressao)}
-      ${gerarDiscrepancia(dual)}
+      ${gerarAutoImagem(perfilNat, dual.natural, seed)}
+      ${gerarPalavrasDescritivas(perfilNat, dual.natural, seed)}
+      ${gerarAutoMotivacao(perfilNat, seed)}
+      ${gerarEnfaseTrabalho(perfilNat, seed)}
+      ${gerarCaracteristicas(perfilNat, seed)}
+      ${gerarPercepcaoAdaptada(perfilAdp, dual, seed)}
+      ${gerarSobPressao(perfilNat, seed)}
+      ${gerarEstimulos(perfilNat, seed)}
+      ${gerarValorOrganizacao(perfilNat, seed)}
+      ${gerarDiscrepancia(dual, seed)}
       ${gerarSecaoZona(dual.natural)}
-      ${gerarListaSecao('Recomendações Práticas', 11, dual.natural, TEXTOS.recomendacoes)}
       ${gerarInferenciaAPI(apiResult)}
       ${gerarDisclaimer()}
       <div class="flex flex-wrap justify-center gap-3 mt-8 no-print">
