@@ -1,15 +1,15 @@
 # TESTEDISC V2 — Perfil Comportamental DISC
 
-Teste psicométrico completo com perfil **Natural + Adaptado**, devolutiva profissional em 12 seções e API de inferência.
+Teste psicométrico completo com perfil **Natural + Adaptado**, devolutiva profissional estruturada (base: 66 relatórios Thomas) e API de inferência.
 
-**Versão:** 2.0.0
+**Versão:** 2.1.0
 
 ## Funcionalidades
 
-- **56 questões** (28 Natural + 28 Adaptado) forced-choice
+- **56 afirmações** (28 Natural + 28 Adaptado) — ordem randomizada, sem revelar etapa
 - **3 gráficos DISC** (Autoimagem · Pressão · Adaptado)
-- **Análise de discrepância** Natural vs Adaptado
-- **12 seções de devolutiva** inspiradas em relatórios profissionais
+- **12 seções de devolutiva** no formato dos relatórios Thomas International
+- **Base de conhecimento** extraída de 66 PDFs modelo
 - **55 regras de inferência** via API
 - Modo escuro, PWA offline, compartilhamento por link
 - Coleta anônima para analytics (`/responses`)
@@ -18,12 +18,14 @@ Teste psicométrico completo com perfil **Natural + Adaptado**, devolutiva profi
 ## Desenvolvimento
 
 ```bash
-# Pipeline completo (na raiz do projeto)
+# Pipeline completo
 python build_all.py
 
 # Ou manualmente:
-python ../scripts/generate_questions.py
-python ../scripts/generate_rules.py
+python scripts/extract_knowledge.py
+python scripts/build_devolutiva_templates.py
+python scripts/generate_questions.py
+python scripts/generate_rules.py
 python build_complete.py
 python run_tests.py
 ```
@@ -40,18 +42,19 @@ Endpoints: `POST /infer`, `POST /responses`, `GET /analytics`, `GET /result/{has
 ## Estrutura
 
 ```
-src/js/
-├── constants.js, questions.js, scoring.js
-├── charts.js, devolutiva.js, features.js, app.js
-api/
-├── main.py, inference.py, database.py
-admin/index.html
-manifest.json, sw.js
+src/js/          — módulos frontend (app, scoring, devolutiva, templates)
+scripts/         — pipeline de geração (questões, regras, knowledge)
+artifacts/       — knowledge engine (phrases, rules, devolutiva_templates)
+api/             — FastAPI + inferência
+docs/            — GitHub Pages (deploy automático)
 ```
 
 ## Deploy
 
-GitHub Pages publica `docs/`. Branch `enhanced-platform`.
+- **Repositório:** https://github.com/CENTRALSP3/TESTEDISC
+- **Branch principal:** `enhanced-platform`
+- **GitHub Pages:** https://centralsp3.github.io/TESTEDISC/
+- Workflow `.github/workflows/pages.yml` publica `docs/` automaticamente
 
 ## Licença
 
