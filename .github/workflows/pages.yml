@@ -3,6 +3,7 @@ name: Publish GitHub Pages
 on:
   push:
     branches: [enhanced-platform, main]
+  workflow_dispatch:
 
 permissions:
   contents: read

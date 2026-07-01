@@ -2373,19 +2373,19 @@
     }
   },
   "section_coverage": {
-    "sob_pressao": 66,
-    "lideranca": 1,
-    "enfase_trabalho": 66,
-    "auto_motivacao": 64,
-    "ambiente": 63,
-    "percepcao_adaptada": 66,
-    "caracteristicas_gerais": 66,
-    "valor_organizacao": 66,
     "auto_imagem_natural": 66,
-    "comunicacao": 9,
-    "comentarios_gerais": 66,
     "palavras_descritivas_feedback": 66,
+    "auto_motivacao": 64,
+    "palavras_descritivas_natural": 66,
+    "enfase_trabalho": 66,
+    "valor_organizacao": 66,
+    "sob_pressao": 66,
+    "comentarios_gerais": 66,
+    "comunicacao": 9,
+    "ambiente": 63,
     "motivadores": 66,
-    "palavras_descritivas_natural": 66
+    "caracteristicas_gerais": 66,
+    "percepcao_adaptada": 66,
+    "lideranca": 1
   }
 }
